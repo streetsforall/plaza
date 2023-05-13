@@ -1,8 +1,8 @@
 require('dotenv').config();
 
-const express = require('express'); //Line 1
-const app = express(); //Line 2
-const port = process.env.PORT || 5000; //Line 3
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 5000;
 
 
 const client = require('@mailchimp/mailchimp_marketing');
