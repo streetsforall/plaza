@@ -15,27 +15,28 @@ client.setConfig({
     server: process.env.SERVER,
 });
 
+app.use(cors())
+app.use(helmet())
+
+// This displays message that the server running and listening to specified port
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+
+// this gets the most recent mailchimp blast for serving to the streetsforall.org splash page
 const getCampaigns = async () => {
-    const response = await client.campaigns.list({ sort_field: "send_time", sort_dir: "DESC" });
+    const response = await client.campaigns.list({ list_id: "948112d831", status: "sent", sort_field: "send_time", sort_dir: "DESC" });
+
     var campaign = response['campaigns'][0]
-    console.log('campaigns', campaign);
 
     campaign_url = campaign['long_archive_url']
     campaign_subject = campaign['settings']['subject_line']
     campaign_time = campaign['send_time']
-
     return [{
         'url': campaign_url,
         'subject': campaign_subject,
         'date': campaign_time
     }];
 }
-
-app.use(cors())
-app.use(helmet())
-
-// This displays message that the server running and listening to specified port
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 
 app.get('/cta', async (req, res) => {

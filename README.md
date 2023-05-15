@@ -9,8 +9,23 @@ _| """ |_|"""""|_|"""""|_|"""""|_|"""""|
 
 ## Welcome to the SFA Plaza
 
-this is a landing page and backend we can use for tools and projects that don't require their own URLs
+this is a landing page and backend we can use for hosting tools and projects that don't require their own URLs
 
-File structure looks like:  
-* Backend (node express app) 
-* * Frontend (react)  
+Pushing to the **main** branch deploys straight to: https://plaza.streetsforall.org
+
+
+---
+
+### to preview locally run:  
+
+`npm start`   
+*this starts the node js server*
+
+`cd frontend npm start`   
+*this starts the react app*
+
+--- 
+projects structure looks like:  
+> BACKEND: 
+> node express app with api endpoints
+> > frontend: react app with pages/tools
