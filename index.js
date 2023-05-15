@@ -47,3 +47,7 @@ app.get('/cta', async (req, res) => {
 app.get('/test', async (req, res) => {
     res.send({ 'test':'do we have a living backend????' });
 });
+
+app.get('/', async (req, res) => {
+    res.send( 'welcome to the SFA API' );
+});
