@@ -38,18 +38,12 @@ app.use(helmet())
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 
-app.get('/api/cta', async (req, res) => {
+app.get('/cta', async (req, res) => {
     const Data = await getCampaigns();
     res.send({ Data });
 
 });
 
-app.get('/api/test', async (req, res) => {
+app.get('/test', async (req, res) => {
     res.send({ 'test':'do we have a living backend????' });
-});
-
-
-
-app.get('/', function (req, res) {
-    res.send({ mail: 'hello' })
 });
