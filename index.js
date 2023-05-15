@@ -1,10 +1,11 @@
 require('dotenv').config();
 
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 5000;
+const express = require('express')
 
+const PORT = process.env.PORT || 3001;
+const app = express()
 
+const helmet = require('helmet')
 const client = require('@mailchimp/mailchimp_marketing');
 
 client.setConfig({
@@ -28,8 +29,10 @@ const getCampaigns = async () => {
     }];
 }
 
+app.use(helmet())
+
 // This displays message that the server running and listening to specified port
-app.listen(port, () => console.log(`Listening on port ${port}`));
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 
 app.get('/api/cta', async (req, res) => {
@@ -42,9 +45,4 @@ app.get('/api/cta', async (req, res) => {
 
 app.get('/', function (req, res) {
     res.send({ mail: 'hello' })
-});
-
-
-app.get('/api', (req, res) => {
-    res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' }); //Line 10
 });
