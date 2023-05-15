@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from 'react';
 
-function App() {
+const App = () => {
+  const [test, setTest] = useState('');
+
+  useEffect(() => {
+    getApi()
+  }, []);
+
+  const getApi = () => {
+    // Get the passwords and store them in state
+    fetch('/api/test')
+      .then(res => res.json())
+      .then(get => setTest(get));
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Okay lets begin
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+          <h1>{test.test}</h1>
     </div>
   );
 }

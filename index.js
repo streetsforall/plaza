@@ -5,8 +5,10 @@ const express = require('express')
 const PORT = process.env.PORT || 3001;
 const app = express()
 
+const cors = require('cors')
 const helmet = require('helmet')
 const client = require('@mailchimp/mailchimp_marketing');
+
 
 client.setConfig({
     apiKey: process.env.API_KEY,
@@ -29,6 +31,7 @@ const getCampaigns = async () => {
     }];
 }
 
+app.use(cors())
 app.use(helmet())
 
 // This displays message that the server running and listening to specified port
@@ -39,6 +42,10 @@ app.get('/api/cta', async (req, res) => {
     const Data = await getCampaigns();
     res.send({ Data });
 
+});
+
+app.get('/api/test', async (req, res) => {
+    res.send({ 'test':'do we have a living backend????' });
 });
 
 
