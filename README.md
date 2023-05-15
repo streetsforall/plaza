@@ -14,8 +14,6 @@ this is a landing page and backend we can use for hosting tools and projects tha
 Pushing to the **main** branch deploys straight to: https://plaza.streetsforall.org
 
 
----
-
 ### to preview locally run:  
 
 `npm start`   
@@ -24,7 +22,10 @@ Pushing to the **main** branch deploys straight to: https://plaza.streetsforall.
 `cd frontend npm start`   
 *this starts the react app*
 
---- 
+### structure
+
+All backend endpoints are prefaced with '/api'.
+
 projects structure looks like:  
 > BACKEND: 
 > node express app with api endpoints
