@@ -37,9 +37,11 @@ const CTA = () => {
 
    // remove email from to field
    const remove = (e) => {
+      e.target.classList.toggle("chosen");
       var list = recieverList
+      const item = data.findIndex(i => i.DEMAIL ===  e.target.textContent.slice(0,-1));
+      console.log(item)
       var bye = e.target.textContent.replace()
-      console.log(bye)
       list = list.filter(item => item !== bye.slice(0,-2))
       setRecieverList(list)
       updateEmail();
