@@ -19,7 +19,8 @@ Pushing to the **main** branch deploys straight to: https://plaza.streetsforall.
 `npm start`   
 *this starts the node js server*
 
-`cd frontend npm start`   
+`cd frontend`   
+`npm start`   
 *this starts the react app*
 
 ### structure

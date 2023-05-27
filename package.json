@@ -14,5 +14,8 @@
   "scripts": {
     "start": "node index.js",
     "build": "cd frontend && npm install && npm run build"
+  },
+  "devDependencies": {
+    "react-router-dom": "^6.11.2"
   }
 }
