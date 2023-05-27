@@ -27,7 +27,8 @@ const CTA = () => {
    }
 
    // add email from selector field
-   const addEmail = (localEmail) => {
+   const addEmail = (localEmail, e) => {
+      e.target.classList.toggle("chosen");
       var list = recieverList
       list.push(localEmail)
       setRecieverList(list)
@@ -102,10 +103,8 @@ const CTA = () => {
 
          <div id="options">
             {data != '' ? data.map((locals) => {
-              return(<span onClick={() => {addEmail(locals.properties.DEMAIL)}}> {locals.properties.NAME} </span>)
+              return(<span onClick={(e) => {addEmail(locals.properties.DEMAIL, e)}}> {locals.properties.NAME} </span>)
             }) : ''}
-
-            
          </div>
 
          <label>Subject</label>

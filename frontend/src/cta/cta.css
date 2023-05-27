@@ -91,6 +91,10 @@ column-width: 12em;
         background-color: beige;
 }
 
+#options span.chosen {
+    background-color: grey;
+}
+
 
 #preview {
     max-width: 100%;

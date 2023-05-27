@@ -23,6 +23,7 @@ const App = () => {
         <Route path="/" exact element={<Home />} >
         </Route>
         <Route path="cta" element={<CTA />} />
+        <Route path="*" element={"not found"} />
       </Routes>
     </BrowserRouter >
 
