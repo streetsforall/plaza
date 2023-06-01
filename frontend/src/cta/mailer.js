@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './cta.css';
 import nieghborhoods from "./LA_Neighborhood_Councils.json";
 import { useParams } from "react-router-dom";
-import { contentSecurityPolicy } from 'helmet';
-import { constructFromObject } from '@mailchimp/mailchimp_marketing/src/ApiClient';
-
 
 const CTA = () => {
    const [body, setBody] = useState('');
