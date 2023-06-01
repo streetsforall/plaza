@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './cta.css';
 import nieghborhoods from "./LA_Neighborhood_Councils.json";
+import { useParams } from "react-router-dom";
 import { contentSecurityPolicy } from 'helmet';
+import { constructFromObject } from '@mailchimp/mailchimp_marketing/src/ApiClient';
 
 
 const CTA = () => {
@@ -11,57 +13,84 @@ const CTA = () => {
    const [recieverList, setRecieverList] = useState([])
    const [email, setEmail] = useState('');
    const [data, setData] = useState('');
-
-   var receivers = ''
+   const [hash, setHash] = useState('');
+   const [hashData, setHashData] = useState('');
 
    // set email
    useEffect(() => {
       updateEmail();
    }, []);
 
+   const handle = useParams()
 
+
+   if (handle.hash) {
+      console.log(handle.hash)
+      fetch('/email/reader')
+        .then(response => response.json())
+        .then(data => console.log(data));
+   }
+
+
+   useEffect(() => {
+      updateEmail();
+   }, [recieverList]);
+
+   const createHash = async () => {
+
+      var url = handle.hash ? hash : (Math.random() + 1).toString(36).substring(2)
+      setHash(url)
+
+      var load = { url: url, to: recieverList, subject: subject, body: body }
+
+      const response = await fetch('/email/poster', {
+         method: 'POST',
+         headers: {
+            'Content-type': 'application/json',
+         },
+         body: JSON.stringify(load)
+      })
+
+      const data = await response.json();
+      console.log(url);
+   }
 
    const getData = (dataSource) => {
-      if (data !== '') {setData('')} else if (dataSource === "nc") {setData(nieghborhoods.features)}
+      if (data !== '') { setData('') } else if (dataSource === "nc") { setData(nieghborhoods.features) }
       console.log(nieghborhoods.features)
    }
 
-   // add email from selector field
+   // add email from selector array
    const addEmail = (localEmail, e) => {
-      e.target.classList.toggle("chosen");
       var list = recieverList
       list.push(localEmail)
       setRecieverList(list)
-      updateEmail();
+      updateEmail()
    }
 
-   // remove email from to field
+   // remove email from 'To' field
    const remove = (e) => {
-      e.target.classList.toggle("chosen");
       var list = recieverList
-      const item = data.findIndex(i => i.DEMAIL ===  e.target.textContent.slice(0,-1));
-      console.log(item)
       var bye = e.target.textContent.replace()
-      list = list.filter(item => item !== bye.slice(0,-2))
+      list = list.filter(item => item !== bye.slice(0, -2))
       setRecieverList(list)
-      updateEmail();
    }
 
    // add email to recipients, clean up any spaces and split comma-seperated list into multiple
-   const addRecipients = (e) => { 
+   const addRecipients = (e) => {
       var newmails = document.getElementById('recipients')
-      var clean = newmails.value.replace(/\s/g, '') 
+      var clean = newmails.value.replace(/\s/g, '')
       var clean = clean.split(",");
       var list = recieverList
       list.push(clean)
       setRecieverList(list.flat())
-      updateEmail();
       e.target.reset();
       e.preventDefault();
    }
 
-   // takes the subject and body states, converts spaces to '%20', and updates the email state
+   // takes the subject and body states and updates the email state
    const updateEmail = () => {
+      // this converts any spaces to '%20'
       function spaced(text) {
          var spacer = encodeURI(text.trim())
          return (spacer)
@@ -69,6 +98,7 @@ const CTA = () => {
 
       var output = `mailto:${recieverList}?&bcc=cta@streetsforall.org&subject=${spaced(subject)}&body=${spaced(body)}`
       setEmail(output);
+      console.log('updated')
    }
 
    // async copy current email state to clipboard 
@@ -85,27 +115,39 @@ const CTA = () => {
       setCopy(true);
    }
 
+   if (handle.hash) {
+      var shareable = <div id="hash"><a href={window.location.href}>{window.location.href}</a></div>;
+   } else if (hash) {
+      var shareable = <div id="hash"><a href={window.location.href + hash}>{window.location.href + hash}</a></div>;
+   } else {
+      var shareable = <button onClick={() => createHash()}>Create Shareable Link</button>
+   }
+
+      
+   
+
+
    return (
       <div id="mailer">
 
-<label>To</label>
+         <label>To</label>
          <div id="recipient_list">
-            {recieverList.map((e, i , arr) => {
-               return(<span onClick={(e) => {remove(e)}}>{e}, </span>)
+            {recieverList.map((e, i, arr) => {
+               return (<span onClick={(e) => { remove(e) }}>{e}, </span>)
             })}
-            <form id="recipients_form" autocomplete="off" onSubmit={(e) => {addRecipients(e)}}>
+            <form id="recipients_form" autocomplete="off" onSubmit={(e) => { addRecipients(e) }}>
                <input required type="email" multiple id="recipients"></input>
-         </form>
+            </form>
          </div>
 
 
          <div id="filter">
-            <button onClick={() => {getData('nc')}}>LA Nieghborhood Councils</button>
+            <button onClick={() => { getData('nc') }}>LA Nieghborhood Councils</button>
          </div>
 
          <div id="options">
             {data != '' ? data.map((locals) => {
-              return(<span onClick={(e) => {addEmail(locals.properties.DEMAIL, e)}}> {locals.properties.NAME} </span>)
+               return (<span onClick={(e) => { addEmail(locals.properties.DEMAIL, e) }}> {locals.properties.NAME} </span>)
             }) : ''}
          </div>
 
@@ -116,11 +158,11 @@ const CTA = () => {
          <label>Email</label>
          <textarea rows="20" onChange={(e) => { setBody(e.target.value); updateEmail() }} />
 
-         <button id="copy" onClick={handleCopyClick} >
+         <button id="copy" onClick={() => handleCopyClick()} >
             <span>{copy ? "Copied!" : "Copy"}</span>
          </button>
 
-         <button>Create Shareable Link</button>
+         {shareable}
 
          <label>Output</label>
 

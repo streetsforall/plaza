@@ -1,19 +1,29 @@
 require('dotenv').config();
 
+
 const express = require('express')
 
 const PORT = process.env.PORT || 3001;
 const app = express()
 
+
 const cors = require('cors')
 const helmet = require('helmet')
 const client = require('@mailchimp/mailchimp_marketing');
+const { Octokit, App } = require("octokit");
 
+const octokit = new Octokit({ auth: process.env.GIT_KEY });
 
 client.setConfig({
     apiKey: process.env.API_KEY,
     server: process.env.SERVER,
 });
+
+const library = {
+    owner: "streetsforall",
+    repo: "library",
+    path: "email_generator.json",
+}
 
 app.use(cors())
 app.use(helmet())
@@ -37,6 +47,55 @@ const getCampaigns = async () => {
         'date': campaign_time
     }];
 }
+
+app.get('/hex', async (req, res) => {
+    var crypto = require("crypto");
+    var id = crypto.randomBytes(20).toString('hex');
+    res.send({ id });
+});
+
+
+app.use(express.json());
+
+app.get('/email/reader', async (req, res) => {
+
+    const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+      owner: "streetsforall",
+      repo: "library",
+      path: "email_generator.json",
+    })
+
+    json = JSON.parse(atob(data.content))
+    console.log(json)
+    res.json(json);
+
+});
+
+app.post('/email/poster', async (req, res) => {
+
+      const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+        owner: "streetsforall",
+        repo: "library",
+        path: "email_generator.json",
+      })
+
+      json = JSON.parse(atob(data.content))
+      req.body ? json.data.push(req.body) : ''
+
+      const SHA = data.sha
+
+      await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
+        owner: 'streetsforall',
+        repo: 'library',
+        sha: SHA,
+        path: 'email_generator.json',
+        message: 'updating DB',
+        content:  btoa(JSON.stringify(json)),
+      })
+
+      res.json(btoa(JSON.stringify(json)));
+
+});
 
 
 app.get('/cta', async (req, res) => {

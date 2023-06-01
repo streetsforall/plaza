@@ -28,7 +28,8 @@ const App = () => {
       <Routes>
         <Route path="/" exact element={<Home />} >
         </Route>
-        <Route path="/cta" exact element={<CTA />} />
+        <Route path="/cta" element={<CTA />} />
+        <Route path="/cta/:hash" element={<CTA />} />
         <Route path="/*" element={"not found"} />
       </Routes>
     </HashRouter >
