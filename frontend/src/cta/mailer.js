@@ -28,7 +28,7 @@ const CTA = () => {
    // using our email api this grabs all emails
    const loadEmails = async () => {
       setHash(handle.hash)
-      const response = await fetch(process.env.PORT+'/email/reader');
+      const response = await fetch('/email/reader');
       const jsonData = await response.json();
       const match = jsonData.data.find(val => val.url == handle.hash)
       console.log(match)

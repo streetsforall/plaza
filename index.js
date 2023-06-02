@@ -6,7 +6,6 @@ const express = require('express')
 const PORT = process.env.PORT || 3001;
 const app = express()
 
-
 const cors = require('cors')
 const helmet = require('helmet')
 const client = require('@mailchimp/mailchimp_marketing');
