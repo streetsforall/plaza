@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import nieghborhoods from "../LA_Neighborhood_Councils.json";
+import nieghborhoods from "../data/LA_Neighborhood_Councils.json";
+import cds from "../data/LA_City_Council_Districts.json";
 
 
 
@@ -9,7 +10,9 @@ const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
     const [data, setData] = useState('');
 
     const getData = (dataSource) => {
-        if (data !== '') { setData('') } else if (dataSource === "nc") { setData(nieghborhoods.features) }
+        if (data !== '') { setData('') } 
+        else if (dataSource === "nc") { setData(nieghborhoods.features) }
+        else if (dataSource === "cd") { setData(cds.features) }
 
     }
 
@@ -34,6 +37,7 @@ const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
 
             <div id="filter" >
                 <button onClick={() => { getData('nc') }}>LA Nieghborhood Councils</button>
+                <button onClick={() => { getData('cd') }}>LA City Council</button>
             </div >
 
             <div id="options">

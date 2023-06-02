@@ -25,7 +25,6 @@ const CTA = () => {
    useEffect(() => {
       const dataset = (handle.hash ? loadEmails() : '')
       updateEmail();
-      // set field values 
    }, []);
 
    const handle = useParams()
@@ -82,8 +81,11 @@ const CTA = () => {
    // remove email from 'To' field
    const remove = (e) => {
       var selectors = Array.from(document.querySelectorAll(".chosen"));
-      const selected = selectors.find(a => a.dataset.email.includes(e.target.textContent.slice(0, -2)))
-      if (selected) { selected.classList.remove('chosen') }
+      console.log(selectors)
+      if (selectors) {
+         const selected = selectors.find(a => a.dataset.email.includes(e.target.textContent.slice(0, -2)))
+         if (selected) { selected.classList.remove('chosen') }
+      }
       var list = recieverList
       var bye = e.target.textContent.replace()
       list = list.filter(item => item !== bye.slice(0, -2))
@@ -150,9 +152,10 @@ const CTA = () => {
 
    return (
       <div id="container">
-         <Geocoder />
+         <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
          <div id="mailer">
             MailTo
+            <p class="tooltip">Use this to generate an email</p>
 
             <label>To</label>
             <div id="recipient_list">

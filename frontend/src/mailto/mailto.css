@@ -7,6 +7,11 @@ textarea, input {
     margin-bottom: .5rem;
 }
 
+.tooltip {
+    font-size: .9rem;
+    color: grey;
+}
+
 #container {
     width: 100%;
     max-width: 700px;
@@ -72,7 +77,7 @@ textarea, input {
 font-size: 1.1rem;
 }
 
-label {
+label, tooltip {
     margin-top: 1rem;
     font-size: .8rem;
     font-family: 'Courier New', Courier, monospace;
@@ -93,7 +98,7 @@ column-width: 12em;
   font-size: .8rem;
 }
 
-#options span{
+#options span, .geo_selector{
     padding: .2rem .3rem;
     margin-bottom: .3rem;
     background-color: rgb(239, 234, 234);
@@ -103,7 +108,7 @@ column-width: 12em;
     display: block;
 }
 
-#options span:hover{
+#options span:hover, .geo_selector:hover{
         background-color: beige;
 }
 
