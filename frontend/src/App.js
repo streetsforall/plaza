@@ -1,6 +1,6 @@
 import React, { Component }  from 'react';
 import { HashRouter, Routes, Route, Link } from "react-router-dom";
-import CTA from './cta/mailer';
+import CTA from './mailto/mailer';
 
 
 

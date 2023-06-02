@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import './cta.css';
+import './mailto.css';
 import Data_field from './components/data_field'
+import Geocoder from './components/geocoder'
 import { useParams } from "react-router-dom";
 
 const CTA = () => {
@@ -15,23 +16,27 @@ const CTA = () => {
    const [hash, setHash] = useState('');
    const [copy, setCopy] = useState('');
 
-   // set email
    useEffect(() => {
-      const dataset = (handle.hash ? loadEmails() : '')
-      console.log(dataset)
+      updateEmail();
+   }, [recieverList]);
+
+
+   // set email on load
+   useEffect(() => {
+      // const dataset = (handle.hash ? loadEmails() : '')
       updateEmail();
       // set field values 
    }, []);
 
    const handle = useParams()
 
-   // using our email api this grabs all emails
+   // using our mailto api this grabs all mailto URLs
+   // if one matches, it fills in that data to state & HTML body
    const loadEmails = async () => {
       setHash(handle.hash)
-      const response = await fetch(process.env.REACT_APP_API+'email/reader');
+      const response = await fetch(process.env.REACT_APP_API + 'email/reader');
       const jsonData = await response.json();
       const match = jsonData.data.find(val => val.url == handle.hash)
-      console.log(match)
       if (match) {
          // if URL is valid, fill field with data
          setBody(match.body)
@@ -42,11 +47,6 @@ const CTA = () => {
          document.getElementById("body_field").value = match.body;
       }
    }
-
-
-   useEffect(() => {
-      updateEmail();
-   }, [recieverList]);
 
 
    // this posts a new email hash
@@ -63,7 +63,7 @@ const CTA = () => {
          body: body
       }
 
-      const response = await fetch(process.env.REACT_APP_API+'email/poster', {
+      const response = await fetch(process.env.REACT_APP_API + 'email/poster', {
          method: 'POST',
          headers: {
             'Content-type': 'application/json',
@@ -80,7 +80,7 @@ const CTA = () => {
    const remove = (e) => {
       var selectors = Array.from(document.querySelectorAll(".chosen"));
       const selected = selectors.find(a => a.dataset.email.includes(e.target.textContent.slice(0, -2)))
-      if (selected) { selected.classList.remove('chosen')}
+      if (selected) { selected.classList.remove('chosen') }
       var list = recieverList
       var bye = e.target.textContent.replace()
       list = list.filter(item => item !== bye.slice(0, -2))
@@ -146,40 +146,44 @@ const CTA = () => {
 
 
    return (
-      <div id="mailer">
+      <div id="container">
+         <Geocoder />
+         <div id="mailer">
+            MailTo
 
-         <label>To</label>
-         <div id="recipient_list">
-            {recieverList.map((e, i, arr) => {
-               return (<span onClick={(e) => { remove(e) }}>{e}, </span>)
-            })}
-            <form id="recipients_form" autocomplete="off" onSubmit={(e) => { addRecipients(e) }}>
-               <input required type="email" multiple id="recipients"></input>
-            </form>
+            <label>To</label>
+            <div id="recipient_list">
+               {recieverList.map((e, i, arr) => {
+                  return (<span onClick={(e) => { remove(e) }}>{e}, </span>)
+               })}
+               <form id="recipients_form" autocomplete="off" onSubmit={(e) => { addRecipients(e) }}>
+                  <input required type="email" multiple id="recipients"></input>
+               </form>
+            </div>
+
+            <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
+
+            <label>Subject</label>
+            <input id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
+            </input>
+
+            <label>Email</label>
+            <textarea id="body_field" rows="20" onChange={(e) => { setBody(e.target.value); updateEmail() }} />
+
+            <button id="copy" onClick={() => handleCopyClick()} >
+               <span>{copy ? "Copied!" : "Copy MailTo"}</span>
+            </button>
+
+            {shareable}
+
+            <label>Output</label>
+
+            <div id="preview">
+               {email}
+            </div>
+
+
          </div>
-
-         <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
-
-         <label>Subject</label>
-         <input id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
-         </input>
-
-         <label>Email</label>
-         <textarea id="body_field" rows="20" onChange={(e) => { setBody(e.target.value); updateEmail() }} />
-
-         <button id="copy" onClick={() => handleCopyClick()} >
-            <span>{copy ? "Copied!" : "Copy MailTo"}</span>
-         </button>
-
-         {shareable}
-
-         <label>Output</label>
-
-         <div id="preview">
-            {email}
-         </div>
-
-
       </div>
 
    );
