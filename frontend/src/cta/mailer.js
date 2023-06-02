@@ -28,7 +28,7 @@ const CTA = () => {
    // using our email api this grabs all emails
    const loadEmails = async () => {
       setHash(handle.hash)
-      const response = await fetch(process.env.REACT_APP_API+'/email/reader');
+      const response = await fetch(process.env.REACT_APP_API+'email/reader');
       const jsonData = await response.json();
       const match = jsonData.data.find(val => val.url == handle.hash)
       console.log(match)
@@ -63,7 +63,7 @@ const CTA = () => {
          body: body
       }
 
-      const response = await fetch(process.env.REACT_APP_API+'/email/poster', {
+      const response = await fetch(process.env.REACT_APP_API+'email/poster', {
          method: 'POST',
          headers: {
             'Content-type': 'application/json',
@@ -160,8 +160,6 @@ const CTA = () => {
 
          <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
 
-         {'api:'+process.env.REACT_APP_API}
-         {'api:'+process.env.SERVER}
          <label>Subject</label>
          <input id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
          </input>
