@@ -72,7 +72,7 @@ const CTA = () => {
       })
 
       // refresh page, or send to unique url if not already there
-      window.location.href = window.location.href.includes(url) ? window.location.href : window.location.href + url;
+      window.location.href = window.location.href.includes(url) ? window.location.href : window.location.href + '/' + url;
    }
 
 
