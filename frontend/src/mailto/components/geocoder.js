@@ -25,7 +25,7 @@ const Geocoder = () => {
     useEffect(() => {
         const getCoords = async () => {
             const body = {
-                string: place
+                string: 'nyc'
             }
             const response = await fetch(process.env.REACT_APP_API + 'geocoder', {
                 method: "POST",
@@ -35,8 +35,8 @@ const Geocoder = () => {
                  },
             });
             const jsonData = await response.json();
-            setLocations(jsonData)
             console.log(jsonData)
+            setLocations(jsonData)
          }
         if (place) {getCoords();}
         console.log(locations)

@@ -76,10 +76,8 @@ app.post('/email/poster', async (req, res) => {
       const match = json.data.findIndex(val => val.url == req.body.url)
 
       if (match != -1) {
-        console.log('matched')
         json.data[match] = req.body
       } else {
-        console.log('new')
         req.body ? json.data.push(req.body) : ''
       }
       
@@ -98,10 +96,9 @@ app.post('/email/poster', async (req, res) => {
 });
 
 app.get('/geocoder', async (req, res) => {
-    // const place = req.body
-    console.log('okayyyy')
-    console.log(req.body)
-    return fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/' + req.body.string + '.json?country=US&proximity=-118.2497,34.048707&limit=5&autocomplete=false&types=place,postcode,address&access_token=' + process.env.Mapbox_Token)
+    console.log('place')
+    const place = JSON.parse(req.body)
+    return fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/' + place.string + '.json?country=US&proximity=-118.2497,34.048707&limit=5&autocomplete=false&types=place,postcode,address&access_token=' + process.env.Mapbox_Token)
             .then(response => response.json())
             .then(data => res.send(data.features))
 })
@@ -110,7 +107,6 @@ app.get('/geocoder', async (req, res) => {
 app.get('/cta', async (req, res) => {
     const Data = await getCampaigns();
     res.send({ Data });
-
 });
 
 app.get('/test', async (req, res) => {
