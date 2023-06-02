@@ -11,11 +11,6 @@ const Geocoder = () => {
     const [locations, setLocations] = useState('');
     const [nieghborhood, setNeighborhood] = useState('');
 
-    const getCoords = () => {
-        return fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/' + place + '.json?country=US&proximity=-118.2497,34.048707&limit=5&autocomplete=false&types=place,postcode,address&access_token=' + process.env.REACT_APP_Mapbox_Token)
-            .then(response => response.json())
-            .then(data => setLocations(data.features))
-    }
 
     const findDistricts = (coords) => {
         console.log('coords:',coords)
@@ -28,7 +23,20 @@ const Geocoder = () => {
 
 
     useEffect(() => {
-        getCoords(place)
+        const getCoords = async () => {
+            console.log(place)
+            const response = await fetch(process.env.REACT_APP_API + 'geocoder', {
+                method: "POST",
+                body: JSON.stringify(place),
+                headers: {
+                    'Content-type': 'application/json',
+                 },
+            });
+            const jsonData = await response.json();
+            setLocations(jsonData)
+            console.log(jsonData)
+         }
+         getCoords()
         console.log(locations)
     }, [place]);
 

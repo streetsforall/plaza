@@ -23,7 +23,8 @@ const CTA = () => {
 
    // set email on load
    useEffect(() => {
-      // const dataset = (handle.hash ? loadEmails() : '')
+      jrr();
+      const dataset = (handle.hash ? loadEmails() : '')
       updateEmail();
       // set field values 
    }, []);
@@ -36,6 +37,7 @@ const CTA = () => {
       setHash(handle.hash)
       const response = await fetch(process.env.REACT_APP_API + 'email/reader');
       const jsonData = await response.json();
+      console.log(jsonData)
       const match = jsonData.data.find(val => val.url == handle.hash)
       if (match) {
          // if URL is valid, fill field with data
@@ -47,6 +49,20 @@ const CTA = () => {
          document.getElementById("body_field").value = match.body;
       }
    }
+
+   const jrr = async () => {
+      const response = await fetch(process.env.REACT_APP_API + 'geocoder', {
+         method: "POST",
+         headers: {
+            'Content-type': 'application/json',
+         },
+         body: JSON.stringify('wow'),
+     });
+     console.log(response)
+
+   }
+
+
 
 
    // this posts a new email hash
@@ -127,7 +143,7 @@ const CTA = () => {
    }
 
    // sets the share button dependant on state
-   if (hash) {
+   if (handle.hash) {
       var shareable = (
          <div id="shareable">
             <div id="hash">
@@ -135,7 +151,7 @@ const CTA = () => {
             </div>
             <button id="save" onClick={() => updateDatabase()}>Save</button>
          </div>);
-   } else if (hash) {
+   } else if (handle.hash) {
       var shareable = <div id="hash"><a href={window.location.href}>{window.location.href}</a></div>;
    } else {
       var shareable = <button onClick={() => updateDatabase()}>Create Shareable Link</button>

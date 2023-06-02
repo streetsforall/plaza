@@ -97,6 +97,14 @@ app.post('/email/poster', async (req, res) => {
       res.json(btoa(JSON.stringify(json)));
 });
 
+app.get('/geocoder', async (req, res) => {
+    // const place = req.body
+    console.log(req.body)
+    return fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/' + place + '.json?country=US&proximity=-118.2497,34.048707&limit=5&autocomplete=false&types=place,postcode,address&access_token=' + process.env.Mapbox_Token)
+            .then(response => response.json())
+            .then(data => res.send(data.features))
+})
+
 
 app.get('/cta', async (req, res) => {
     const Data = await getCampaigns();
