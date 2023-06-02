@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './cta.css';
-import nieghborhoods from "./LA_Neighborhood_Councils.json";
+import Data_field from './components/data_field'
 import { useParams } from "react-router-dom";
 
 const CTA = () => {
@@ -12,7 +12,6 @@ const CTA = () => {
 
    // UI state
    const [email, setEmail] = useState('');
-   const [data, setData] = useState('');
    const [hash, setHash] = useState('');
    const [copy, setCopy] = useState('');
 
@@ -29,7 +28,7 @@ const CTA = () => {
    // using our email api this grabs all emails
    const loadEmails = async () => {
       setHash(handle.hash)
-      const response = await fetch('/email/reader');
+      const response = await fetch('process.env.PORT/email/reader');
       const jsonData = await response.json();
       const match = jsonData.data.find(val => val.url == handle.hash)
       console.log(match)
@@ -76,31 +75,12 @@ const CTA = () => {
       window.location.href = window.location.href.includes(url) ? window.location.href : window.location.href + url;
    }
 
-   const getData = (dataSource) => {
-      if (data !== '') { setData('') } else if (dataSource === "nc") { setData(nieghborhoods.features) }
-      console.log(nieghborhoods.features)
-   }
-
-   // add email from selector array
-   const addEmail = (localEmail, e) => {
-      e.target.classList.toggle('chosen')
-
-      var list = recieverList
-      if (!list.includes(localEmail)) {
-         list.push(localEmail);
-      } else {
-         list.splice(list.indexOf(localEmail), 1);
-      }
-      // list.push(localEmail)
-      setRecieverList(list)
-      updateEmail()
-   }
 
    // remove email from 'To' field
    const remove = (e) => {
       var selectors = Array.from(document.querySelectorAll(".chosen"));
       const selected = selectors.find(a => a.dataset.email.includes(e.target.textContent.slice(0, -2)))
-      selected.classList.remove('chosen')
+      if (selected) { selected.classList.remove('chosen')}
       var list = recieverList
       var bye = e.target.textContent.replace()
       list = list.filter(item => item !== bye.slice(0, -2))
@@ -178,16 +158,8 @@ const CTA = () => {
             </form>
          </div>
 
+         <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
 
-         <div id="filter">
-            <button onClick={() => { getData('nc') }}>LA Nieghborhood Councils</button>
-         </div>
-
-         <div id="options">
-            {data != '' ? data.map((locals, i) => {
-               return (<span data-email={locals.properties.DEMAIL} class="geo_selector" index={i} onClick={(e) => { addEmail(locals.properties.DEMAIL, e, i) }}> {locals.properties.NAME} </span>)
-            }) : ''}
-         </div>
 
          <label>Subject</label>
          <input id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
