@@ -176,14 +176,12 @@ const CTA = () => {
             <label>Email</label>
             <textarea id="body_field" rows="20" onChange={(e) => { setBody(e.target.value); updateEmail() }} />
 
+            {shareable}
+
+
             <button id="copy" onClick={() => handleCopyClick()} >
                <span>{copy ? "Copied!" : "Copy MailTo"}</span>
             </button>
-
-            {shareable}
-
-            <label>Output</label>
-
             <div id="preview">
                {email}
             </div>
