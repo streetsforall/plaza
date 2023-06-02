@@ -23,7 +23,6 @@ const CTA = () => {
 
    // set email on load
    useEffect(() => {
-      jrr();
       const dataset = (handle.hash ? loadEmails() : '')
       updateEmail();
       // set field values 
@@ -48,18 +47,6 @@ const CTA = () => {
          document.getElementById("subject_field").value = match.subject;
          document.getElementById("body_field").value = match.body;
       }
-   }
-
-   const jrr = async () => {
-      const response = await fetch(process.env.REACT_APP_API + 'geocoder', {
-         method: "POST",
-         headers: {
-            'Content-type': 'application/json',
-         },
-         body: JSON.stringify('wow'),
-     });
-     console.log(response)
-
    }
 
 
