@@ -28,8 +28,8 @@ textarea, input {
 
 #recipient_list span {
     padding: .2rem .2rem;
-    
 }
+
 
 #recipients_form input:hover {
     background-color: aliceblue;
@@ -54,7 +54,17 @@ textarea, input {
 #recipient_list span:hover {
     cursor: pointer;
     text-decoration: line-through;
-    background-color: lemonchiffon;
+    background-color: lightsalmon;
+}
+
+#shareable {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+#save {
+font-size: 1.1rem;
 }
 
 label {

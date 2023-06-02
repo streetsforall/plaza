@@ -19,6 +19,8 @@ client.setConfig({
     server: process.env.SERVER,
 });
 
+app.use(express.json());
+
 const library = {
     owner: "streetsforall",
     repo: "library",
@@ -48,29 +50,21 @@ const getCampaigns = async () => {
     }];
 }
 
-app.get('/hex', async (req, res) => {
-    var crypto = require("crypto");
-    var id = crypto.randomBytes(20).toString('hex');
-    res.send({ id });
-});
 
-
-app.use(express.json());
-
+// read from our mailto database hosted on GitHub
 app.get('/email/reader', async (req, res) => {
-
     const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
       owner: "streetsforall",
       repo: "library",
       path: "email_generator.json",
     })
-
     json = JSON.parse(atob(data.content))
     console.log(json)
     res.json(json);
 
 });
 
+// post to our mailto database hosted on GitHub
 app.post('/email/poster', async (req, res) => {
 
       const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
@@ -80,8 +74,16 @@ app.post('/email/poster', async (req, res) => {
       })
 
       json = JSON.parse(atob(data.content))
-      req.body ? json.data.push(req.body) : ''
+      const match = json.data.findIndex(val => val.url == req.body.url)
 
+      if (match != -1) {
+        console.log('matched')
+        json.data[match] = req.body
+      } else {
+        console.log('new')
+        req.body ? json.data.push(req.body) : ''
+      }
+      
       const SHA = data.sha
 
       await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
@@ -94,7 +96,6 @@ app.post('/email/poster', async (req, res) => {
       })
 
       res.json(btoa(JSON.stringify(json)));
-
 });
 
 

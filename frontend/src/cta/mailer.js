@@ -4,28 +4,44 @@ import nieghborhoods from "./LA_Neighborhood_Councils.json";
 import { useParams } from "react-router-dom";
 
 const CTA = () => {
+   //content state
    const [body, setBody] = useState('');
-   const [copy, setCopy] = useState('');
    const [subject, setSubject] = useState('');
-   const [recieverList, setRecieverList] = useState([])
+   const [recieverList, setRecieverList] = useState([]);
+   const [editable, setEditable] = useState(true);
+
+   // UI state
    const [email, setEmail] = useState('');
    const [data, setData] = useState('');
    const [hash, setHash] = useState('');
-   const [hashData, setHashData] = useState('');
+   const [copy, setCopy] = useState('');
 
    // set email
    useEffect(() => {
+      const dataset = (handle.hash ? loadEmails() : '')
+      console.log(dataset)
       updateEmail();
+      // set field values 
    }, []);
 
    const handle = useParams()
 
-
-   if (handle.hash) {
-      console.log(handle.hash)
-      fetch('/email/reader')
-        .then(response => response.json())
-        .then(data => console.log(data));
+   // using our email api this grabs all emails
+   const loadEmails = async () => {
+      setHash(handle.hash)
+      const response = await fetch('/email/reader');
+      const jsonData = await response.json();
+      const match = jsonData.data.find(val => val.url == handle.hash)
+      console.log(match)
+      if (match) {
+         // if URL is valid, fill field with data
+         setBody(match.body)
+         setSubject(match.subject)
+         setRecieverList(match.to)
+         setEditable(match.editable)
+         document.getElementById("subject_field").value = match.subject;
+         document.getElementById("body_field").value = match.body;
+      }
    }
 
 
@@ -33,12 +49,20 @@ const CTA = () => {
       updateEmail();
    }, [recieverList]);
 
-   const createHash = async () => {
 
-      var url = handle.hash ? hash : (Math.random() + 1).toString(36).substring(2)
+   // this posts a new email hash
+   const updateDatabase = async () => {
+
+      var url = handle.hash ? hash : (Math.random() + 1).toString(36).substring(5)
       setHash(url)
 
-      var load = { url: url, to: recieverList, subject: subject, body: body }
+      var load = {
+         editable: editable,
+         url: url,
+         to: recieverList,
+         subject: subject,
+         body: body
+      }
 
       const response = await fetch('/email/poster', {
          method: 'POST',
@@ -48,8 +72,8 @@ const CTA = () => {
          body: JSON.stringify(load)
       })
 
-      const data = await response.json();
-      console.log(url);
+      // refresh page, or send to unique url if not already there
+      window.location.href = window.location.href.includes(url) ? window.location.href : window.location.href + url;
    }
 
    const getData = (dataSource) => {
@@ -59,14 +83,24 @@ const CTA = () => {
 
    // add email from selector array
    const addEmail = (localEmail, e) => {
+      e.target.classList.toggle('chosen')
+
       var list = recieverList
-      list.push(localEmail)
+      if (!list.includes(localEmail)) {
+         list.push(localEmail);
+      } else {
+         list.splice(list.indexOf(localEmail), 1);
+      }
+      // list.push(localEmail)
       setRecieverList(list)
       updateEmail()
    }
 
    // remove email from 'To' field
    const remove = (e) => {
+      var selectors = Array.from(document.querySelectorAll(".chosen"));
+      const selected = selectors.find(a => a.dataset.email.includes(e.target.textContent.slice(0, -2)))
+      selected.classList.remove('chosen')
       var list = recieverList
       var bye = e.target.textContent.replace()
       list = list.filter(item => item !== bye.slice(0, -2))
@@ -112,16 +146,23 @@ const CTA = () => {
       setCopy(true);
    }
 
-   if (handle.hash) {
-      var shareable = <div id="hash"><a href={window.location.href}>{window.location.href}</a></div>;
+   // sets the share button dependant on state
+   if (hash) {
+      var shareable = (
+         <div id="shareable">
+            <div id="hash">
+               <a href={window.location.href}>{window.location.href}</a>
+            </div>
+            <button id="save" onClick={() => updateDatabase()}>Save</button>
+         </div>);
    } else if (hash) {
-      var shareable = <div id="hash"><a href={window.location.href + hash}>{window.location.href + hash}</a></div>;
+      var shareable = <div id="hash"><a href={window.location.href}>{window.location.href}</a></div>;
    } else {
-      var shareable = <button onClick={() => createHash()}>Create Shareable Link</button>
+      var shareable = <button onClick={() => updateDatabase()}>Create Shareable Link</button>
    }
 
-      
-   
+
+
 
 
    return (
@@ -143,20 +184,20 @@ const CTA = () => {
          </div>
 
          <div id="options">
-            {data != '' ? data.map((locals) => {
-               return (<span onClick={(e) => { addEmail(locals.properties.DEMAIL, e) }}> {locals.properties.NAME} </span>)
+            {data != '' ? data.map((locals, i) => {
+               return (<span data-email={locals.properties.DEMAIL} class="geo_selector" index={i} onClick={(e) => { addEmail(locals.properties.DEMAIL, e, i) }}> {locals.properties.NAME} </span>)
             }) : ''}
          </div>
 
          <label>Subject</label>
-         <input onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
+         <input id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
          </input>
 
          <label>Email</label>
-         <textarea rows="20" onChange={(e) => { setBody(e.target.value); updateEmail() }} />
+         <textarea id="body_field" rows="20" onChange={(e) => { setBody(e.target.value); updateEmail() }} />
 
          <button id="copy" onClick={() => handleCopyClick()} >
-            <span>{copy ? "Copied!" : "Copy"}</span>
+            <span>{copy ? "Copied!" : "Copy MailTo"}</span>
          </button>
 
          {shareable}
