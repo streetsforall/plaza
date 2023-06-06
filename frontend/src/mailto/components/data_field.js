@@ -18,11 +18,22 @@ const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
         console.log(data)
     }
 
+    const addAll = () => {
+        const result = data.map(e => e.properties.DEMAIL).join();
+        const list = result.split(",")
+        console.log(recieverList, list)
+        var addedlist = []
+        if (recieverList.length > 0) {var addedlist = recieverList.concat(list) }
+        else if (recieverList.length == 0 ) {var addedlist  = list}
+        setRecieverList(addedlist)
+    }
+
 
     // add email from selector array
     const addEmail = (localEmail, e) => {
-        e.target.classList.toggle('chosen')
+        if (e) { e.target.classList.toggle('chosen')}
         var list = recieverList
+        // add if email is new
         if (!list.includes(localEmail)) {
             list.push(localEmail);
         } else {
@@ -47,6 +58,7 @@ const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
                 {data != '' ? data.map((locals, i) => {
                     return (<span data-email={locals.properties.DEMAIL} class="geo_selector" index={i} onClick={(e) => { addEmail(locals.properties.DEMAIL, e, i) }}> {locals.properties.NAME} </span>)
                 }) : ''}
+                {data != '' ? <span class="geo_selector" onClick={(e) => { addAll(data) }}>ALL</span> : '' }
             </div>
         </div >
     )

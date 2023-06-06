@@ -3,10 +3,12 @@
     flex-direction: column;
     background-color: white;
     width: 100%;
+    max-width: calc(100% - 3rem);
     border: 1px dotted black;
-    margin-bottom: 3rem;
+    margin: .5rem;
     padding: 1rem;
 }
+
 
 #dropdown {
     margin-top: -.5rem;
