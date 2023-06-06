@@ -135,3 +135,11 @@ column-width: 12em;
     overflow-wrap: anywhere;
     background: lightgray;
 }
+
+#filter button{
+    border-radius: 1rem;
+    border: 1px solid grey;
+    padding: .2rem .6rem;
+    margin-right: .5rem;
+    font-size: 1.1rem;
+}

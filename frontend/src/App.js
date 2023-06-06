@@ -1,6 +1,7 @@
 import React, { Component }  from 'react';
 import { HashRouter, Routes, Route, Link } from "react-router-dom";
 import CTA from './mailto/mailto';
+import Geocoder from './mailto/components/geocoder';
 
 
 
@@ -26,8 +27,8 @@ const App = () => {
   return (
     <HashRouter>
       <Routes>
-        <Route path="/" exact element={<Home />} >
-        </Route>
+        <Route path="/" exact element={<Home />} />
+        <Route path="/geocoder" element={<Geocoder />} />
         <Route path="/cta" element={<CTA />} />
         <Route path="/cta/:hash" element={<CTA />} />
         <Route path="/*" element={"not found"} />

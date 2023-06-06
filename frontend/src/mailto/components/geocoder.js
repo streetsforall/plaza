@@ -15,7 +15,6 @@ const Geocoder = ({ recieverList, setRecieverList, updateEmail }) => {
     const [showDrop, setshowDrop] = useState(false);
 
     const findDistricts = (coords) => {
-        console.log('coords:', coords)
         var pt = turf.point(coords);
         nieghborhoods.features.forEach(e => {
             var poly = e.geometry
