@@ -1,6 +1,6 @@
 :root { 
     --bg: white;
-    --edit: blue;
+    --edit: rgb(244, 242, 239);
     --button: rgb(232, 227, 227);
     --soft_bg: rgb(228, 237, 239);
 }
@@ -50,8 +50,8 @@ textarea, input {
 }
 
 
-#recipients_form input:hover {
-    background-color: aliceblue;
+#recipients_form input:hover, #recipients_form input:focus {
+    background-color: rgb(225, 225, 238);
 }
 
 #recipients_form {
@@ -65,14 +65,14 @@ textarea, input {
 
 #recipients_form input {
     border: 0px; 
-    padding: 0;
+    font-size: 1rem;
+    padding: 0 .2rem;
     margin: 0;
-    font-size: 1.1rem;
+    line-height: 1.6rem;
 }
 
 #recipient_list span { 
     background-color: var(--soft_bg);
-    border-radius: 0.5rem;
     padding: 0.1rem 0.3rem;
     line-height: 1.6rem;
     margin-right: 0.2rem;
@@ -81,7 +81,7 @@ textarea, input {
 #recipient_list span:hover {
     cursor: pointer;
     text-decoration: line-through;
-    background-color: lightsalmon;
+    background-color: rgb(250, 176, 176);
 }
 
 #hash {
@@ -130,8 +130,9 @@ label, tooltip {
     margin-left: calc(100% - 50px);
     color: gray;
     width: max-content;
-    font-size: .8rem;
-    left: 0;
+    font-size: .7rem;
+    left: -.4rem;
+    top: -2rem;
     position: relative;
 }
 
@@ -140,21 +141,43 @@ label, tooltip {
     background-color: var(--button);
 }
 
+#data_field {
+    background-color: var(--button);
+    padding: 0.5rem;
+   margin-top: -1rem;
+}
+
+
 
 #options {
     border: 1px dotted grey;
   font-size: .8rem;
   padding: .5rem;
   border-radius: .25rem;
-  background-color: var(--soft_bg);
+  background-color: var(--bg);
   max-height: 50vh;
   overflow-y: scroll;
   margin-top: .5rem;
 
 }
 
+#filter button{
+    border: none;
+    background-color: var(--bg);
+    padding: .4rem .8rem;
+    margin-right: .5rem;
+}
+
+#filter button:hover{ 
+    cursor: pointer;
+}
+
+.geo_selector:first-child {
+    border-bottom: 1px grey solid;
+}
+
 .geo_selector{
-    margin-bottom: .3rem;
+    padding: .2rem 0;
     border-bottom: 1px grey dotted;
     cursor: pointer;
     width: calc(100% - 1rem);
@@ -173,12 +196,9 @@ label, tooltip {
 
 
 .geo_selector:hover{
-        background-color: beige;
+        background-color: var(--button);
 }
 
-#options span.chosen {
-    background-color: grey;
-}
 
 
 #preview {
@@ -191,15 +211,4 @@ label, tooltip {
     text-overflow: ellipsis;
     overflow-wrap: anywhere;
     background: var(--soft_bg);
-}
-
-#filter button{
-    border: none;
-    background-color: var(--button);
-    padding: .4rem .8rem;
-    margin-right: .5rem;
-}
-
-#filter button:hover{ 
-    cursor: pointer;
 }

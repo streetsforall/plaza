@@ -11,8 +11,7 @@ const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
     const [data, setData] = useState('');
 
     const getData = (dataSource) => {
-        if (data !== '') { setData('') } 
-        else if (dataSource === "nc") { setData(nieghborhoods.features) }
+        if (dataSource === "nc") { setData(nieghborhoods.features) }
         else if (dataSource === "cd") { setData(cds.features) }
         else if (dataSource === "metro") { setData(contacts.Metro) }
         console.log(data)
@@ -48,12 +47,13 @@ const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
 
 
     return (
-        <div>
+        <div id="data_field">
 
             <div id="filter" >
                 <button onClick={() => { getData('nc') }}>LA Nieghborhood Councils</button>
                 <button onClick={() => { getData('cd') }}>LA City Council</button>
                 <button onClick={() => { getData('metro') }}>Metro</button>
+                <button onClick={() => { setData('') }}>X</button>
             </div >
 
             <div class={data != '' ? "shown" : "hidden"} id="options">
