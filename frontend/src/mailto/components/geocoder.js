@@ -77,10 +77,10 @@ const Geocoder = ({ recieverList, setRecieverList, updateEmail }) => {
                 }) : ''}
             </div>
 
-            <div id="geo_return">
+            <div class={nieghborhood ? 'shown' : "hidden"} id="geo_return">
 
                 {cd ? <div class="geo_result">
-                    <span class="geo_title">Council District</span>
+                    <span class="geo_title">Council District:</span>
                     <span>{cd.NAME}</span>
                     <span class="geo_selector" onClick={() => addEmail(cd.DEMAIL)}>
                         {cd.DEMAIL}

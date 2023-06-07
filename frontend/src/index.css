@@ -20,3 +20,11 @@ code {
   padding: 1rem;
   width: 20rem;
 }
+
+.shown {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}

@@ -31,7 +31,7 @@ const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
 
     // add email from selector array
     const addEmail = (localEmail, e) => {
-        if (e) { e.target.classList.toggle('chosen')}
+        // if (e) { e.target.classList.toggle('chosen')}
         var list = recieverList
         // add if email is new
         if (!list.includes(localEmail)) {
@@ -45,6 +45,8 @@ const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
     }
 
 
+
+
     return (
         <div>
 
@@ -54,11 +56,20 @@ const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
                 <button onClick={() => { getData('metro') }}>Metro</button>
             </div >
 
-            <div id="options">
+            <div class={data != '' ? "shown" : "hidden"} id="options">
+            {data != '' ? <span class="geo_selector" onClick={(e) => { addAll(data) }}>ADD ALL</span> : '' }
                 {data != '' ? data.map((locals, i) => {
-                    return (<span data-email={locals.properties.DEMAIL} class="geo_selector" index={i} onClick={(e) => { addEmail(locals.properties.DEMAIL, e, i) }}> {locals.properties.NAME} </span>)
-                }) : ''}
-                {data != '' ? <span class="geo_selector" onClick={(e) => { addAll(data) }}>ALL</span> : '' }
+                    if (locals.properties.DEMAIL) {return(
+
+                    <span data-email={locals.properties.DEMAIL} 
+                    class="geo_selector" index={i} 
+                    onClick={(e) => { addEmail(locals.properties.DEMAIL, e, i) }}>
+                        
+                    <span>{locals.properties.NAME}</span>
+                    <span>{locals.properties.DEMAIL}</span>
+                    </span>
+                )}}) : ''}
+               
             </div>
         </div >
     )

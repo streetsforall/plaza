@@ -80,12 +80,12 @@ const CTA = () => {
 
    // remove email from 'To' field
    const remove = (e) => {
-      var selectors = Array.from(document.querySelectorAll(".chosen"));
-      console.log(selectors)
-      if (selectors) {
-         const selected = selectors.find(a => a.dataset.email.includes(e.target.textContent.slice(0, -2)))
-         if (selected) { selected.classList.remove('chosen') }
-      }
+      // var selectors = Array.from(document.querySelectorAll(".chosen"));
+      // console.log(selectors)
+      // if (selectors) {
+      //    const selected = selectors.find(a => a.dataset.email.includes(e.target.textContent.slice(0, -2)))
+      //    if (selected) { selected.classList.remove('chosen') }
+      // }
       var list = recieverList
       var bye = e.target.textContent.replace()
       list = list.filter(item => item !== bye.slice(0, -2))
@@ -118,30 +118,35 @@ const CTA = () => {
    }
 
    // async copy current email state to clipboard 
-   async function copyTextToClipboard() {
-      navigator.clipboard.writeText(email).then(function () {
+   async function copyTextToClipboard(content, e) {
+      console.log(e)
+      e.target.innerText = 'Copied Link!'
+      navigator.clipboard.writeText(content).then(function () {
          console.log('Async: Copying to clipboard was successful!');
       }, function (err) {
          console.error('Async: Could not copy text: ', err);
       });
    }
 
-   const handleCopyClick = () => {
-      copyTextToClipboard(body)
-      setCopy(true);
+   const clear = () => {
+      setRecieverList([])
+   }
+
+   const handleCopyClick = (e) => {
+      copyTextToClipboard(body, e)
+      console.log(e)
+      // setCopy(true);
    }
 
    // sets the share button dependant on state
    if (handle.hash) {
       var shareable = (
          <div id="shareable">
-            <div id="hash">
-               <a href={window.location.href}>{window.location.href}</a>
+            <div onClick={(e) => copyTextToClipboard(window.location.href, e)} id="hash">
+               Share this page
             </div>
-            <button id="save" onClick={() => updateDatabase()}>Save</button>
+            <button id="save" onClick={() => updateDatabase()}>Save Page</button>
          </div>);
-   } else if (handle.hash) {
-      var shareable = <div id="hash"><a href={window.location.href}>{window.location.href}</a></div>;
    } else {
       var shareable = <button onClick={() => updateDatabase()}>Create Shareable Link</button>
    }
@@ -166,6 +171,7 @@ const CTA = () => {
                   <input required type="email" multiple id="recipients"></input>
                </form>
             </div>
+            <p  id="clear" onClick={() => clear()}>CLEAR</p>
 
             <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
 
@@ -179,12 +185,14 @@ const CTA = () => {
             {shareable}
 
 
-            <button id="copy" onClick={() => handleCopyClick()} >
-               <span>{copy ? "Copied!" : "Copy MailTo"}</span>
-            </button>
+           
             <div id="preview">
                {email}
             </div>
+
+            <button id="copy" onClick={(e) => handleCopyClick(e)} >
+            Copy Code
+            </button>
 
 
          </div>

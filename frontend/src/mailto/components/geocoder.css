@@ -16,26 +16,31 @@
     background-color: rgb(239, 234, 234);
 }
 
-#geo_return {
-    margin-top: 1rem;
-}
-
 .geo_result span {
     flex: 2;
 }
 
-.geo_result {
-    margin-top: .5rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+span.geo_selector {
+    flex: 3;
 }
 
 
-span.geo_selector {
-    flex: 3;
-    width: max-content;
-    display: inline;
+.geo_title {
+    font-weight: 600;
+}
+#geo_return{
+    border: 1px dotted grey;
+    font-size: .8rem;
+    padding: .5rem;
+    border-radius: .25rem;
+    background-color: #f7f5f5;
+    max-height: 50vh;
+    overflow-y: scroll;
+    margin-top: .5rem;
+}
+
+.geo_result {
+    display: flex;
 }
 
 #dropdown p {
