@@ -1,3 +1,10 @@
+:root { 
+    --bg: white;
+    --edit: blue;
+    --button: rgb(232, 227, 227);
+    --soft_bg: rgb(228, 237, 239);
+}
+
 
 textarea, input {
     resize:none;
@@ -27,7 +34,7 @@ textarea, input {
     max-width: calc(100% - 3rem);
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: var(--bg);
     width: 100%;
     border: 1px dotted black;
 
@@ -64,7 +71,7 @@ textarea, input {
 }
 
 #recipient_list span { 
-    background-color: #e7e7e7;
+    background-color: var(--soft_bg);
     border-radius: 0.5rem;
     padding: 0.1rem 0.3rem;
     line-height: 1.6rem;
@@ -78,7 +85,7 @@ textarea, input {
 }
 
 #hash {
-    background-color: #e7e7e7;
+    background-color: var(--button);
     cursor: pointer;
     padding: .3rem;
 }
@@ -120,7 +127,6 @@ label, tooltip {
     justify-self: end;
     margin: 0;
     padding: .3rem;
-    margin-bottom: 1rem;
     margin-left: calc(100% - 50px);
     color: gray;
     width: max-content;
@@ -131,7 +137,7 @@ label, tooltip {
 
 #clear:hover{
     cursor: pointer;
-    background-color: #e7e7e7;
+    background-color: var(--button);
 }
 
 
@@ -140,7 +146,7 @@ label, tooltip {
   font-size: .8rem;
   padding: .5rem;
   border-radius: .25rem;
-  background-color: #f7f5f5;
+  background-color: var(--soft_bg);
   max-height: 50vh;
   overflow-y: scroll;
   margin-top: .5rem;
@@ -157,8 +163,14 @@ label, tooltip {
 
 
 .geo_selector span{
+    flex: 2
+}
+
+.geo_selector span.short{
     flex: 1
 }
+
+
 
 .geo_selector:hover{
         background-color: beige;
@@ -178,13 +190,12 @@ label, tooltip {
     overflow: hidden;
     text-overflow: ellipsis;
     overflow-wrap: anywhere;
-    background: rgb(240, 237, 237);
+    background: var(--soft_bg);
 }
 
 #filter button{
-    border-radius: 1rem;
-    border: 1px solid grey;
-    padding: .2rem .6rem;
+    border: none;
+    background-color: var(--button);
+    padding: .4rem .8rem;
     margin-right: .5rem;
-    font-size: 1.1rem;
 }

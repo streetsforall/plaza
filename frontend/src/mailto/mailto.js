@@ -179,7 +179,7 @@ const CTA = () => {
             <input id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
             </input>
 
-            <label>Email</label>
+            <label>Email Body</label>
             <textarea id="body_field" rows="20" onChange={(e) => { setBody(e.target.value); updateEmail() }} />
 
             {shareable}

@@ -64,7 +64,7 @@ const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
                     <span data-email={locals.properties.DEMAIL} 
                     class="geo_selector" index={i} 
                     onClick={(e) => { addEmail(locals.properties.DEMAIL, e, i) }}>
-                        
+                    <span class={locals.properties.District ? "short shown" : "short hidden" }>{locals.properties.District}</span>
                     <span>{locals.properties.NAME}</span>
                     <span>{locals.properties.DEMAIL}</span>
                     </span>
