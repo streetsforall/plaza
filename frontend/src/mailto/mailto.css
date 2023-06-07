@@ -199,3 +199,7 @@ label, tooltip {
     padding: .4rem .8rem;
     margin-right: .5rem;
 }
+
+#filter button:hover{ 
+    cursor: pointer;
+}

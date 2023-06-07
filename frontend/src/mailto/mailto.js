@@ -119,7 +119,7 @@ const CTA = () => {
 
    // async copy current email state to clipboard 
    async function copyTextToClipboard(content, e) {
-      console.log(e)
+      console.log(content)
       e.target.innerText = 'Copied Link!'
       navigator.clipboard.writeText(content).then(function () {
          console.log('Async: Copying to clipboard was successful!');
@@ -133,7 +133,8 @@ const CTA = () => {
    }
 
    const handleCopyClick = (e) => {
-      copyTextToClipboard(body, e)
+      console.log(email)
+      copyTextToClipboard(email, e)
       console.log(e)
       // setCopy(true);
    }
