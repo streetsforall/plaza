@@ -1,8 +1,26 @@
 :root { 
-    --bg: white;
-    --edit: rgb(244, 242, 239);
+    --bg: rgb(244, 242, 238);
+    --edit: rgb(249, 248, 246);
     --button: rgb(232, 227, 227);
-    --soft_bg: rgb(228, 237, 239);
+    --soft_bg: rgb(216, 228, 238);
+    --bold: rgb(34, 40, 219);
+}
+
+button {
+    border: none;
+    background-color: var(--button);
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: edit;
+}
+
+.window {
+    background-color: var(--bg);
+    width: 100%;
+    border-radius: 1rem;
+    box-shadow: 0px 0px 10px rgba(135, 122, 96, 0.471);
 }
 
 
@@ -12,6 +30,14 @@ textarea, input {
     font-family: sans-serif;
     padding: .5rem;
     margin-bottom: .5rem;
+    border-radius: .5rem;
+    border: 1px dotted grey;
+    background: var(--edit)
+}
+
+textarea:focus-within, input:focus-within, #recipient_list:focus-within{
+    border: 1px solid var(--bold);
+    outline: none;
 }
 
 .tooltip {
@@ -20,7 +46,6 @@ textarea, input {
 }
 
 #container {
-
     width: 100%;
     max-width: 700px;
     margin: auto;
@@ -34,29 +59,23 @@ textarea, input {
     max-width: calc(100% - 3rem);
     display: flex;
     flex-direction: column;
-    background-color: var(--bg);
-    width: 100%;
-    border: 1px dotted black;
 
 }
 
 #recipient_list {
     padding: .5rem;
-    border: 1px dotted black;
+    border: 1px dotted grey;
+    border-radius: .5rem;
+    background: var(--edit)
 }
-
-#recipient_list span {
-    padding: .2rem .2rem;
-}
-
-
 #recipients_form input:hover, #recipients_form input:focus {
-    background-color: rgb(225, 225, 238);
+    background-color: var(--soft_bg);
 }
 
 #recipients_form {
     font-size: 1.1rem;
     display: inline-block;
+    background: var(--edit)
 }
 #recipients_form input:focus-visible, #recipients_form input:focus {
     border: 0px;
@@ -64,18 +83,23 @@ textarea, input {
 }
 
 #recipients_form input {
+    vertical-align: middle;
     border: 0px; 
     font-size: 1rem;
-    padding: 0 .2rem;
+    padding: 0 .3rem;
     margin: 0;
+    border-radius: .3rem;
     line-height: 1.6rem;
 }
 
 #recipient_list span { 
+    padding: .2rem .2rem;
     background-color: var(--soft_bg);
-    padding: 0.1rem 0.3rem;
+    padding: 0.2rem 0.3rem;
     line-height: 1.6rem;
     margin-right: 0.2rem;
+    vertical-align: middle;
+    border-radius: .3rem;
 }
 
 #recipient_list span:hover {
@@ -113,9 +137,9 @@ label, tooltip {
     background-color: rgb(25, 151, 151);
     color: white;
     border: none;
-    border-radius: .5rem;
     margin-bottom: .5rem;
     font-weight: 600;
+    border-radius: 2rem;
 }
 
 #copy:hover {
@@ -134,17 +158,31 @@ label, tooltip {
     left: -.4rem;
     top: -2rem;
     position: relative;
+    border-radius: .3rem;
 }
 
-#clear:hover{
+#clear:hover, #hider:hover{
     cursor: pointer;
     background-color: var(--button);
 }
+
+#hider {
+    background-color: var(--bg);
+    border: 1px solid grey;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    border-radius: .5rem;
+    padding: .3rem .5rem;
+}
+
+
 
 #data_field {
     background-color: var(--button);
     padding: 0.5rem;
    margin-top: -1rem;
+   border-radius: .3rem;
 }
 
 
@@ -154,7 +192,7 @@ label, tooltip {
   font-size: .8rem;
   padding: .5rem;
   border-radius: .25rem;
-  background-color: var(--bg);
+  background-color: var(--edit);
   max-height: 50vh;
   overflow-y: scroll;
   margin-top: .5rem;

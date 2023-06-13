@@ -1,10 +1,9 @@
 #geocoder {
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: var(--bg);
     width: 100%;
     max-width: calc(100% - 3rem);
-    border: 1px dotted black;
     margin: .5rem;
     padding: 1rem;
 }
@@ -13,8 +12,22 @@
 #dropdown {
     margin-top: -.5rem;
     padding: .5rem;
-    background-color: rgb(239, 234, 234);
+    background-color: var(--bg);
 }
+
+
+#geo_toggle {
+    position: relative;
+    top: -1rem;
+    right: 0;
+}
+
+#geo_body {
+    flex-direction: column;
+    display: flex;
+}
+
+
 
 .geo_result span {
     flex: 2;

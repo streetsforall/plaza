@@ -27,6 +27,11 @@ const CTA = () => {
       updateEmail();
    }, []);
 
+
+   const changeTime = () => {
+      document.documentElement.style.setProperty('--bg', 'blue');
+   }
+
    const handle = useParams()
 
    // using our mailto api this grabs all mailto URLs
@@ -106,7 +111,7 @@ const CTA = () => {
 
    // takes the subject and body states and updates the email state
    const updateEmail = () => {
-      // this converts any spaces to '%20'
+      // this converts any spaces to '%20', a
       function spaced(text) {
          var spacer = encodeURI(text.trim())
          return (spacer)
@@ -159,7 +164,7 @@ const CTA = () => {
    return (
       <div id="container">
          <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
-         <div id="mailer">
+         <div class="window" id="mailer">
             MailTo
             <p class="tooltip">Use this to generate an email</p>
 
@@ -169,7 +174,7 @@ const CTA = () => {
                   return (<span onClick={(e) => { remove(e) }}>{e}, </span>)
                })}
                <form id="recipients_form" autocomplete="off" onSubmit={(e) => { addRecipients(e) }}>
-                  <input required type="email" multiple id="recipients"></input>
+                  <input required placeholder="add email" type="email" multiple id="recipients"></input>
                </form>
             </div>
             <p  id="clear" onClick={() => clear()}>CLEAR</p>

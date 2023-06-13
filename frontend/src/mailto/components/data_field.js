@@ -53,14 +53,13 @@ const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
                 <button onClick={() => { getData('nc') }}>LA Nieghborhood Councils</button>
                 <button onClick={() => { getData('cd') }}>LA City Council</button>
                 <button onClick={() => { getData('metro') }}>Metro</button>
-                <button onClick={() => { setData('') }}>X</button>
             </div >
 
             <div class={data != '' ? "shown" : "hidden"} id="options">
-            {data != '' ? <span class="geo_selector" onClick={(e) => { addAll(data) }}>ADD ALL</span> : '' }
+            <button id="hider" onClick={() => { setData('') }}>X</button>
+            {data != '' ? <span class="geo_selector" onClick={(e) => { addAll(data) }}>+ ADD ALL</span> : '' }
                 {data != '' ? data.map((locals, i) => {
                     if (locals.properties.DEMAIL) {return(
-
                     <span data-email={locals.properties.DEMAIL} 
                     class="geo_selector" index={i} 
                     onClick={(e) => { addEmail(locals.properties.DEMAIL, e, i) }}>
