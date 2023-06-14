@@ -6,10 +6,9 @@ import nieghborhoods from "../data/LA_Neighborhood_Councils.json";
 import cds from "../data/LA_City_Council_Districts.json";
 
 
-const Geocoder = ({ recieverList, setRecieverList, updateEmail }) => {
+const Geocoder = ({ setshowGeo, showGeo, recieverList, setRecieverList, updateEmail }) => {
 
     const [place, setPlace] = useState('');
-    const [showGeo, setshowGeo] = useState(true);
     const [locations, setLocations] = useState('');
     const [nieghborhood, setNeighborhood] = useState('');
     const [cd, setCD] = useState('');
@@ -30,12 +29,14 @@ const Geocoder = ({ recieverList, setRecieverList, updateEmail }) => {
 
     const addEmail = (localEmail, e) => {
         var list = recieverList
+        localEmail =  localEmail.toString()
+        var localEmail = localEmail.split(",").flat().filter(Boolean)
         if (!list.includes(localEmail)) {
             list.push(localEmail);
         } else {
             list.splice(list.indexOf(localEmail), 1);
         }
-
+        list  = list.flat()
         setRecieverList(list)
         updateEmail()
     }
@@ -67,44 +68,50 @@ const Geocoder = ({ recieverList, setRecieverList, updateEmail }) => {
 
 
     return (
-        <div class="window" id="geocoder">
-            Geocoder
-            {/* <span id="geo_toggle" onClick={() => setshowGeo(!showGeo)}>{showGeo ? '-' : "+"}</span> */}
-            <p class="tooltip">Use this to find the emails of electeds responsible for an address</p>
-            <div id="geo_body" class={showGeo ? 'shown' : "hidden"}>
-                <label>Enter Address</label>
-                <input onChange={(e) => setPlace(e.target.value)}></input>
-                <div id="dropdown">
-                    {locations ? locations.map(e => {
-                        return (
-                            <p onClick={() => findDistricts(e.center)}>{e.place_name}</p>)
-                    }) : ''}
+        
+        <div class={showGeo ? "shown" : "hidden"}>
+            <div class="window" id="geocoder">
+                {/* <button class="hider" onClick={() => setshowGeo(!showGeo)}>X</button> */}
+                Geocoder
+                <span class="tooltip">Use this to find the emails of electeds responsible for an address</span>
+                <div id="geo_body">
+                    <label>Enter Address</label>
+                    <input onChange={(e) => setPlace(e.target.value)}></input>
+                    <div id="dropdown">
+                        {locations ? locations.map(e => {
+                            return (
+                                <p onClick={() => findDistricts(e.center)}>{e.place_name}</p>)
+                        }) : ''}
+                    </div>
+
+                    <div class={nieghborhood ? 'shown' : "hidden"} id="geo_return">
+                    <div id="header">
+                        <button class="geo_selector" onClick={() => addEmail([cd.DEMAIL + ',' +nieghborhood.DEMAIL])}>
+                            ADD ALL
+                        </button>
+                        </div>
+                        <table>
+
+                        {cd ? <tr onClick={() => addEmail(cd.DEMAIL)} class="geo_selector">
+                            <td class="geo_title">Council District:</td>
+                            <td>{cd.NAME}</td>
+                            <td class="geo_mail" >
+                                {cd.DEMAIL}
+                            </td>
+                        </tr> : ''}
+
+                        {nieghborhood ? <tr onClick={() => addEmail(nieghborhood.DEMAIL)} class="geo_selector">
+                            <td class="geo_title">Nieghborhood Council: </td>
+                            <td >{nieghborhood.NAME}</td>
+                            <td class="geo_mail" >
+                                {nieghborhood.DEMAIL}
+                            </td>
+                        </tr> : ''}
+                        </table>
+                    </div>
                 </div>
 
-                <div class={nieghborhood ? 'shown' : "hidden"} id="geo_return">
-
-                    <span class="geo_selector" onClick={() => addEmail([cd.DEMAIL, nieghborhood.DEMAIL])}>
-                        ADD ALL
-                    </span>
-
-                    {cd ? <div onClick={() => addEmail(cd.DEMAIL)} class="geo_selector">
-                        <span class="geo_title">Council District:</span>
-                        <span>{cd.NAME}</span>
-                        <span class="geo_mail" >
-                            {cd.DEMAIL}
-                        </span>
-                    </div> : ''}
-
-                    {nieghborhood ? <div onClick={() => addEmail(nieghborhood.DEMAIL)} class="geo_selector">
-                        <span class="geo_title">Nieghborhood Council: </span>
-                        <span >{nieghborhood.NAME}</span>
-                        <span class="geo_mail" >
-                            {nieghborhood.DEMAIL}
-                        </span>
-                    </div> : ''}
-                </div>
             </div>
-
         </div>
     );
 

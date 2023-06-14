@@ -1,10 +1,24 @@
-:root { 
+:root {
     --bg: rgb(244, 242, 238);
     --edit: rgb(249, 248, 246);
     --button: rgb(232, 227, 227);
     --soft_bg: rgb(216, 228, 238);
     --bold: rgb(34, 40, 219);
 }
+
+#container {
+    width: max-content;
+    margin: auto;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+}
+
+@media only screen and (max-width: 800px) {
+    #container {
+        margin-top: 8rem;
+    }
+}
+
 
 button {
     border: none;
@@ -17,15 +31,17 @@ button:hover {
 }
 
 .window {
+    width: 40rem;
     background-color: var(--bg);
-    width: 100%;
     border-radius: 1rem;
+    max-width: 100%;
     box-shadow: 0px 0px 10px rgba(135, 122, 96, 0.471);
 }
 
 
-textarea, input {
-    resize:none;
+textarea,
+input {
+    resize: none;
     font-weight: 500;
     font-family: sans-serif;
     padding: .5rem;
@@ -35,7 +51,9 @@ textarea, input {
     background: var(--edit)
 }
 
-textarea:focus-within, input:focus-within, #recipient_list:focus-within{
+textarea:focus-within,
+input:focus-within,
+#recipient_list:focus-within {
     border: 1px solid var(--bold);
     outline: none;
 }
@@ -43,14 +61,6 @@ textarea:focus-within, input:focus-within, #recipient_list:focus-within{
 .tooltip {
     font-size: .9rem;
     color: grey;
-}
-
-#container {
-    width: 100%;
-    max-width: 700px;
-    margin: auto;
-    margin-bottom: 2rem;
-    margin-top: 1rem;
 }
 
 #mailer {
@@ -62,13 +72,20 @@ textarea:focus-within, input:focus-within, #recipient_list:focus-within{
 
 }
 
+#mailer img {
+    width: 5rem;
+    height: auto;
+}
+
 #recipient_list {
     padding: .5rem;
     border: 1px dotted grey;
     border-radius: .5rem;
     background: var(--edit)
 }
-#recipients_form input:hover, #recipients_form input:focus {
+
+#recipients_form input:hover,
+#recipients_form input:focus {
     background-color: var(--soft_bg);
 }
 
@@ -77,14 +94,16 @@ textarea:focus-within, input:focus-within, #recipient_list:focus-within{
     display: inline-block;
     background: var(--edit)
 }
-#recipients_form input:focus-visible, #recipients_form input:focus {
+
+#recipients_form input:focus-visible,
+#recipients_form input:focus {
     border: 0px;
     outline: none;
 }
 
 #recipients_form input {
     vertical-align: middle;
-    border: 0px; 
+    border: 0px;
     font-size: 1rem;
     padding: 0 .3rem;
     margin: 0;
@@ -92,11 +111,11 @@ textarea:focus-within, input:focus-within, #recipient_list:focus-within{
     line-height: 1.6rem;
 }
 
-#recipient_list span { 
+#recipient_list span {
     padding: .2rem .2rem;
     background-color: var(--soft_bg);
     padding: 0.2rem 0.3rem;
-    line-height: 1.6rem;
+    line-height: 1.8rem;
     margin-right: 0.2rem;
     vertical-align: middle;
     border-radius: .3rem;
@@ -121,10 +140,11 @@ textarea:focus-within, input:focus-within, #recipient_list:focus-within{
 }
 
 #save {
-font-size: 1.1rem;
+    font-size: 1.1rem;
 }
 
-label, tooltip {
+label,
+tooltip {
     margin-top: 1rem;
     font-size: .8rem;
     font-family: 'Courier New', Courier, monospace;
@@ -161,16 +181,33 @@ label, tooltip {
     border-radius: .3rem;
 }
 
-#clear:hover, #hider:hover{
+#geo_toggle {
+    border-radius: 1rem;
+    border: 1px dotted black;
+    max-width: 100px;
+    position: fixed;
+    left: 10px;
+    top: 10px
+}
+
+#geo_toggle img{
+    width: auto;
+    height: 3rem;
+}
+
+#clear:hover,
+.hider:hover {
     cursor: pointer;
     background-color: var(--button);
 }
 
-#hider {
+.hider {
+    left: 620px;
     background-color: var(--bg);
     border: 1px solid grey;
     position: -webkit-sticky; /* Safari */
     position: sticky;
+    width: 30px;
     top: 0;
     border-radius: .5rem;
     padding: .3rem .5rem;
@@ -179,34 +216,58 @@ label, tooltip {
 
 
 #data_field {
-    background-color: var(--button);
-    padding: 0.5rem;
-   margin-top: -1rem;
-   border-radius: .3rem;
+    /* background-color: var(--button);
+    padding: 0.5rem; */
+    margin-top: -1rem;
+    border-radius: .3rem;
 }
 
 
 
 #options {
     border: 1px dotted grey;
-  font-size: .8rem;
-  padding: .5rem;
-  border-radius: .25rem;
-  background-color: var(--edit);
-  max-height: 50vh;
-  overflow-y: scroll;
-  margin-top: .5rem;
+    font-size: .8rem;
+    margin-top: .5rem;
+    border-radius: .25rem;
+    background-color: var(--edit);
+    max-height: 50vh;
+    overflow-y: scroll;
 
 }
 
-#filter button{
-    border: none;
+#header {
+    height: 2rem;
+    display: flex;
+    width: 100%;
+    top: 0;
+    position: sticky;
+    border-bottom: 1px dotted grey;
+    background-color: var(--button);
+}
+
+#header button { 
+    border: 1px solid grey;
+    border-radius: .5rem;
+    margin: .2rem;
+}
+
+#options table {
+    width: 100%;
+}
+
+#filter button {
+    border: 1px solid grey;
     background-color: var(--bg);
     padding: .4rem .8rem;
+    border-radius: .5rem;
     margin-right: .5rem;
 }
 
-#filter button:hover{ 
+#filter button.selected {
+    background-color: var(--button);
+}
+
+#filter button:hover {
     cursor: pointer;
 }
 
@@ -214,27 +275,36 @@ label, tooltip {
     border-bottom: 1px grey solid;
 }
 
-.geo_selector{
+.geo_selector {
     padding: .2rem 0;
     border-bottom: 1px grey dotted;
     cursor: pointer;
-    width: calc(100% - 1rem);
-    display: flex;
+    min-width: 100%;
+    right: 0px;
+    left: 0px;
+    width: 100%;
+    /* width: calc(100% - 1rem);
+    display: flex; */
 }
 
 
+tr:nth-child(even) {
+    background-color: var(--button);
+}
+
+/* 
 .geo_selector span{
     flex: 2
 }
 
 .geo_selector span.short{
     flex: 1
-}
+} */
 
 
 
-.geo_selector:hover{
-        background-color: var(--button);
+.geo_selector:hover {
+    background-color: var(--soft_bg);
 }
 
 

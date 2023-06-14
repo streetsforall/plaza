@@ -3,9 +3,10 @@
     flex-direction: column;
     background-color: var(--bg);
     width: 100%;
-    max-width: calc(100% - 3rem);
+    max-width: 650px;
     margin: .5rem;
     padding: 1rem;
+    z-index: 2;
 }
 
 
@@ -15,12 +16,6 @@
     background-color: var(--bg);
 }
 
-
-#geo_toggle {
-    position: relative;
-    top: -1rem;
-    right: 0;
-}
 
 #geo_body {
     flex-direction: column;

@@ -5,39 +5,75 @@ import cds from "../data/LA_City_Council_Districts.json";
 
 
 
-const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
+const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
 
 
     const [data, setData] = useState('');
+    const [deputies, setDeputies] = useState(false)
+    const [dataSource, setdataSource] = useState('')
 
-    const getData = (dataSource) => {
+    useEffect(() => {
         if (dataSource === "nc") { setData(nieghborhoods.features) }
         else if (dataSource === "cd") { setData(cds.features) }
         else if (dataSource === "metro") { setData(contacts.Metro) }
         console.log(data)
-    }
+    }, [dataSource])
 
     const addAll = () => {
-        const result = data.map(e => e.properties.DEMAIL).join();
-        const list = result.split(",")
-        console.log(recieverList, list)
+        const emails = data.map(e => e.properties.DEMAIL).join();
+        var deputiesList = ''
+        if (deputies) {
+            var deputiesList = data.map(e => e.properties.Deputy).join();
+            console.log('deputiesList', deputiesList)
+        }
+
+
+        
+        var combined = deputiesList + ',' + emails
+        console.log(combined)
+
         var addedlist = []
-        if (recieverList.length > 0) {var addedlist = recieverList.concat(list) }
-        else if (recieverList.length == 0 ) {var addedlist  = list}
-        setRecieverList(addedlist)
+        // if (recieverList.length > 0) { 
+        //     var addedlist = recieverList.concat(deputiesList, emailsList) 
+        //     console.log('added', addedlist)
+        // }
+        // else if (recieverList.length == 0) { var addedlist = emailsList }
+        console.log(combined)
+        addEmail(combined)
     }
 
 
     // add email from selector array
-    const addEmail = (localEmail, e) => {
-        // if (e) { e.target.classList.toggle('chosen')}
-        var list = recieverList
-        // add if email is new
-        if (!list.includes(localEmail)) {
-            list.push(localEmail);
-        } else {
-            list.splice(list.indexOf(localEmail), 1);
+    const addEmail = (localEmail, deputyEmail, e, i) => {
+
+        if (deputies && deputyEmail) {
+            localEmail = localEmail + ', ' + deputyEmail
+            console.log(localEmail)
         }
+
+        localEmail =  localEmail.toString()
+
+
+        var list = recieverList
+
+        console.log(localEmail)
+        // this cleans out nulls and unifies array
+        var localEmail = localEmail.split(",").flat().filter(Boolean)
+        localEmail.forEach(email => {
+            // filters out nulls and duplicates
+            if (!list.includes(email)) {
+                console.log('good', email)
+                list.push(email);
+                list  = list.flat()
+            } else {
+                console.log('bad', email)
+                list.splice(list.indexOf(email), 1);
+            }
+        })
+        // add if email is new
+        
+
+        console.log(list)
 
         setRecieverList(list)
         updateEmail()
@@ -50,25 +86,35 @@ const Data_field = ({recieverList, setRecieverList, updateEmail}) => {
         <div id="data_field">
 
             <div id="filter" >
-                <button onClick={() => { getData('nc') }}>LA Nieghborhood Councils</button>
-                <button onClick={() => { getData('cd') }}>LA City Council</button>
-                <button onClick={() => { getData('metro') }}>Metro</button>
+                <button class={dataSource === 'nc' ? 'selected': ""} onClick={() => { setdataSource('nc'); setDeputies(false) }}>LA Nieghborhood Councils</button>
+                <button class={dataSource === 'cd' ? 'selected': ""}onClick={() => { setdataSource('cd') }}>LA City Council</button>
+                <button class={dataSource === 'metro' ? 'selected': ""} onClick={() => { setdataSource('metro') }}>Metro</button>
             </div >
 
             <div class={data != '' ? "shown" : "hidden"} id="options">
-            <button id="hider" onClick={() => { setData('') }}>X</button>
-            {data != '' ? <span class="geo_selector" onClick={(e) => { addAll(data) }}>+ ADD ALL</span> : '' }
-                {data != '' ? data.map((locals, i) => {
-                    if (locals.properties.DEMAIL) {return(
-                    <span data-email={locals.properties.DEMAIL} 
-                    class="geo_selector" index={i} 
-                    onClick={(e) => { addEmail(locals.properties.DEMAIL, e, i) }}>
-                    <span class={locals.properties.District ? "short shown" : "short hidden" }>{locals.properties.District}</span>
-                    <span>{locals.properties.NAME}</span>
-                    <span>{locals.properties.DEMAIL}</span>
-                    </span>
-                )}}) : ''}
-               
+                <div id="header">
+                    <button onClick={(e) => { addAll(data) }}>Add All</button>
+                    <button class={dataSource == 'metro' || dataSource == 'cd' ? "shown" : "hidden"} onClick={(e) => { setDeputies(!deputies) }}>{!deputies ? 'Include Deputies' : 'Exclude Deputies'}</button>
+                    <button class="hider" onClick={() => { setData(''); setdataSource('')  }}>X</button>
+                </div>
+                <table>
+
+
+                    {data != '' ? data.map((locals, i) => {
+                        if (locals.properties.DEMAIL) {
+                            return (
+                                <tr data-email={locals.properties.DEMAIL}
+                                    class="geo_selector" index={i}
+                                    onClick={(e) => { addEmail(locals.properties.DEMAIL, locals.properties.Deputy, e, i) }}>
+                                    <td class={locals.properties.District ? "short shown" : "short hidden"}>{locals.properties.District}</td>
+                                    <td>{locals.properties.NAME}</td>
+                                    <td>{locals.properties.DEMAIL}</td>
+                                    <td>{deputies ? locals.properties.Deputy : ''}</td>
+                                </tr>
+                            )
+                        }
+                    }) : ''}
+                </table>
             </div>
         </div >
     )

@@ -15,6 +15,7 @@ const CTA = () => {
    const [email, setEmail] = useState('');
    const [hash, setHash] = useState('');
    const [copy, setCopy] = useState('');
+   const [showGeo, setshowGeo] = useState(false);
 
    useEffect(() => {
       updateEmail();
@@ -138,9 +139,7 @@ const CTA = () => {
    }
 
    const handleCopyClick = (e) => {
-      console.log(email)
       copyTextToClipboard(email, e)
-      console.log(e)
       // setCopy(true);
    }
 
@@ -163,10 +162,17 @@ const CTA = () => {
 
    return (
       <div id="container">
-         <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
+         <button id="geo_toggle" onClick={() => setshowGeo(!showGeo)}>
+            <img src="/images/geotagger.png" />
+            {showGeo ? 'Hide Geocoder' : "Show Geocoder"}
+         </button>
+         <Geocoder setshowGeo={setshowGeo} showGeo={showGeo} setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
+
+
          <div class="window" id="mailer">
+         <img src="/images/mailto.png" />
             MailTo
-            <p class="tooltip">Use this to generate an email</p>
+            <span class="tooltip">Use this to generate an email</span>
 
             <label>To</label>
             <div id="recipient_list">
@@ -177,7 +183,7 @@ const CTA = () => {
                   <input required placeholder="add email" type="email" multiple id="recipients"></input>
                </form>
             </div>
-            <p  id="clear" onClick={() => clear()}>CLEAR</p>
+            <p id="clear" onClick={() => clear()}>CLEAR</p>
 
             <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
 
@@ -191,13 +197,13 @@ const CTA = () => {
             {shareable}
 
 
-           
+
             <div id="preview">
                {email}
             </div>
 
             <button id="copy" onClick={(e) => handleCopyClick(e)} >
-            Copy Code
+               Copy Code
             </button>
 
 
