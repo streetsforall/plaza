@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import nieghborhoods from "../data/LA_Neighborhood_Councils.json";
-import contacts from "../data/metro.json";
+import metro from "../data/metro.json";
 import cds from "../data/LA_City_Council_Districts.json";
+import assembly from "../data/CA_Assembly_Districts.json";
+import senate from "../data/CA_Senate_Districts.json";
 
 
 
@@ -15,7 +17,9 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
     useEffect(() => {
         if (dataSource === "nc") { setData(nieghborhoods.features) }
         else if (dataSource === "cd") { setData(cds.features) }
-        else if (dataSource === "metro") { setData(contacts.Metro) }
+        else if (dataSource === "metro") { setData(metro.features) }
+        else if (dataSource === "assembly") { setData(assembly.features) }
+        else if (dataSource === "senate") { setData(senate.features) }
         console.log(data)
     }, [dataSource])
 
@@ -89,6 +93,8 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
                 <button class={dataSource === 'nc' ? 'selected': ""} onClick={() => { setdataSource('nc'); setDeputies(false) }}>LA Nieghborhood Councils</button>
                 <button class={dataSource === 'cd' ? 'selected': ""}onClick={() => { setdataSource('cd') }}>LA City Council</button>
                 <button class={dataSource === 'metro' ? 'selected': ""} onClick={() => { setdataSource('metro') }}>Metro</button>
+                <button class={dataSource === 'assembly' ? 'selected': ""} onClick={() => { setdataSource('assembly') }}>Assembly</button>
+                <button class={dataSource === 'senate' ? 'selected': ""} onClick={() => { setdataSource('senate') }}>Senate</button>
             </div >
 
             <div class={data != '' ? "shown" : "hidden"} id="options">

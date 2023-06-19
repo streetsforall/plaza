@@ -31,7 +31,7 @@ button:hover {
 }
 
 .window {
-    width: 40rem;
+    width: 50rem;
     background-color: var(--bg);
     border-radius: 1rem;
     max-width: 100%;
@@ -202,14 +202,14 @@ tooltip {
 }
 
 .hider {
-    left: 620px;
+    left: 770px;
     background-color: var(--bg);
     border: 1px solid grey;
     position: -webkit-sticky; /* Safari */
     position: sticky;
     width: 30px;
     top: 0;
-    border-radius: .5rem;
+    border-radius: .2rem;
     padding: .3rem .5rem;
 }
 
@@ -247,7 +247,7 @@ tooltip {
 
 #header button { 
     border: 1px solid grey;
-    border-radius: .5rem;
+    border-radius: .3rem;
     margin: .2rem;
 }
 

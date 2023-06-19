@@ -1,5 +1,5 @@
 {
-    "Metro": [
+    "features": [
         {
             "properties": {
                 "NAME": " ",
@@ -36,7 +36,7 @@
             "properties": {
                 "NAME": "Hilda L. Solis",
                 "DEMAIL": "firstdistrict@bos.lacounty.gov",
-                "District": "SD 1",
+                "District": "CS 1",
                 "Deputy":"kmacias@bos.lacounty.gov"
             }
         },
@@ -44,7 +44,7 @@
             "properties": {
                 "NAME": "Holly J. Mitchell",
                 "DEMAIL": "HollyJMitchell@bos.lacounty.gov",
-                "District": "SD 2",
+                "District": "CS 2",
                 "Deputy":"LOBrien@bos.lacounty.gov"
             }
         },
@@ -52,7 +52,7 @@
             "properties": {
                 "NAME": "Lindsey Horvath",
                 "DEMAIL": "ThirdDistrict@bos.lacounty.gov",
-                "District": "SD 3",
+                "District": "CS 3",
                 "Deputy":"JOrenstein@bos.lacounty.gov"
             }
         },
@@ -60,7 +60,7 @@
             "properties": {
                 "NAME": "Janice Hahn",
                 "DEMAIL": "fourthdistrict@bos.lacounty.gov",
-                "District": "SD 4",
+                "District": "CS 4",
                 "Deputy":"LKlipp@bos.lacounty.gov"
             }
         },
@@ -68,7 +68,7 @@
             "properties": {
                 "NAME": "Kathryn Barger",
                 "DEMAIL": "Kathryn@bos.lacounty.gov",
-                "District": "SD 5",
+                "District": "CS 5",
                 "Deputy":"dpetty@bos.lacounty.gov"
             }
         },
