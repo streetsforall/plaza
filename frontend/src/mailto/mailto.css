@@ -8,6 +8,7 @@
 
 #container {
     width: max-content;
+    max-width: 100%;
     margin: auto;
     margin-bottom: 1rem;
     margin-top: 2rem;
@@ -16,6 +17,10 @@
 @media only screen and (max-width: 800px) {
     #container {
         margin-top: 8rem;
+    }
+
+    #container {
+        font-size: .9rem;
     }
 }
 
