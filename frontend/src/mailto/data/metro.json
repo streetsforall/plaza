@@ -12,7 +12,8 @@
                 "NAME": "Ara Najarian",
                 "DEMAIL": "anajarian@glendaleca.gov",
                 "Position": "Board, Chair",
-                "District": "Chair"
+                "District": "Chair",
+                "Committee": ["Planning and Programming" ]
             }
         },
         {
@@ -20,7 +21,8 @@
                 "NAME": "Stephanie Wiggins",
                 "DEMAIL": "Wigginss@metro.net",
                 "Position": "Board, ",
-                "District": "CEO"
+                "District": "CEO",
+                "Committee": ["Finance, Budget and Audit",  "Planning and Programming", "Construction"]
             }
         },
         {
@@ -29,7 +31,8 @@
                 "DEMAIL": "mayor.helpdesk@lacity.org",
                 "Position": "Board, ",
                 "District": "Mayor",
-                "Deputy":"randall.winston@lacity.org"
+                "Deputy":"randall.winston@lacity.org",
+                "Committee": ["Finance, Budget and Audit"]
             }
         },
         {
@@ -37,7 +40,8 @@
                 "NAME": "Hilda L. Solis",
                 "DEMAIL": "firstdistrict@bos.lacounty.gov",
                 "District": "CS 1",
-                "Deputy":"kmacias@bos.lacounty.gov"
+                "Deputy":"kmacias@bos.lacounty.gov",
+                "Committee": ["Planning and Programming" ]
             }
         },
         {
@@ -45,7 +49,8 @@
                 "NAME": "Holly J. Mitchell",
                 "DEMAIL": "HollyJMitchell@bos.lacounty.gov",
                 "District": "CS 2",
-                "Deputy":"LOBrien@bos.lacounty.gov"
+                "Deputy":"LOBrien@bos.lacounty.gov",
+                "Committee": ["Finance, Budget and Audit", "Operations & Safety"]
             }
         },
         {
@@ -53,7 +58,8 @@
                 "NAME": "Lindsey Horvath",
                 "DEMAIL": "ThirdDistrict@bos.lacounty.gov",
                 "District": "CS 3",
-                "Deputy":"JOrenstein@bos.lacounty.gov"
+                "Deputy":"JOrenstein@bos.lacounty.gov",
+                "Committee": ["Construction", "Operations & Safety"]
             }
         },
         {
@@ -61,7 +67,8 @@
                 "NAME": "Janice Hahn",
                 "DEMAIL": "fourthdistrict@bos.lacounty.gov",
                 "District": "CS 4",
-                "Deputy":"LKlipp@bos.lacounty.gov"
+                "Deputy":"LKlipp@bos.lacounty.gov",
+                "Committee": ["Construction"]
             }
         },
         {
@@ -69,35 +76,40 @@
                 "NAME": "Kathryn Barger",
                 "DEMAIL": "Kathryn@bos.lacounty.gov",
                 "District": "CS 5",
-                "Deputy":"dpetty@bos.lacounty.gov"
+                "Deputy":"dpetty@bos.lacounty.gov",
+                "Committee": ["Finance, Budget and Audit"]
             }
         },
         {
             "properties": {
                 "NAME": "James Butts",
                 "DEMAIL": "butts@cityofinglewood.org",
-                "District": "Appointee"
+                "District": "Appointee",
+                "Committee": ["Planning and Programming"]
             }
         },
         {
             "properties": {
                 "NAME": "Fernando Dutra",
                 "DEMAIL": "fdutra@cityofwhittier.org",
-                "District": "Appointee"
+                "District": "Appointee",
+                "Committee": ["Planning and Programming", "Construction"]
             }
         },
         {
             "properties": {
                 "NAME": "Tim Sandoval",
                 "DEMAIL": "tim_sandoval@ci.pomona.ca.us",
-                "District": "Appointee"
+                "District": "Appointee",
+                "Committee": ["Finance, Budget and Audit", "Operations & Safety"]
             }
         },
         {
             "properties": {
                 "NAME": "Jacquelyn Dupont-Walker",
                 "DEMAIL": "jdupontw@aol.com",
-                "District": "LA Appointee"
+                "District": "LA Appointee",
+                "Committee": ["Planning and Programming", "Construction" ]
             }
         },
         {
@@ -105,7 +117,8 @@
                 "NAME": "Paul Krekorian",
                 "DEMAIL": "councilmember.krekorian@lacity.org",
                 "District": "CD 2",
-                "Deputy":"sahag.yedalian@lacity.org"
+                "Deputy":"sahag.yedalian@lacity.org",
+                "Committee": ["Finance, Budget and Audit", "Operations & Safety"]
             }
         },
         {
@@ -113,14 +126,16 @@
                 "NAME": "Katy Yaroslavsky",
                 "DEMAIL": "councilwoman.yaroslavsky@lacity.org",
                 "District": "CD 5",
-                "Deputy":"kristen.pawling@lacity.org"
+                "Deputy":"kristen.pawling@lacity.org",
+                "Committee": ["Planning and Programming", "Operations & Safety"]
             }
         },
         {
             "properties": {
                 "NAME": "Gloria Roberts",
                 "DEMAIL": "gloria.roberts@dot.ca.gov",
-                "District": "CalTrans"
+                "District": "CalTrans",
+                "Committee": ["Finance, Budget and Audit", "Planning and Programming", "Construction" ]
             }
         }
     ]

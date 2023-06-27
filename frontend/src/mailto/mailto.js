@@ -48,6 +48,7 @@ const CTA = () => {
          setBody(match.body)
          setSubject(match.subject)
          setRecieverList(match.to)
+         setRecieverList(match.to)
          setEditable(match.editable)
          document.getElementById("subject_field").value = match.subject;
          document.getElementById("body_field").value = match.body;
@@ -174,13 +175,25 @@ const CTA = () => {
             MailTo
             <span class="tooltip">Use this to generate an email</span>
 
-            <label>To</label>
             <div id="recipient_list">
+            <label>To: </label>
                {recieverList.map((e, i, arr) => {
                   return (<span onClick={(e) => { remove(e) }}>{e}, </span>)
                })}
                <form id="recipients_form" autocomplete="off" onSubmit={(e) => { addRecipients(e) }}>
                   <input required placeholder="add email" type="email" multiple id="recipients"></input>
+               </form>
+            </div>
+            <div id="recipient_list">
+            <label>CC: </label>
+            <form id="recipients_form" autocomplete="off" onSubmit={(e) => { addRecipients(e) }}>
+                  <input required placeholder="add CC" type="email" multiple id="recipients"></input>
+               </form>
+            </div>
+            <div id="recipient_list">
+            <label>BCC: </label>
+            <form id="recipients_form" autocomplete="off" onSubmit={(e) => { addRecipients(e) }}>
+                  <input required placeholder="add BCC" type="email" multiple id="recipients"></input>
                </form>
             </div>
             <p id="clear" onClick={() => clear()}>CLEAR</p>
