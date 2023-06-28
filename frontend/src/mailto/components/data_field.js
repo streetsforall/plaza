@@ -13,7 +13,6 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
     const [data, setData] = useState('');
     const [deputies, setDeputies] = useState(false)
     const [dataSource, setdataSource] = useState('')
-    const [committees, setCommittees] = useState([])
 
     useEffect(() => {
         if (dataSource === "nc") { setData(nieghborhoods.features) }
@@ -22,7 +21,6 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
         else if (dataSource === "assembly") { setData(assembly.features) }
         else if (dataSource === "senate") { setData(senate.features) }
         console.log(data)
-        getCommittees(data)
     }, [dataSource])
 
     const addAll = () => {
@@ -32,8 +30,11 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
             var deputiesList = data.map(e => e.properties.Deputy).join();
             console.log('deputiesList', deputiesList)
         }
+
+
         
         var combined = deputiesList + ',' + emails
+        console.log(combined)
 
         var addedlist = []
         // if (recieverList.length > 0) { 
@@ -43,22 +44,6 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
         // else if (recieverList.length == 0) { var addedlist = emailsList }
         console.log(combined)
         addEmail(combined)
-    }
-
-    const getCommittees = (newData) => {
-
-        if (newData != []) {
-            console.log('ok')
-            newData.map((e) => (
-                e.properties.Committee ? 
-                setCommittees(committees.concat(e.properties.Committee.filter((item) => committees.indexOf(item) < 0)))
-                : ''
-            ))
-        }
-        console.log(committees)
-        // newData != '' ? newData.map((features) => {
-        //     return(<p>{features.properties.Committee}</p>)
-        // }) : ''
     }
 
 
@@ -116,15 +101,6 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
                 <div id="header">
                     <button onClick={(e) => { addAll(data) }}>Add All</button>
                     <button class={dataSource == 'metro' || dataSource == 'cd' ? "shown" : "hidden"} onClick={(e) => { setDeputies(!deputies) }}>{!deputies ? 'Include Deputies' : 'Exclude Deputies'}</button>
-                    <div class={committees != '' ? "shown" : "hidden"}>
-                    {committees != '' ? committees.map((com) => {
-                            return( <button>{com}</button>)
-                        }) : ''
-                    }
-                   
-                    </div>
-                   
-                    
                     <button class="hider" onClick={() => { setData(''); setdataSource('')  }}>X</button>
                 </div>
                 <table>
