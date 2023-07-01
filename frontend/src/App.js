@@ -2,6 +2,7 @@ import React, { Component }  from 'react';
 import { HashRouter, Routes, Route, Link } from "react-router-dom";
 import CTA from './mailto/mailto';
 import Geocoder from './mailto/components/geocoder';
+import Feed from './mailto/feed'
 
 
 
@@ -15,13 +16,29 @@ const Home = () => {
  
 
  <div>
-  <Link to="/cta">Call to Action Builder</Link>
+  <Link to="/mailto">Call to Action Builder</Link>
  </div>
  
   </div>
 </div>
   )
 }
+
+
+
+const CTA_bounce = () => {
+  return (
+  <div>
+    <p>Mailto tool has mooooved 🐄</p>
+    <p>/cta    ------>  /mailto</p>
+    <Link to="/mailto">Call to Action Builder</Link>
+  </div>
+  )
+}
+
+
+
+
 const App = () => {
 
   return (
@@ -29,8 +46,10 @@ const App = () => {
       <Routes>
         <Route path="/" exact element={<Home />} />
         <Route path="/geocoder" element={<Geocoder />} />
-        <Route path="/cta" element={<CTA />} />
-        <Route path="/cta/:hash" element={<CTA />} />
+        <Route path="/feed" element={<Feed />} />
+        <Route path="/cta" element={<CTA_bounce />} />
+        <Route path="/mailto" element={<CTA />} />
+        <Route path="/mailto/:hash" element={<CTA />} />
         <Route path="/*" element={"not found"} />
       </Routes>
     </HashRouter >

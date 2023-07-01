@@ -37,7 +37,7 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
         console.log(combined)
 
         var addedlist = []
-        // if (recieverList.length > 0) { 
+        // if (recieverList != null) { 
         //     var addedlist = recieverList.concat(deputiesList, emailsList) 
         //     console.log('added', addedlist)
         // }
@@ -45,6 +45,8 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
         console.log(combined)
         addEmail(combined)
     }
+
+
 
 
     // add email from selector array
@@ -89,6 +91,7 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
     return (
         <div id="data_field">
 
+            <label>Email Library</label>
             <div id="filter" >
                 <button class={dataSource === 'nc' ? 'selected': ""} onClick={() => { setdataSource('nc'); setDeputies(false) }}>LA Nieghborhood Councils</button>
                 <button class={dataSource === 'cd' ? 'selected': ""}onClick={() => { setdataSource('cd') }}>LA City Council</button>
@@ -98,7 +101,7 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
             </div >
 
             <div class={data != '' ? "shown" : "hidden"} id="options">
-                <div id="header">
+                <div id="filter_header">
                     <button onClick={(e) => { addAll(data) }}>Add All</button>
                     <button class={dataSource == 'metro' || dataSource == 'cd' ? "shown" : "hidden"} onClick={(e) => { setDeputies(!deputies) }}>{!deputies ? 'Include Deputies' : 'Exclude Deputies'}</button>
                     <button class="hider" onClick={() => { setData(''); setdataSource('')  }}>X</button>

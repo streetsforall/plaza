@@ -2,8 +2,6 @@
     display: flex;
     flex-direction: column;
     background-color: var(--bg);
-    width: 100%;
-    max-width: 650px;
     margin: .5rem;
     padding: 1rem;
     z-index: 2;
@@ -20,6 +18,11 @@
 #geo_body {
     flex-direction: column;
     display: flex;
+    margin-top: 1rem;
+}
+
+#geo_body table {
+    width: 100%;
 }
 
 

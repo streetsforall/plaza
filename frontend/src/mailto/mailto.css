@@ -8,6 +8,7 @@
 
 #container {
     width: max-content;
+
     max-width: 100%;
     margin: auto;
     margin-bottom: 1rem;
@@ -22,6 +23,16 @@
     #container {
         font-size: .9rem;
     }
+}
+
+#feed {
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+}
+
+#feeder p {
+    text-decoration: none;
 }
 
 
@@ -57,16 +68,11 @@ input {
 }
 
 textarea:focus-within,
-input:focus-within,
-#recipient_list:focus-within {
+input:focus-within {
     border: 1px solid var(--bold);
     outline: none;
 }
 
-.tooltip {
-    font-size: .9rem;
-    color: grey;
-}
 
 #mailer {
     padding: 1rem;
@@ -77,16 +83,48 @@ input:focus-within,
 
 }
 
+#mailer_head {
+    display: flex;
+    margin-bottom: 1rem;
+    justify-content: space-between;
+}
+
+#mailer_head>div {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
 #mailer img {
     width: 5rem;
     height: auto;
 }
 
-#recipient_list {
-    padding: .5rem;
+.label_header {
+    display: inline;
+    margin-right: .5rem;
+    
+}
+
+.label_header.full {
+    display: block;
+    margin-top: 1rem;
+}
+
+.label_header:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.recipient_list {
+    padding: .3rem;
+    padding-bottom: 0;
     border: 1px dotted grey;
     border-radius: .5rem;
-    background: var(--edit)
+    background: var(--edit);
+    display: flex;
+    flex-wrap: wrap;
+    color: var(--bg);
 }
 
 #recipients_form input:hover,
@@ -94,15 +132,54 @@ input:focus-within,
     background-color: var(--soft_bg);
 }
 
+
+
+.recipient_menu {
+    display: none;
+    position: absolute;
+    background-color: var(--bg);
+    box-shadow: 0 .2rem .4rem lightgray;
+    padding: .2rem .2rem;
+    border-radius: .3rem;
+}
+
+
+.recipient:hover>.recipient_menu {
+    display: flex;
+    cursor: pointer;
+    font-size: .8rem;
+    border: 1px solid var(--button);
+}
+
+
+.recipient_menu span {
+    /* background-color: var(--edit); */
+    padding: .1rem .2rem;
+    border-radius: .5rem;
+    margin: .1rem;
+    border: .5px solid var(--edit);
+}
+
+.recipient_menu span:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.recipient_menu .delete {
+    padding: .1rem .4rem;
+    border-left: 1px solid lightgrey;
+    border-radius: 0;
+}
+
 #recipients_form {
     font-size: 1.1rem;
     display: inline-block;
+    margin-bottom: .3rem;
     background: var(--edit)
 }
 
 #recipients_form input:focus-visible,
 #recipients_form input:focus {
-    border: 0px;
     outline: none;
 }
 
@@ -116,20 +193,20 @@ input:focus-within,
     line-height: 1.6rem;
 }
 
-#recipient_list span {
+.recipient {
+    color: black;
+    margin-bottom: .3rem;
     padding: .2rem .2rem;
-    background-color: var(--soft_bg);
+    /* background-color: var(--soft_bg); */
     padding: 0.2rem 0.3rem;
-    line-height: 1.8rem;
-    margin-right: 0.2rem;
     vertical-align: middle;
-    border-radius: .3rem;
+    border-radius: .5rem;
+    border: 1px solid var(--button);
 }
 
-#recipient_list span:hover {
-    cursor: pointer;
-    text-decoration: line-through;
-    background-color: rgb(250, 176, 176);
+.recipient:focus {
+    background-color: var(--soft_bg);
+    border: 1px solid var(--bold);
 }
 
 #hash {
@@ -139,20 +216,42 @@ input:focus-within,
 }
 
 #shareable {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
+    justify-content: end;
+    max-width: max-content;
+    min-width: 10rem;
 }
 
-#save {
-    font-size: 1.1rem;
+#shareable button {
+    border-radius: .3rem;
+    padding: .2rem .4rem;
+    margin: .2rem;
 }
 
-label,
-tooltip {
-    margin-top: 1rem;
+#shareable button:hover {
+    text-decoration: underline;
+}
+
+#shareable div {
+    flex-direction: row;
+    margin-bottom: .5rem;
+}
+
+#shareable label {
+    border: 1px solid var(--button);
+    border-radius: .3rem;
+    margin: .2rem;
+    padding: .2rem .4rem;
+
+}
+
+label {
     font-size: .8rem;
-    font-family: 'Courier New', Courier, monospace;
+    color: grey;
+}
+
+.main_label{
+    margin-top: 1rem;
+    line-height: 1rem;
 }
 
 #copy {
@@ -173,17 +272,14 @@ tooltip {
 }
 
 #clear {
-    justify-self: end;
     margin: 0;
     padding: .3rem;
-    margin-left: calc(100% - 50px);
     color: gray;
     width: max-content;
     font-size: .7rem;
-    left: -.4rem;
-    top: -2rem;
-    position: relative;
+    height: fit-content;
     border-radius: .3rem;
+    margin-left: auto;
 }
 
 #geo_toggle {
@@ -221,10 +317,7 @@ tooltip {
 
 
 #data_field {
-    /* background-color: var(--button);
-    padding: 0.5rem; */
-    margin-top: -1rem;
-    border-radius: .3rem;
+    margin-top: 1rem;
 }
 
 
@@ -240,20 +333,24 @@ tooltip {
 
 }
 
-#header {
+#filter_header {
     height: 2rem;
     display: flex;
     width: 100%;
     top: 0;
     position: sticky;
     border-bottom: 1px dotted grey;
-    background-color: var(--button);
+    background-color: var(--bg);
 }
 
-#header button { 
-    border: 1px solid grey;
+#filter_header  button { 
+    border: 1px solid var(--button);
     border-radius: .3rem;
     margin: .2rem;
+}
+
+#filter_header  button:hover { 
+    text-decoration: underline;
 }
 
 #options table {
@@ -261,7 +358,7 @@ tooltip {
 }
 
 #filter button {
-    border: 1px solid grey;
+    border: 1px solid var(--button);
     background-color: var(--bg);
     padding: .4rem .8rem;
     border-radius: .5rem;
@@ -274,6 +371,7 @@ tooltip {
 
 #filter button:hover {
     cursor: pointer;
+    text-decoration: underline;
 }
 
 .geo_selector:first-child {
@@ -281,15 +379,10 @@ tooltip {
 }
 
 .geo_selector {
-    padding: .2rem 0;
     border-bottom: 1px grey dotted;
     cursor: pointer;
     min-width: 100%;
-    right: 0px;
-    left: 0px;
     width: 100%;
-    /* width: calc(100% - 1rem);
-    display: flex; */
 }
 
 
