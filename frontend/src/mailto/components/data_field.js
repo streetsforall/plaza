@@ -117,7 +117,7 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
                                     onClick={(e) => { addEmail(locals.properties.DEMAIL, locals.properties.Deputy, e, i) }}>
                                     <td class={locals.properties.District ? "short shown" : "short hidden"}>{locals.properties.District}</td>
                                     <td>{locals.properties.NAME}</td>
-                                    <td>{locals.properties.DEMAIL}</td>
+                                    <td class="data_email">{locals.properties.DEMAIL}</td>
                                     <td>{deputies ? locals.properties.Deputy : ''}</td>
                                 </tr>
                             )

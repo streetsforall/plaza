@@ -355,6 +355,7 @@ label {
 
 #options table {
     width: 100%;
+    border-collapse: collapse; 
 }
 
 #filter button {
@@ -374,15 +375,13 @@ label {
     text-decoration: underline;
 }
 
-.geo_selector:first-child {
-    border-bottom: 1px grey solid;
-}
-
 .geo_selector {
-    border-bottom: 1px grey dotted;
+    /* border-bottom: 1px grey dotted; */
+    padding: .2rem;
     cursor: pointer;
     min-width: 100%;
     width: 100%;
+    line-height: 1.1rem;
 }
 
 
@@ -400,8 +399,7 @@ tr:nth-child(even) {
 } */
 
 
-
-.geo_selector:hover {
+.geo_selector:hover{
     background-color: var(--soft_bg);
 }
 

@@ -10,8 +10,7 @@ const Home = () => {
   return (
   <div class="home">
   <div id="welcome">
-    <h1>Welcome to the Streets for All Plaza</h1>
-    <a href="https://www.streetsforall.org/">Streetsforall.org</a>
+    <h1>Welcome to the <a href="https://www.streetsforall.org/">Streets for All</a> Plaza</h1>
     <p>this is a public square where all our small projects and tools hang out</p>
  
 
