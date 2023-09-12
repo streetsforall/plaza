@@ -1,0 +1,59 @@
+{
+    "features": [
+        {
+            "properties":  {
+                "NAME": "Council Meetings",
+                "DEMAIL": "councilmtgitems@santamonica.gov"
+            }
+        },
+        {
+            "properties":  {
+                "NAME": "Council Mailbox",
+                "DEMAIL": "council.mailbox@santamonica.gov"
+            }
+        },
+        {
+            "properties":  {
+                "NAME": "Christine Parra",
+                "DEMAIL": "christine.parra@santamonica.gov"
+            }
+        },
+        {
+            "properties": {
+                "NAME": "Gleam Davis",
+                "DEMAIL": "gleam.davis@santamonica.gov"
+            }
+        },
+        {
+            "properties": {
+                "NAME": "Phil Brock",
+                "DEMAIL": "phil.brock@santamonica.gov",
+                "Position": "Board, "
+            }
+        },
+        {
+            "properties": {
+                "NAME": "Oscar de la Torre",
+                "DEMAIL": "oscar.delatorre@santamonica.gov"
+            }
+        },
+        {
+            "properties": {
+                "NAME": "Lana Negrete",
+                "DEMAIL": "lana.negrete@santamonica.gov"
+            }
+        },
+        {
+            "properties": {
+                "NAME": "Caroline Torosis",
+                "DEMAIL": "Caroline.Torosis@santamonica.gov"
+            }
+        },
+        {
+            "properties": {
+                "NAME": "Jesse Zwick",
+                "DEMAIL": "jesse.zwick@santamonica.gov"
+            }
+        }
+    ]
+}
