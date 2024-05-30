@@ -1,8 +1,8 @@
 import React, { Component }  from 'react';
 import { HashRouter, Routes, Route, Link } from "react-router-dom";
-import CTA from './app/mailto/mailto';
-import Geocoder from './app/mailto/components/geocoder';
-import Feed from './app/mailto/feed'
+import CTA from './pages/mailto/mailto';
+import Geocoder from './pages/mailto/components/geocoder';
+import Feed from './pages/mailto/feed'
 
 
 
