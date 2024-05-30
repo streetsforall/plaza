@@ -147,7 +147,7 @@ input:focus-within {
 .recipient:hover>.recipient_menu {
     display: flex;
     cursor: pointer;
-    font-size: .8rem;
+    font-size: .9rem;
     border: 1px solid var(--button);
 }
 
@@ -186,7 +186,7 @@ input:focus-within {
 #recipients_form input {
     vertical-align: middle;
     border: 0px;
-    font-size: 1rem;
+    font-size: 1.1rem;
     padding: 0 .3rem;
     margin: 0;
     border-radius: .3rem;
@@ -225,6 +225,7 @@ input:focus-within {
     border-radius: .3rem;
     padding: .2rem .4rem;
     margin: .2rem;
+    font-size: 1rem;
 }
 
 #shareable button:hover {
@@ -276,7 +277,7 @@ label {
     padding: .3rem;
     color: gray;
     width: max-content;
-    font-size: .7rem;
+    font-size: .8rem;
     height: fit-content;
     border-radius: .3rem;
     margin-left: auto;
@@ -324,7 +325,7 @@ label {
 
 #options {
     border: 1px dotted grey;
-    font-size: .8rem;
+    font-size: .9rem;
     margin-top: .5rem;
     border-radius: .25rem;
     background-color: var(--edit);
@@ -364,6 +365,7 @@ label {
     padding: .4rem .8rem;
     border-radius: .5rem;
     margin-right: .5rem;
+    font-size: .9rem;
 }
 
 #filter button.selected {

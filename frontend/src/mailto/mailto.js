@@ -3,12 +3,14 @@ import './mailto.css';
 import Data_field from './components/data_field'
 import Geocoder from './components/geocoder'
 import { useParams } from "react-router-dom";
+import Outgoing from './components/outgoing';
 
 const CTA = () => {
    //content state
    const [body, setBody] = useState('');
    const [subject, setSubject] = useState('');
    const [recieverList, setRecieverList] = useState([]);
+   const [outList, setOutList] = useState([]);
    const [editable, setEditable] = useState(true);
    const [cc, setCC] = useState([]);
    const [bcc, setBcc] = useState(['contact@streetsforall.org']);
@@ -31,6 +33,7 @@ const CTA = () => {
       var times = Date.now()
       setLoad({
          editable: editable,
+         outgoing: outList,
          url: handle.hash,
          to: recieverList,
          cc: cc,
@@ -39,7 +42,7 @@ const CTA = () => {
          body: body,
          time: new Date(times)
       })
-   }, [recieverList, cc, bcc, body, subject]);
+   }, [recieverList, cc, bcc, body, subject, editable]);
 
 
    // set email on load
@@ -64,6 +67,7 @@ const CTA = () => {
          setSubject(match.subject)
          setBcc(match.bcc)
          setCC(match.cc)
+         setOutList(match.outlist)
          setRecieverList(match.to)
          setEditable(match.editable)
          document.getElementById("subject_field").value = match.subject;
@@ -140,10 +144,13 @@ const CTA = () => {
       var shareable = (
          <div id="shareable">
             <div>
-               <button onClick={(e) => copyTextToClipboard(window.location.href, e)} id="hash">
-                  Copy Link
+            <button onClick={(e) => copyTextToClipboard(window.location.href, e)} id="hash">
+                  Create Outgoing Mailto
                </button>
-               <label>url: <a href={window.location.href}>/mailto/{hash}</a></label>
+               <button onClick={(e) => copyTextToClipboard(window.location.href, e)} id="hash">
+                  Copy Shareable Link
+               </button>
+               {/* <label>url: <a href={window.location.href}>{window.location.href}</a></label> */}
             </div>
             <div>
                <button id="save" onClick={() => updateDatabase()}>Save Page</button>
@@ -151,7 +158,7 @@ const CTA = () => {
             </div>
          </div>);
    } else {
-      var shareable = <div id="shareable"><button onClick={() => updateDatabase()}>Create Shareable Link</button></div>
+      var shareable = <div id="shareable"><button onClick={() => updateDatabase()}>Save Template</button></div>
    }
 
 
@@ -207,7 +214,7 @@ const CTA = () => {
                </>
                )
             })}
-            <form id="recipients_form" autocomplete="off" onSubmit={(e) => { addRecipients(e.target.firstChild.value, list, setList, e) }}>
+            <form id="recipients_form" autoComplete="off" onSubmit={(e) => { addRecipients(e.target.firstChild.value, list, setList, e) }}>
                <input tabindex={list.length + 11} required placeholder="add email" type="email" multiple id="recipients"></input>
             </form>
             <p id="clear" onClick={() => setList([])}>CLEAR</p>
@@ -226,6 +233,7 @@ const CTA = () => {
             {showGeo ? 'Hide Geocoder' : "Show Geocoder"}
          </button>
          {showGeo ? <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> : ''}
+         {<Outgoing setOutList={setOutList} outList={outList} />}
 
 
          <div class="window" id="mailer">
