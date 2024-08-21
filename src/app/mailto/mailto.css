@@ -1,14 +1,14 @@
 :root {
-    --bg: rgb(244, 242, 238);
+    --bg: rgb(241, 241, 240);
     --edit: rgb(249, 248, 246);
-    --button: rgb(232, 227, 227);
+    --button: rgb(212, 204, 204);
     --soft_bg: rgb(216, 228, 238);
     --bold: rgb(34, 40, 219);
 }
 
 #container {
     width: max-content;
-
+    display: flex;
     max-width: 100%;
     margin: auto;
     margin-bottom: 1rem;
@@ -51,7 +51,7 @@ button:hover {
     background-color: var(--bg);
     border-radius: 1rem;
     max-width: 100%;
-    box-shadow: 0px 0px 10px rgba(135, 122, 96, 0.471);
+    /* box-shadow: 0px 0px 10px rgba(135, 122, 96, 0.471); */
 }
 
 
@@ -80,7 +80,12 @@ input:focus-within {
     max-width: calc(100% - 3rem);
     display: flex;
     flex-direction: column;
+    width: 50%
+}
 
+#toolset {
+    width: 50%;
+    max-width: 100%;
 }
 
 #mailer_head {
@@ -216,33 +221,54 @@ input:focus-within {
 }
 
 #shareable {
+
+}
+
+.sub_menu {
+    border: 1px solid var(--button);
+    border-radius: .5rem;
+}
+
+.saved {
+    background-color: rgb(128, 231, 128);
+    border-color: green;
+
+}
+
+.unsaved {
+    background-color: rgb(243, 156, 156);
+    border-color: red;
+}
+
+#editable {
     justify-content: end;
     max-width: max-content;
     min-width: 10rem;
 }
 
-#shareable button {
+.m_button {
     border-radius: .3rem;
     padding: .2rem .4rem;
     margin: .2rem;
     font-size: 1rem;
 }
 
-#shareable button:hover {
+#editable button:hover {
     text-decoration: underline;
 }
 
-#shareable div {
+#editable div {
+    min-width: 100%;
     flex-direction: row;
     margin-bottom: .5rem;
 }
 
-#shareable label {
-    border: 1px solid var(--button);
+#editable label {
+    /* border: 1px solid var(--button); */
     border-radius: .3rem;
     margin: .2rem;
     padding: .2rem .4rem;
-
+    color: black;
 }
 
 label {
@@ -315,12 +341,22 @@ label {
     padding: .3rem .5rem;
 }
 
-
-
-#data_field {
-    margin-top: 1rem;
+.data_field {
+    margin: .5rem;
+    background-color: var(--bg);
+    padding: 1rem;
+    /* box-shadow: 0px 0px 10px rgba(135, 122, 96, 0.471); */
+    border-radius: 1rem;
 }
 
+.m_button.selected {
+    background-color: var(--soft_bg);
+}
+
+.m_button.selected::before{
+    content: "✔️";
+    font-size: .8rem;
+}
 
 
 #options {
@@ -365,6 +401,7 @@ label {
     padding: .4rem .8rem;
     border-radius: .5rem;
     margin-right: .5rem;
+    margin-bottom: .5rem;
     font-size: .9rem;
 }
 

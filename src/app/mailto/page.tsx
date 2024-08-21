@@ -1,17 +1,19 @@
+'use client'
+
 import React, { useState, useEffect } from 'react';
 import './mailto.css';
-import Data_field from './components/data_field'
+import Data_field from './components/email_library'
 import Geocoder from './components/geocoder'
-import { useParams } from "react-router-dom";
-import Outgoing from './components/outgoing';
+import Outgoing from './components/outgoing.tsx';
+import { newSaved, getSaved} from './helpers/saved_emails';
 
 const CTA = () => {
    //content state
    const [body, setBody] = useState('');
    const [subject, setSubject] = useState('');
    const [recieverList, setRecieverList] = useState([]);
-   const [outList, setOutList] = useState([]);
-   const [editable, setEditable] = useState(true);
+   const [isShareable, setIsShareable] = useState(false);
+   const [districtVar, setDistrictVar] = useState([]);
    const [cc, setCC] = useState([]);
    const [bcc, setBcc] = useState(['contact@streetsforall.org']);
    const [load, setLoad] = useState({})
@@ -32,9 +34,9 @@ const CTA = () => {
       updateEmail();
       var times = Date.now()
       setLoad({
-         editable: editable,
-         outgoing: outList,
-         url: handle.hash,
+         shareable: isShareable,
+         district_var: districtVar,
+         url: window.location.hash,
          to: recieverList,
          cc: cc,
          bcc: bcc,
@@ -42,37 +44,51 @@ const CTA = () => {
          body: body,
          time: new Date(times)
       })
-   }, [recieverList, cc, bcc, body, subject, editable]);
+   }, [recieverList, cc, bcc, body, subject, isShareable, districtVar]);
 
 
    // set email on load
    useEffect(() => {
-      const dataset = (handle.hash ? loadEmails() : '')
+      const dataset = (window.location.hash ? loadEmails() : '')
       updateEmail();
    }, []);
 
-   const handle = useParams()
 
    // using our mailto api this grabs all mailto URLs
    // if one matches, it fills in that data to state & HTML body
    const loadEmails = async () => {
-      setHash(handle.hash)
-      const response = await fetch(process.env.REACT_APP_API + 'email/reader');
-      const jsonData = await response.json();
-      console.log(jsonData)
-      const match = jsonData.data.find(val => val.url == handle.hash)
+
+      const loadEmails = async () => {
+         const response = getSaved();
+         console.log('response', response)
+         return(response)
+     }
+
+     loadEmails().then(result => {
+      setHash(window.location.hash)
+      const jsonData = result[0]
+      console.log(jsonData.data)
+      console.log(window.location.hash)
+
+      const match = jsonData.data.find(val => val.url == window.location.hash)
+
+      console.log(window.location.hash, match)
+
       if (match) {
          // if URL is valid, fill field with data
          setBody(match.body)
          setSubject(match.subject)
          setBcc(match.bcc)
          setCC(match.cc)
-         setOutList(match.outlist)
+         setIsShareable(match.shareable)
+         setDistrictVar(match.district_var)
          setRecieverList(match.to)
-         setEditable(match.editable)
          document.getElementById("subject_field").value = match.subject;
          document.getElementById("body_field").value = match.body;
       }
+      }).catch(err => {
+         console.log(err)
+   })
       setSaved(load)
    }
 
@@ -84,19 +100,12 @@ const CTA = () => {
    // this posts a new email hash
    const updateDatabase = async () => {
 
-      var url = handle.hash ? hash : (Math.random() + 1).toString(36).substring(5)
+      var url = window.location.hash ? hash : (Math.random() + 1).toString(36).substring(5)
       setHash(url)
 
-      const response = await fetch(process.env.REACT_APP_API + 'email/poster', {
-         method: 'POST',
-         headers: {
-            'Content-type': 'application/json',
-         },
-         body: JSON.stringify(load)
-      })
+      newSaved(load)
 
-      // refresh page, or send to unique url if not already there
-      window.location.href = window.location.href.includes(url) ? window.location.href : window.location.href + '/' + url;
+      window.location.href = window.location.href.includes(url) ? window.location.href : window.location.href + '#' + url;
       setSaved(load)
    }
 
@@ -122,7 +131,8 @@ const CTA = () => {
       console.log('updated')
    }
 
-   // async copy current email state to clipboard 
+
+   // async copy current email state to clipboard use
    async function copyTextToClipboard(content, e) {
       console.log(content)
       e.target.innerText = 'Copied Link!'
@@ -140,25 +150,22 @@ const CTA = () => {
 
 
    // sets the share button dependant on state
-   if (handle.hash) {
-      var shareable = (
-         <div id="shareable">
+   if (window.location.hash) {
+      var editable = (
+         <div id="editable">
             <div>
-            <button onClick={(e) => copyTextToClipboard(window.location.href, e)} id="hash">
-                  Create Outgoing Mailto
-               </button>
-               <button onClick={(e) => copyTextToClipboard(window.location.href, e)} id="hash">
-                  Copy Shareable Link
+               <button className="m_button"  style={{width: "100%"}} onClick={(e) => copyTextToClipboard(window.location.href, e)} id="hash">
+                  Copy Editable Link
                </button>
                {/* <label>url: <a href={window.location.href}>{window.location.href}</a></label> */}
             </div>
-            <div>
-               <button id="save" onClick={() => updateDatabase()}>Save Page</button>
-               <label>{saved == load ? "✅ up to date" : "❗ unsaved changes"}</label>
+            <div  className="sub_menu">
+               <button className="m_button" id="save" onClick={() => updateDatabase()}>Save Page</button>
+               <label className={saved == load ? "saved" : "unsaved"} >{saved == load ? "✅ up to date" : "❗ unsaved changes"}</label>
             </div>
          </div>);
    } else {
-      var shareable = <div id="shareable"><button onClick={() => updateDatabase()}>Save Template</button></div>
+      var editable = <div id="editable"><button onClick={() => updateDatabase()}>Save Template</button></div>
    }
 
 
@@ -199,16 +206,16 @@ const CTA = () => {
    const RecipientForm = ({ list, setList, name}) => {
       if (list != null) {
       return (
-         <div class="recipient_list" id={name}>
+         <div className="recipient_list" id={name}>
             {list.map((email, i, arr) => {
                return (
                <>
-                  <span onClick={(e) => {e.target.focus()}}class="recipient" tabindex={10 + i}>{email}
-                     <div class="recipient_menu">
-                        <span class={name != "to" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, recieverList, setRecieverList); remove(email, list, setList); }}>To</span>
-                        <span class={name != "cc" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, cc, setCC); remove(email, list, setList); setshowCC(true) }}>Cc</span>
-                        <span class={name != "bcc" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, bcc, setBcc); remove(email, list, setList); setShowBcc(true) }}>Bcc</span>
-                        <span class="delete" onClick={() => { remove(email, list, setList) }}>Delete</span>
+                  <span onClick={(e) => {e.target.focus()}}className="recipient" tabindex={10 + i}>{email}
+                     <div className="recipient_menu">
+                        <span className={name != "to" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, recieverList, setRecieverList); remove(email, list, setList); }}>To</span>
+                        <span className={name != "cc" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, cc, setCC); remove(email, list, setList); setshowCC(true) }}>Cc</span>
+                        <span className={name != "bcc" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, bcc, setBcc); remove(email, list, setList); setShowBcc(true) }}>Bcc</span>
+                        <span className="delete" onClick={() => { remove(email, list, setList) }}>Delete</span>
                      </div>
                   </span>,
                </>
@@ -228,44 +235,51 @@ const CTA = () => {
 
    return (
       <div id="container">
-         <button id="geo_toggle" onClick={() => setshowGeo(!showGeo)}>
-            <img src="/images/geotagger.png" />
-            {showGeo ? 'Hide Geocoder' : "Show Geocoder"}
-         </button>
-         {showGeo ? <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> : ''}
-         {<Outgoing setOutList={setOutList} outList={outList} />}
+         {/* <button id="geo_toggle" onClick={() => setshowGeo(!showGeo)}>
+            {/* <img src="/images/geotagger.png" /> */}
+            {/* {showGeo ? 'Hide Geocoder' : "Show Geocoder"} */}
+         {/* </button> */}
+
+         <div id='toolset'>
 
 
-         <div class="window" id="mailer">
+
+         <Outgoing hash={hash} districtVar={districtVar} setDistrictVar={setDistrictVar} isShareable={isShareable} setIsShareable={setIsShareable}  />
+
+         <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
+         <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
+
+         </div>
+
+         <div className="window" id="mailer">
             <div id="mailer_head">
                <div>
-                  <img src="/images/mailto.png" />
-                  MailTo
+               
+                  <h1>MailTo</h1>
                   <label>Use this to generate an email</label>
                </div>
-               {shareable}
+               {editable}
 
             </div>
 
             <div>
 
-               <label class="main_label">To</label>
+               <label className="main_label">To</label>
                <RecipientForm name="to" list={recieverList} setList={setRecieverList} />
 
-               <label class={showCC === true ? "label_header full" : "label_header"} onClick={() => setshowCC(!showCC)}>Cc</label>
+               <label className={showCC === true ? "label_header full" : "label_header"} onClick={() => setshowCC(!showCC)}>Cc</label>
                {showCC === true ? < RecipientForm list={cc} name="cc" setList={setCC} /> : ''}
 
-               <label class={showBcc === true ? "label_header full" : "label_header"} onClick={() => setShowBcc(!showBcc)}>Bcc</label>
+               <label className={showBcc === true ? "label_header full" : "label_header"} onClick={() => setShowBcc(!showBcc)}>Bcc</label>
                {showBcc === true ? <RecipientForm name="bcc" list={bcc} setList={setBcc} /> : ''}
 
             </div>
-            <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
 
-            <label class="main_label">Subject</label>
+            <label className="main_label">Subject</label>
             <input id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
             </input>
 
-            <label class="main_label">Email Body</label>
+            <label className="main_label">Email Body</label>
             <textarea id="body_field" rows="20" onChange={(e) => { setBody(e.target.value); updateEmail() }} />
 
 
@@ -279,7 +293,7 @@ const CTA = () => {
 
 
          </div>
-         <button id="feed"><a href="/#/feed">mailto feed</a></button>
+         <button id="feed"><a href="/mailto/drafts">mailto drafts</a></button>
       </div>
 
 

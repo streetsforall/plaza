@@ -1,13 +1,3 @@
-#geocoder {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--bg);
-    margin: .5rem;
-    padding: 1rem;
-    z-index: 2;
-}
-
-
 #dropdown {
     margin-top: -.5rem;
     padding: .5rem;

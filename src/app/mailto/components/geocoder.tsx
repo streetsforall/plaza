@@ -6,6 +6,7 @@ import nieghborhoods from "../data/LA_Neighborhood_Councils.json";
 import cds from "../data/LA_City_Council_Districts.json";
 import assemblies from "../data/CA_Assembly_Districts.json";
 import senates from "../data/CA_Senate_Districts.json";
+import geo from "../helpers/geo"
 
 
 const Geocoder = ({ recieverList, setRecieverList, updateEmail }) => {
@@ -61,15 +62,17 @@ const Geocoder = ({ recieverList, setRecieverList, updateEmail }) => {
             var body = {
                 string: place
             }
-            var body = JSON.stringify(body)
-            const response = await fetch(process.env.REACT_APP_API + 'geo', {
-                method: "POST",
-                body: body,
-                headers: {
-                    'Content-type': 'application/json',
-                },
-            });
-            const jsonData = await response.json();
+
+            // var body = JSON.stringify(body)
+
+            // const response = await fetch(process.env.REACT_APP_API + 'geo', {
+            //     method: "POST",
+            //     body: body,
+            //     headers: {
+            //         'Content-type': 'application/json',
+            //     },
+            // });
+            const jsonData = await geo(body);
             setLocations(jsonData)
         }
         if (place) { getCoords(); }
@@ -81,9 +84,9 @@ const Geocoder = ({ recieverList, setRecieverList, updateEmail }) => {
 
     return (
 
-        <div class="window" id="geocoder">
-            {/* <button class="hider" onClick={() => setshowGeo(!showGeo)}>X</button> */}
-            Geocoder
+        <div className="data_field" id="geocoder">
+            {/* <button className="hider" onClick={() => setshowGeo(!showGeo)}>X</button> */}
+            <h3>Geocoder</h3>
             <label >Use this to find the emails of electeds responsible for an address</label>
             <div id="geo_body">
                 <label>Enter Address</label>
@@ -95,7 +98,7 @@ const Geocoder = ({ recieverList, setRecieverList, updateEmail }) => {
                     }) : ''}
                 </div>
 
-                <div class={senate ? 'shown' : "hidden"} id="geo_return">
+                <div className={senate ? 'shown' : "hidden"} id="geo_return">
 
                     <div id="header">
                         <button onClick={() => addEmail([cd.DEMAIL + ',' + nieghborhood.DEMAIL + ',' + assembly.DEMAIL + ',' + senate.DEMAIL])}>
@@ -105,32 +108,32 @@ const Geocoder = ({ recieverList, setRecieverList, updateEmail }) => {
 
                     <table>
 
-                        {cd ? <tr onClick={() => addEmail(cd.DEMAIL)} class="geo_selector">
-                            <td class="geo_title">Council District:</td>
+                        {cd ? <tr onClick={() => addEmail(cd.DEMAIL)} className="geo_selector">
+                            <td className="geo_title">Council District:</td>
                             <td>{cd.NAME}</td>
-                            <td class="geo_mail" >
+                            <td className="geo_mail" >
                                 {cd.DEMAIL}
                             </td>
                         </tr> : ''}
 
-                        {nieghborhood ? <tr onClick={() => addEmail(nieghborhood.DEMAIL)} class="geo_selector">
-                            <td class="geo_title">Nieghborhood Council: </td>
+                        {nieghborhood ? <tr onClick={() => addEmail(nieghborhood.DEMAIL)} className="geo_selector">
+                            <td className="geo_title">Nieghborhood Council: </td>
                             <td >{nieghborhood.NAME}</td>
-                            <td class="geo_mail" >
+                            <td className="geo_mail" >
                                 {nieghborhood.DEMAIL}
                             </td>
                         </tr> : ''}
-                        {assembly ? <tr onClick={() => addEmail(assembly.DEMAIL)} class="geo_selector">
-                            <td class="geo_title">Assembly: </td>
+                        {assembly ? <tr onClick={() => addEmail(assembly.DEMAIL)} className="geo_selector">
+                            <td className="geo_title">Assembly: </td>
                             <td >{assembly.NAME}</td>
-                            <td class="geo_mail" >
+                            <td className="geo_mail" >
                                 {assembly.DEMAIL}
                             </td>
                         </tr> : ''}
-                        {senate ? <tr onClick={() => addEmail(senate.DEMAIL)} class="geo_selector">
-                            <td class="geo_title">Senate: </td>
+                        {senate ? <tr onClick={() => addEmail(senate.DEMAIL)} className="geo_selector">
+                            <td className="geo_title">Senate: </td>
                             <td >{senate.NAME}</td>
-                            <td class="geo_mail" >
+                            <td className="geo_mail" >
                                 {senate.DEMAIL}
                             </td>
                         </tr> : ''}

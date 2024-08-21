@@ -1,21 +1,33 @@
+'use client'
+
 import React, { useState, useEffect } from 'react';
-import './mailto.css';
+import {getSaved} from '../helpers/saved_emails'
+import './../mailto.css';
 
 const Feed = () => {
 
     const [feed, setFeed] = useState('')
 
     useEffect(() => {
-        loadEmails();
+
+        const loadEmails = async () => {
+            const response = getSaved();
+            console.log('response', response)
+            return(response)
+        }
+
+
+        loadEmails().then(result => {
+            console.log('result', result[0]) 
+            setFeed(result[0].data)
+        }).catch(err => {
+            console.log(err)
+        })
+
+    
+    
     }, []);
-
-    const loadEmails = async () => {
-        const response = await fetch(process.env.REACT_APP_API + 'email/reader');
-        const jsonData = await response.json();
-        setFeed(jsonData.data.reverse())
-        console.log(jsonData.data.reverse())
-    }
-
+    
     return (
         <div id="feeder">
 
@@ -23,8 +35,7 @@ const Feed = () => {
 
                 return (
                     <p>
-                        
-                        <a href={"/#/mailto/" + mailto.url}>
+                        <a href={"/mailto" + mailto.url}>
                         {mailto.time ? new Date(mailto.time).toISOString().slice(0, 10) : ''} • {mailto.subject}
                         </a>
                     </p>

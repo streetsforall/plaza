@@ -91,23 +91,23 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
 
 
     return (
-        <div id="data_field">
-
-            <label>Email Library</label>
+        <div className="data_field">
+<h3>Email Library</h3>     
+<label>Use this to select emails of representatives</label> <br/> <br/>
             <div id="filter" >
-                <button class={dataSource === 'nc' ? 'selected': ""} onClick={() => { setdataSource('nc'); setDeputies(false) }}>LA Nieghborhood Councils</button>
-                <button class={dataSource === 'cd' ? 'selected': ""}onClick={() => { setdataSource('cd') }}>LA City Council</button>
-                <button class={dataSource === 'metro' ? 'selected': ""} onClick={() => { setdataSource('metro') }}>Metro</button>
-                <button class={dataSource === 'santamonica' ? 'selected': ""} onClick={() => { setdataSource('santamonica') }}>Santa Monica</button>
-                <button class={dataSource === 'assembly' ? 'selected': ""} onClick={() => { setdataSource('assembly') }}>Assembly</button>
-                <button class={dataSource === 'senate' ? 'selected': ""} onClick={() => { setdataSource('senate') }}>Senate</button>
+                <button className={dataSource === 'nc' ? 'selected': ""} onClick={() => { setdataSource('nc'); setDeputies(false) }}>LA Nieghborhood Councils</button>
+                <button className={dataSource === 'cd' ? 'selected': ""}onClick={() => { setdataSource('cd') }}>LA City Council</button>
+                <button className={dataSource === 'metro' ? 'selected': ""} onClick={() => { setdataSource('metro') }}>Metro</button>
+                <button className={dataSource === 'santamonica' ? 'selected': ""} onClick={() => { setdataSource('santamonica') }}>Santa Monica</button>
+                <button className={dataSource === 'assembly' ? 'selected': ""} onClick={() => { setdataSource('assembly') }}>Assembly</button>
+                <button className={dataSource === 'senate' ? 'selected': ""} onClick={() => { setdataSource('senate') }}>Senate</button>
             </div >
 
-            <div class={data != '' ? "shown" : "hidden"} id="options">
+            <div className={data != '' ? "shown" : "hidden"} id="options">
                 <div id="filter_header">
                     <button onClick={(e) => { addAll(data) }}>Add All</button>
-                    <button class={dataSource == 'metro' || dataSource == 'cd' ? "shown" : "hidden"} onClick={(e) => { setDeputies(!deputies) }}>{!deputies ? 'Include Deputies' : 'Exclude Deputies'}</button>
-                    <button class="hider" onClick={() => { setData(''); setdataSource('')  }}>X</button>
+                    <button className={dataSource == 'metro' || dataSource == 'cd' ? "shown" : "hidden"} onClick={(e) => { setDeputies(!deputies) }}>{!deputies ? 'Include Deputies' : 'Exclude Deputies'}</button>
+                    <button className="hider" onClick={() => { setData(''); setdataSource('')  }}>X</button>
                 </div>
                 <table>
 
@@ -116,11 +116,11 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
                         if (locals.properties.DEMAIL) {
                             return (
                                 <tr data-email={locals.properties.DEMAIL}
-                                    class="geo_selector" index={i}
+                                    className="geo_selector" index={i}
                                     onClick={(e) => { addEmail(locals.properties.DEMAIL, locals.properties.Deputy, e, i) }}>
-                                    <td class={locals.properties.District ? "short shown" : "short hidden"}>{locals.properties.District}</td>
+                                    <td className={locals.properties.District ? "short shown" : "short hidden"}>{locals.properties.District}</td>
                                     <td>{locals.properties.NAME}</td>
-                                    <td class="data_email">{locals.properties.DEMAIL}</td>
+                                    <td className="data_email">{locals.properties.DEMAIL}</td>
                                     <td>{deputies ? locals.properties.Deputy : ''}</td>
                                 </tr>
                             )

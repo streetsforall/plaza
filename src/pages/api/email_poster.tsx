@@ -1,27 +1,19 @@
+import { NextApiRequest, NextApiResponse } from "next";
+
+
 
 // read from our mailto database hosted on GitHub
-app.get('/email/reader', async (req, res) => {
-    const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: "streetsforall",
-      repo: "library",
-      path: "email_generator.json",
-    })
-    json = JSON.parse(atob(data.content))
-    console.log(json)
-    res.json(json);
-
-});
-
-// post to our mailto database hosted on GitHub
-app.post('/email/poster', async (req, res) => {
-
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
       const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
         owner: "streetsforall",
         repo: "library",
         path: "email_generator.json",
       })
 
-      json = JSON.parse(atob(data.content))
+      const json = JSON.parse(atob(data.content))
       const match = json.data.findIndex(val => val.url == req.body.url)
 
       if (match != -1) {
@@ -42,4 +34,4 @@ app.post('/email/poster', async (req, res) => {
       })
 
       res.json(btoa(JSON.stringify(json)));
-});
+};
