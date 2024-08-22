@@ -15,17 +15,51 @@ export async function geo(place) {
 // this inputs a district geojson and set of coordinates and finds what feature the coords are inside
 export async function districtFinder(coords, district) {
 
-    var foundDistrict = null
+    var foundDistrict = []
     var pt = point(coords);
 
-    district.features.forEach(e => {
+    console.log('district', district)
+
+    await district.features.forEach(e => {
         var poly = e.geometry
+        console.log(e)
         if (booleanPointInPolygon(pt, poly)) {
-            foundDistrict = e.properties
+            foundDistrict = e.properties.person
             }
     });
+    console.log('foundDistrict', foundDistrict)
+    
     return(foundDistrict)
 }
+
+export async function geoLoader(boundary, geo) {
+
+    var district_link = ""
+
+    console.log('package', boundary,geo )
+
+    if (boundary == "Assembly") { 
+        district_link="state-assembly-districts"
+    } else if (boundary == "Senate") { 
+        district_link="state-senate-districts"
+    }
+    var districts = []
+
+    await fetch(`https://geo-api-8a9lx.ondigitalocean.app/v1/`+district_link+`?geom=`+geo)
+    .then((response => response.json())).then((res) =>  {
+        districts = res
+    })
+
+    console.log('response', districts)
+    return(districts)
+}
+
+
+
+
+
+
+
 
 // export async function districtFinder(localEmail) {
 //     const addEmail = (localEmail) => {

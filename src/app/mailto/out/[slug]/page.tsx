@@ -3,12 +3,12 @@
 
 import { useEffect, useState } from "react";
 import { getSaved } from "../../helpers/saved_emails";
-import { geo, districtFinder } from "../../helpers/geo";
+import { geo, districtFinder, geoLoader } from "../../helpers/geo";
 import '../../mailto.css'
 
 
 // import districts
-import assemblies from "../../data/CA_Assembly_Districts.json";
+// import assemblies from "../../data/CA_Assembly_Districts.json";
 import senates from "../../data/CA_Senate_Districts.json";
 
 
@@ -19,9 +19,9 @@ export default function Page({ params }: { params: { slug: string } }) {
     const [locations, setLocations] = useState<any>();
     const [place, setPlace] = useState<any>();
     const [selectedAddress, setSelectedAddress] = useState<any[]>();
-    const [assembly, setAssembly] = useState<any[]>()
-    const [senate, setSenate] = useState<any[]>()
     const [generated, setGenerated] = useState('')
+
+    const [status, setStatus] = useState<string>('Waiting for input')
 
     // UI
     const [outLink, setOutLink] = useState(false)
@@ -68,29 +68,43 @@ export default function Page({ params }: { params: { slug: string } }) {
 
         console.log(email.district_var)
 
+
+
         email['district_var'].map(async e => {
-            if (e == 'Assembly') {
-                const asemb: any = await districtFinder(address.center, assemblies)
 
-                setTo([...to, asemb.DEMAIL])
-                console.log(asemb)
-                setAssembly(asemb)
+            const loadGeo = async () => {
+                try {
+                    // pigeon  coot oystercatcher <
+                    setStatus('Loading '+ e + ' Districts')
 
-            } else if (e == 'Senate') {
-                const sent : any = await districtFinder(address.center, senates)
-                setTo([...to, sent.DEMAIL])
-                console.log(sent)
-                setSenate(sent)
-            }
+                    const data = await geoLoader(e, true);
+                    console.log('data', data)
 
-            console.log(e)
-        })
+                    setStatus('Finding Address and ' + e + ' District Overlap')
+
+                    const district : any = await districtFinder(address.center, data);
+                    console.log('districts', district)
+
+                    console.log(district.contactDetails[0].value)
+
+                    setTo([...to, district.contactDetails[0].value])   
+                    
+                    console.log('to address', to)
+                    
+
+                    setOutLink(true)
+                    
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+
+            };
+
+            await loadGeo()
         
-        setOutLink(true)
+        })
 
         console.log(email)
-
-        // console.log(senate, assembly)
     }
 
     useEffect(() => {
@@ -102,9 +116,12 @@ export default function Page({ params }: { params: { slug: string } }) {
         }
 
         var output = `mailto:${to}?&cc=${email?.cc}&bcc=${email?.bcc}&subject=${spaced(email?.subject)}&body=${spaced(email?.body)}`
+        
+        
         setGenerated(output)
 
-        console.log(output)
+        setStatus('Email Updated')
+        console.log('email updated')
     }, [to])
 
 
@@ -114,9 +131,9 @@ export default function Page({ params }: { params: { slug: string } }) {
 
         <div id="outbound">
 
-<div id="outbound_header">
-            <a href="https://www.streetsforall.org/"><img src="/images/SFA_logo_wide.png"/></a>
-            <label>Mailto ID: {window.location.hash}</label>
+            <div id="outbound_header">
+                <a href="https://www.streetsforall.org/"><img src="/images/SFA_logo_wide.png" /></a>
+                <label>Mailto ID: {window.location.hash}</label>
             </div>
 
 
@@ -127,7 +144,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                 <div id="geo_body">
                     <input placeholder="enter address or zip code" onChange={(e) => setPlace(e.target.value)}></input>
 
-                    <div  id="dropdown">
+                    <div id="dropdown">
                         {locations ? locations.map((e, i) => {
                             return (
                                 <button key={i} onClick={() => retrieveDistricts(e)}>{e.place_name}</button>)
@@ -136,10 +153,15 @@ export default function Page({ params }: { params: { slug: string } }) {
 
                 </div>
 
-                {outLink ? <p>Address: {selectedAddress ? selectedAddress['place_name'] : ''}</p> : ''}
-                {outLink ? <p>Representative: <span>{senate?.['NAME']}</span> <span>{assembly?.['NAME']}</span></p> : ''}
+                <label>{status}</label>
+<br/>
+                <label>{selectedAddress ? 'Address: '+ selectedAddress['place_name'] : ''}</label>
+                <br/>
+                <br/>
+            
 
                 <div >{outLink ? <a href={generated}><button id="oubound_copy">Send Email</button></a> : ''}</div>
+
                 {outLink ? <div id="outbound_link"><label >Mailto Link: <div id="outbound_link_text">{generated}</div></label></div> : ''}
 
             </div>

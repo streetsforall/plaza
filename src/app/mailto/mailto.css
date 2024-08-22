@@ -373,6 +373,7 @@ label {
     padding: .4rem .8rem;
     border-radius: 1rem;
     font-size: 1.5rem;
+    border: rgb(44, 168, 127) solid 1px;
     background-color:aquamarine;
 }
 
