@@ -17,7 +17,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     const [to, setTo] = useState<any>()
     const [locations, setLocations] = useState<any>();
     const [place, setPlace] = useState<any>();
-    const [selectedAddress, setSelectedAddress] = useState();
+    const [selectedAddress, setSelectedAddress] = useState<any[]>();
     const [assembly, setAssembly] = useState()
     const [senate, setSenate] = useState()
     const [generated, setGenerated] = useState('')
@@ -134,7 +134,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
                 </div>
 
-                {outLink ? <p>Address: {selectedAddress?.place_name}</p> : ''}
+                {outLink ? <p>Address: {selectedAddress ? selectedAddress['place_name'] : ''}</p> : ''}
                 {outLink ? <p>Representatives: {senate}{assembly}</p> : ''}
 
                 {outLink ? <a href={generated}><button>Send Email</button></a> : ''}
