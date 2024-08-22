@@ -13,7 +13,7 @@ const CTA = () => {
    const [subject, setSubject] = useState('');
    const [recieverList, setRecieverList] = useState([]);
    const [isShareable, setIsShareable] = useState(false);
-   const [districtVar, setDistrictVar] = useState([]);
+   const [districtVar, setDistrictVar] = useState(['test', 'test']);
    const [cc, setCC] = useState([]);
    const [bcc, setBcc] = useState(['contact@streetsforall.org']);
    const [load, setLoad] = useState({})
@@ -49,30 +49,25 @@ const CTA = () => {
 
    // set email on load
    useEffect(() => {
-      const dataset = (window.location.hash ? loadEmails() : '')
+      const dataset = (window.location.hash ? fetchEmails() : '')
       updateEmail();
    }, []);
 
 
    // using our mailto api this grabs all mailto URLs
    // if one matches, it fills in that data to state & HTML body
-   const loadEmails = async () => {
+   const fetchEmails = async () => {
 
       const loadEmails = async () => {
-         const response = getSaved();
+         const response = getSaved(window.location.hash);
          console.log('response', response)
          return(response)
      }
 
      loadEmails().then(result => {
       setHash(window.location.hash)
-      const jsonData = result[0]
-      console.log(jsonData.data)
-      console.log(window.location.hash)
 
-      const match = jsonData.data.find(val => val.url == window.location.hash)
-
-      console.log(window.location.hash, match)
+      const match = result
 
       if (match) {
          // if URL is valid, fill field with data

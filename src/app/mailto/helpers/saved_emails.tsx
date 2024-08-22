@@ -6,8 +6,10 @@ import { Octokit, App } from "octokit";
 const octokit = new Octokit({ auth: process.env.GIT_KEY });
 
 
+
+
 // read from our mailto database hosted on GitHub
-export async function getSaved() {
+export async function getAllSaved() {
 
   console.log('fetching emails')
 
@@ -16,32 +18,43 @@ export async function getSaved() {
       repo: "library",
       path: "email_generator.json",
     })
-
-    // console.log('data', data)
-
-
     const json = JSON.parse(atob(data.content))
-
-
     // console.log('json', json)
     return([json, data.sha]);
+};
 
+// get single matching mailto from database hosted on GitHub
+export async function getSaved(hash) {
+
+  console.log('fetching emails')
+
+    const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+      owner: "streetsforall",
+      repo: "library",
+      path: "email_generator.json",
+    })
+    const json = JSON.parse(atob(data.content))
+
+    const match = json.data.find(val => val.url == hash)
+    if (match) {
+      return(match)
+    }
 };
 
 
-// read from our mailto database hosted on GitHub
+// post to our mailto database hosted on GitHub
 export async function newSaved(data) {
+
+  console.log('updating emails')
 
     // get data we will be updating
       const loadEmails = async () => {
-        const response = getSaved();
+        const response = getAllSaved();
         return(response)
     }
 
     // update once loaded
     loadEmails().then(async emails => {
-
-      console.log(emails)
 
       const json = emails[0]
       const SHA = emails[1]

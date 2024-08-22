@@ -20,7 +20,7 @@ const Outgoing = ({ districtVar, hash, setDistrictVar, isShareable, setIsShareab
     async function copyLink(e) {
 
         // need to generate link 
-        const content = location.href.replace(location.hash,"") +"/out"+hash
+        const content = location.href.replace(location.hash,"") +"/out/e"+hash
 
         e.target.innerText = 'Copied Link!'
         navigator.clipboard.writeText(content).then(function () {

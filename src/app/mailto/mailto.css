@@ -253,7 +253,7 @@ input:focus-within {
     font-size: 1rem;
 }
 
-#editable button:hover {
+#editable button:hover, .m_button:hover {
     text-decoration: underline;
 }
 

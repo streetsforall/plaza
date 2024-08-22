@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import {getSaved} from '../helpers/saved_emails'
+import {getAllSaved} from '../helpers/saved_emails'
 import './../mailto.css';
 
 const Feed = () => {
@@ -11,7 +11,7 @@ const Feed = () => {
     useEffect(() => {
 
         const loadEmails = async () => {
-            const response = getSaved();
+            const response = getAllSaved();
             console.log('response', response)
             return(response)
         }
