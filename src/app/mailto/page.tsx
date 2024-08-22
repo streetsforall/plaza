@@ -3,15 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import './mailto.css';
 import Data_field from './components/email_library'
-import Geocoder from './components/geocoder'
-import Outgoing from './components/outgoing.tsx';
+// import Geocoder from './components/geocoder'
+import Outgoing from './components/outgoing';
 import { newSaved, getSaved} from './helpers/saved_emails';
 
 const CTA = () => {
    //content state
    const [body, setBody] = useState('');
    const [subject, setSubject] = useState('');
-   const [recieverList, setRecieverList] = useState([]);
+   const [recieverList, setRecieverList] = useState<any>();
    const [isShareable, setIsShareable] = useState(false);
    const [districtVar, setDistrictVar] = useState(['test', 'test']);
    const [cc, setCC] = useState([]);
@@ -77,9 +77,10 @@ const CTA = () => {
          setCC(match.cc)
          setIsShareable(match.shareable)
          setDistrictVar(match.district_var)
-         setRecieverList(match.to)
-         document.getElementById("subject_field").value = match.subject;
-         document.getElementById("body_field").value = match.body;
+         setRecieverList(match.to);
+
+         (document.getElementById("subject_field")as HTMLInputElement).value = match.subject
+         (document.getElementById("body_field")as HTMLInputElement).value = match.body;
       }
       }).catch(err => {
          console.log(err)
@@ -205,19 +206,19 @@ const CTA = () => {
             {list.map((email, i, arr) => {
                return (
                <>
-                  <span onClick={(e) => {e.target.focus()}}className="recipient" tabindex={10 + i}>{email}
+                  <span onClick={(e : any) => {e.target.focus()}}className="recipient" tabIndex={10 + i}>{email}
                      <div className="recipient_menu">
-                        <span className={name != "to" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, recieverList, setRecieverList); remove(email, list, setList); }}>To</span>
-                        <span className={name != "cc" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, cc, setCC); remove(email, list, setList); setshowCC(true) }}>Cc</span>
-                        <span className={name != "bcc" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, bcc, setBcc); remove(email, list, setList); setShowBcc(true) }}>Bcc</span>
+                        <span className={name != "to" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, recieverList, setRecieverList, e); remove(email, list, setList); }}>To</span>
+                        <span className={name != "cc" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, cc, setCC, e); remove(email, list, setList); setshowCC(true) }}>Cc</span>
+                        <span className={name != "bcc" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, bcc, setBcc, e); remove(email, list, setList); setShowBcc(true) }}>Bcc</span>
                         <span className="delete" onClick={() => { remove(email, list, setList) }}>Delete</span>
                      </div>
                   </span>,
                </>
                )
             })}
-            <form id="recipients_form" autoComplete="off" onSubmit={(e) => { addRecipients(e.target.firstChild.value, list, setList, e) }}>
-               <input tabindex={list.length + 11} required placeholder="add email" type="email" multiple id="recipients"></input>
+            <form id="recipients_form" autoComplete="off" onSubmit={(e : any) => { addRecipients(e.target.firstChild.value, list, setList, e) }}>
+               <input tabIndex={list.length + 11} required placeholder="add email" type="email" multiple id="recipients"></input>
             </form>
             <p id="clear" onClick={() => setList([])}>CLEAR</p>
          </div>
@@ -241,7 +242,7 @@ const CTA = () => {
 
          <Outgoing hash={hash} districtVar={districtVar} setDistrictVar={setDistrictVar} isShareable={isShareable} setIsShareable={setIsShareable}  />
 
-         <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
+         {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> */}
          <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
 
          </div>
@@ -275,7 +276,7 @@ const CTA = () => {
             </input>
 
             <label className="main_label">Email Body</label>
-            <textarea id="body_field" rows="20" onChange={(e) => { setBody(e.target.value); updateEmail() }} />
+            <textarea id="body_field" rows={20} onChange={(e) => { setBody(e.target.value); updateEmail() }} />
 
 
             <div id="preview">

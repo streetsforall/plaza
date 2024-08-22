@@ -6,7 +6,7 @@ import './../mailto.css';
 
 const Feed = () => {
 
-    const [feed, setFeed] = useState('')
+    const [feed, setFeed] = useState<any[]>([])
 
     useEffect(() => {
 
@@ -31,7 +31,7 @@ const Feed = () => {
     return (
         <div id="feeder">
 
-            {feed != '' ? feed.map((mailto) => {
+            {feed ? feed.map((mailto) => {
 
                 return (
                     <p>

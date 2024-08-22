@@ -13,7 +13,7 @@ export async function getAllSaved() {
 
   console.log('fetching emails')
 
-    const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+    const { data }: any = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
       owner: "streetsforall",
       repo: "library",
       path: "email_generator.json",
@@ -28,7 +28,7 @@ export async function getSaved(hash) {
 
   console.log('fetching emails')
 
-    const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+    const { data } : any= await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
       owner: "streetsforall",
       repo: "library",
       path: "email_generator.json",

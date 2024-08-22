@@ -13,12 +13,12 @@ import senates from "../../data/CA_Senate_Districts.json";
 
 export default function Page({ params }: { params: { slug: string } }) {
     // DATA
-    const [email, setEmail] = useState('');
-    const [to, setTo] = useState('')
-    const [locations, setLocations] = useState([]);
-    const [place, setPlace] = useState('');
-    const [assembly, setAssembly] = useState('')
-    const [senate, setSenate] = useState('')
+    const [email, setEmail] = useState<any>();
+    const [to, setTo] = useState<any>()
+    const [locations, setLocations] = useState<any>();
+    const [place, setPlace] = useState<any>();
+    const [assembly, setAssembly] = useState()
+    const [senate, setSenate] = useState()
     const [generated, setGenerated] = useState('')
 
     // UI
@@ -63,7 +63,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
         email['district_var'].map(async e => {
             if (e == 'Assembly') {
-                const asemb = await districtFinder(address.center, assemblies)
+                const asemb: any = await districtFinder(address.center, assemblies)
 
                 setTo([...to, asemb.DEMAIL])
 
@@ -73,7 +73,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             }
 
             if (e == 'Senate') {
-                const sent = await districtFinder(address.center, assemblies)
+                const sent : any = await districtFinder(address.center, assemblies)
                 setTo([...to, sent.DEMAIL])
                 console.log(sent)
                 setSenate(sent)
@@ -83,7 +83,7 @@ export default function Page({ params }: { params: { slug: string } }) {
         })
 
         console.log(email)
-        setGenerated(true)
+
         // console.log(senate, assembly)
     }
 

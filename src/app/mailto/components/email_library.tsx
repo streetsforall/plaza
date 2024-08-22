@@ -10,8 +10,21 @@ import Santa_Monica from "../data/Santa_Monica.json";
 
 const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
 
+    interface datafeatures {
+        OBJECTID: number;
+         NAME: string; 
+         WADDRESS: string; 
+         DWEBSITE: string; 
+         DEMAIL: string; 
+         DPHONE: string; 
+         NC_ID: number; 
+         CERTIFIED: string;
+        TOOLTIP: string; 
+        NLA_URL: string; 
+        SERVICE_RE: string;
+    }
 
-    const [data, setData] = useState('');
+    const [data, setData] = useState<any>();
     const [deputies, setDeputies] = useState(false)
     const [dataSource, setdataSource] = useState('')
 
@@ -29,30 +42,28 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
         const emails = data.map(e => e.properties.DEMAIL).join();
         var deputiesList = ''
         if (deputies) {
-            var deputiesList = data.map(e => e.properties.Deputy).join();
+            var deputiesList : string = data.map(e => e.properties.Deputy).join();
             console.log('deputiesList', deputiesList)
         }
 
-
-        
         var combined = deputiesList + ',' + emails
         console.log(combined)
 
-        var addedlist = []
-        // if (recieverList != null) { 
-        //     var addedlist = recieverList.concat(deputiesList, emailsList) 
-        //     console.log('added', addedlist)
-        // }
-        // else if (recieverList.length == 0) { var addedlist = emailsList }
-        console.log(combined)
-        addEmail(combined)
+        // var addedlist = []
+        // // if (recieverList != null) { 
+        // //     var addedlist = recieverList.concat(deputiesList, emailsList) 
+        // //     console.log('added', addedlist)
+        // // }
+        // // else if (recieverList.length == 0) { var addedlist = emailsList }
+        // console.log(combined)
+        // addEmail(combined)
     }
 
 
 
 
     // add email from selector array
-    const addEmail = (localEmail, deputyEmail, e, i) => {
+    const addEmail = (localEmail, deputyEmail) => {
 
         if (deputies && deputyEmail) {
             localEmail = localEmail + ', ' + deputyEmail
@@ -105,7 +116,7 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
 
             <div className={data != '' ? "shown" : "hidden"} id="options">
                 <div id="filter_header">
-                    <button onClick={(e) => { addAll(data) }}>Add All</button>
+                    <button onClick={(e) => { addAll() }}>Add All</button>
                     <button className={dataSource == 'metro' || dataSource == 'cd' ? "shown" : "hidden"} onClick={(e) => { setDeputies(!deputies) }}>{!deputies ? 'Include Deputies' : 'Exclude Deputies'}</button>
                     <button className="hider" onClick={() => { setData(''); setdataSource('')  }}>X</button>
                 </div>
@@ -116,8 +127,8 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
                         if (locals.properties.DEMAIL) {
                             return (
                                 <tr data-email={locals.properties.DEMAIL}
-                                    className="geo_selector" index={i}
-                                    onClick={(e) => { addEmail(locals.properties.DEMAIL, locals.properties.Deputy, e, i) }}>
+                                    className="geo_selector"
+                                    onClick={(e) => { addEmail(locals.properties.DEMAIL, locals.properties.Deputy) }}>
                                     <td className={locals.properties.District ? "short shown" : "short hidden"}>{locals.properties.District}</td>
                                     <td>{locals.properties.NAME}</td>
                                     <td className="data_email">{locals.properties.DEMAIL}</td>

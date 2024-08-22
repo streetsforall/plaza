@@ -1,7 +1,8 @@
 'use server'
 
+import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
+import { point } from "@turf/helpers";
 
-import * as turf from '@turf/turf';
 
 export async function geo(place) {
 
@@ -15,11 +16,11 @@ export async function geo(place) {
 export async function districtFinder(coords, district) {
 
     var foundDistrict = null
-    var pt = turf.point(coords);
+    var pt = point(coords);
 
     district.features.forEach(e => {
         var poly = e.geometry
-        if (turf.booleanPointInPolygon(pt, poly)) {
+        if (booleanPointInPolygon(pt, poly)) {
             foundDistrict = e.properties
             }
     });
