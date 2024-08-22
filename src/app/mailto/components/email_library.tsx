@@ -24,7 +24,7 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
         SERVICE_RE: string;
     }
 
-    const [data, setData] = useState<any>();
+    const [data, setData] = useState<any>([]);
     const [deputies, setDeputies] = useState(false)
     const [dataSource, setdataSource] = useState('')
 

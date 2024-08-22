@@ -1,17 +1,18 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation'
 import './mailto.css';
 import Data_field from './components/email_library'
 // import Geocoder from './components/geocoder'
 import Outgoing from './components/outgoing';
-import { newSaved, getSaved} from './helpers/saved_emails';
+import { newSaved, getSaved } from './helpers/saved_emails';
 
 const CTA = () => {
    //content state
    const [body, setBody] = useState('');
    const [subject, setSubject] = useState('');
-   const [recieverList, setRecieverList] = useState<any>();
+   const [recieverList, setRecieverList] = useState<any>([]);
    const [isShareable, setIsShareable] = useState(false);
    const [districtVar, setDistrictVar] = useState(['test', 'test']);
    const [cc, setCC] = useState([]);
@@ -36,7 +37,7 @@ const CTA = () => {
       setLoad({
          shareable: isShareable,
          district_var: districtVar,
-         url: window.location.hash,
+         url: hash,
          to: recieverList,
          cc: cc,
          bcc: bcc,
@@ -50,7 +51,11 @@ const CTA = () => {
    // set email on load
    useEffect(() => {
       const dataset = (window.location.hash ? fetchEmails() : '')
+      console.log(dataset)
+
+      setHash(window.location.hash)
       updateEmail();
+
    }, []);
 
 
@@ -59,49 +64,44 @@ const CTA = () => {
    const fetchEmails = async () => {
 
       const loadEmails = async () => {
-         const response = getSaved(window.location.hash);
+         const response = getSaved(hash);
          console.log('response', response)
-         return(response)
-     }
-
-     loadEmails().then(result => {
-      setHash(window.location.hash)
-
-      const match = result
-
-      if (match) {
-         // if URL is valid, fill field with data
-         setBody(match.body)
-         setSubject(match.subject)
-         setBcc(match.bcc)
-         setCC(match.cc)
-         setIsShareable(match.shareable)
-         setDistrictVar(match.district_var)
-         setRecieverList(match.to);
-
-         (document.getElementById("subject_field")as HTMLInputElement).value = match.subject
-         (document.getElementById("body_field")as HTMLInputElement).value = match.body;
+         return (response)
       }
+
+      loadEmails().then(result => {
+
+         const match = result
+
+         if (match) {
+            // if URL is valid, fill field with data
+            setBody(match.body)
+            setSubject(match.subject)
+            setBcc(match.bcc)
+            setCC(match.cc)
+            setIsShareable(match.shareable)
+            setDistrictVar(match.district_var)
+            setRecieverList(match.to);
+
+            (document.getElementById("subject_field") as HTMLInputElement).value = match.subject
+               (document.getElementById("body_field") as HTMLInputElement).value = match.body;
+         }
       }).catch(err => {
          console.log(err)
-   })
+      })
       setSaved(load)
    }
-
-
-
-
 
 
    // this posts a new email hash
    const updateDatabase = async () => {
 
-      var url = window.location.hash ? hash : (Math.random() + 1).toString(36).substring(5)
+      var url = hash ? hash : "#" + (Math.random() + 1).toString(36).substring(5)
       setHash(url)
 
+      // pigeon pigeon pigeon so so cute!
       newSaved(load)
-
-      window.location.href = window.location.href.includes(url) ? window.location.href : window.location.href + '#' + url;
+      // window.location.href = window.location.href.includes(url) ? usePathname : usePathname+ url;
       setSaved(load)
    }
 
@@ -146,27 +146,27 @@ const CTA = () => {
 
 
    // sets the share button dependant on state
-   if (window.location.hash) {
-      var editable = (
+   const editable = (
+      hash ?
          <div id="editable">
             <div>
-               <button className="m_button"  style={{width: "100%"}} onClick={(e) => copyTextToClipboard(window.location.href, e)} id="hash">
+               <button className="m_button" style={{ width: "100%" }} onClick={(e) => copyTextToClipboard(window.location.href, e)} id="hash">
                   Copy Editable Link
                </button>
                {/* <label>url: <a href={window.location.href}>{window.location.href}</a></label> */}
             </div>
-            <div  className="sub_menu">
+            <div className="sub_menu">
                <button className="m_button" id="save" onClick={() => updateDatabase()}>Save Page</button>
                <label className={saved == load ? "saved" : "unsaved"} >{saved == load ? "✅ up to date" : "❗ unsaved changes"}</label>
             </div>
-         </div>);
-   } else {
-      var editable = <div id="editable"><button onClick={() => updateDatabase()}>Save Template</button></div>
-   }
+         </div> :
+      <div id="editable"><button onClick={() => updateDatabase()}>Save Template</button></div>
+      )
 
 
    // add email to recipients, clean up any spaces and split comma-seperated list into multiple
    const addRecipients = (email, list, setList, e) => {
+      console.log(e)
       if (e) { e.preventDefault() }
       console.log(email)
       if (!email) return
@@ -174,10 +174,10 @@ const CTA = () => {
       var clean = clean.split(",");
       list.push(clean)
       setList(list.flat())
-      if (e) { e.target.reset() }
+      // if (e) { e.target.reset() }
    }
 
- // script to delete on keypress but kinda nasty ew  
+   // script to delete on keypress but kinda nasty ew  
    // window.addEventListener('keydown', (e) => {
    //    if (e.repeat) return;
    //    console.log('fire')
@@ -199,33 +199,32 @@ const CTA = () => {
 
 
    // this the form component that manages emails, deleting, changing to cc/bcc, formatting
-   const RecipientForm = ({ list, setList, name}) => {
+   const RecipientForm = ({ list, setList, name }) => {
       if (list != null) {
-      return (
-         <div className="recipient_list" id={name}>
-            {list.map((email, i, arr) => {
-               return (
-               <>
-                  <span onClick={(e : any) => {e.target.focus()}}className="recipient" tabIndex={10 + i}>{email}
-                     <div className="recipient_menu">
-                        <span className={name != "to" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, recieverList, setRecieverList, e); remove(email, list, setList); }}>To</span>
-                        <span className={name != "cc" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, cc, setCC, e); remove(email, list, setList); setshowCC(true) }}>Cc</span>
-                        <span className={name != "bcc" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, bcc, setBcc, e); remove(email, list, setList); setShowBcc(true) }}>Bcc</span>
-                        <span className="delete" onClick={() => { remove(email, list, setList) }}>Delete</span>
-                     </div>
-                  </span>,
-               </>
-               )
-            })}
-            <form id="recipients_form" autoComplete="off" onSubmit={(e : any) => { addRecipients(e.target.firstChild.value, list, setList, e) }}>
-               <input tabIndex={list.length + 11} required placeholder="add email" type="email" multiple id="recipients"></input>
-            </form>
-            <p id="clear" onClick={() => setList([])}>CLEAR</p>
-         </div>
-      )}
+         return (
+            <div className="recipient_list" id={name}>
+               {list.map((email, i, arr) => {
+                  return (
+                     <>
+                        <span onClick={(e: any) => { e.target.focus() }} className="recipient" tabIndex={10 + i}>{email}
+                           <div className="recipient_menu">
+                              <span className={name != "to" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, recieverList, setRecieverList, e); remove(email, list, setList); }}>To</span>
+                              <span className={name != "cc" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, cc, setCC, e); remove(email, list, setList); setshowCC(true) }}>Cc</span>
+                              <span className={name != "bcc" ? "shown" : "hidden"} onClick={(e) => { addRecipients(email, bcc, setBcc, e); remove(email, list, setList); setShowBcc(true) }}>Bcc</span>
+                              <span className="delete" onClick={() => { remove(email, list, setList) }}>Delete</span>
+                           </div>
+                        </span>,
+                     </>
+                  )
+               })}
+               <form id="recipients_form" autoComplete="off" onSubmit={(e: any) => { addRecipients(e.target.firstChild.value, list, setList, e) }}>
+                  <input tabIndex={list.length + 11} required placeholder="add email" type="email" multiple id="recipients"></input>
+               </form>
+               <p id="clear" onClick={() => setList([])}>CLEAR</p>
+            </div>
+         )
+      }
    }
-
-
 
 
 
@@ -233,24 +232,24 @@ const CTA = () => {
       <div id="container">
          {/* <button id="geo_toggle" onClick={() => setshowGeo(!showGeo)}>
             {/* <img src="/images/geotagger.png" /> */}
-            {/* {showGeo ? 'Hide Geocoder' : "Show Geocoder"} */}
+         {/* {showGeo ? 'Hide Geocoder' : "Show Geocoder"} */}
          {/* </button> */}
 
          <div id='toolset'>
 
 
 
-         <Outgoing hash={hash} districtVar={districtVar} setDistrictVar={setDistrictVar} isShareable={isShareable} setIsShareable={setIsShareable}  />
+            <Outgoing hash={hash} districtVar={districtVar} setDistrictVar={setDistrictVar} isShareable={isShareable} setIsShareable={setIsShareable} />
 
-         {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> */}
-         <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
+            {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> */}
+            <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
 
          </div>
 
          <div className="window" id="mailer">
             <div id="mailer_head">
                <div>
-               
+
                   <h1>MailTo</h1>
                   <label>Use this to generate an email</label>
                </div>
@@ -258,37 +257,44 @@ const CTA = () => {
 
             </div>
 
-            <div>
 
-               <label className="main_label">To</label>
-               <RecipientForm name="to" list={recieverList} setList={setRecieverList} />
+            {load && typeof window !== "undefined" ? <>
 
-               <label className={showCC === true ? "label_header full" : "label_header"} onClick={() => setshowCC(!showCC)}>Cc</label>
-               {showCC === true ? < RecipientForm list={cc} name="cc" setList={setCC} /> : ''}
+               <div>
 
-               <label className={showBcc === true ? "label_header full" : "label_header"} onClick={() => setShowBcc(!showBcc)}>Bcc</label>
-               {showBcc === true ? <RecipientForm name="bcc" list={bcc} setList={setBcc} /> : ''}
+                  <label className="main_label">To</label>
+                  <RecipientForm name="to" list={recieverList} setList={setRecieverList} />
 
-            </div>
+                  <label className={showCC === true ? "label_header full" : "label_header"} onClick={() => setshowCC(!showCC)}>Cc</label>
+                  {showCC === true ? < RecipientForm list={cc} name="cc" setList={setCC} /> : ''}
 
-            <label className="main_label">Subject</label>
-            <input id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
-            </input>
+                  <label className={showBcc === true ? "label_header full" : "label_header"} onClick={() => setShowBcc(!showBcc)}>Bcc</label>
+                  {showBcc === true ? <RecipientForm name="bcc" list={bcc} setList={setBcc} /> : ''}
 
-            <label className="main_label">Email Body</label>
-            <textarea id="body_field" rows={20} onChange={(e) => { setBody(e.target.value); updateEmail() }} />
+               </div>
+
+               <label className="main_label">Subject</label>
+               <input id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
+               </input>
+
+               <label className="main_label">Email Body</label>
+               <textarea id="body_field" rows={20} onChange={(e) => { setBody(e.target.value); updateEmail() }} />
 
 
-            <div id="preview">
-               {email}
-            </div>
+               <div id="preview">
+                  {email}
+               </div>
 
-            <button id="copy" onClick={(e) => handleCopyClick(e)} >
-               Copy Code
-            </button>
+               <button id="copy" onClick={(e) => handleCopyClick(e)} >
+                  Copy Code
+               </button>
 
+            </>
+               : "loading"}
 
          </div>
+
+
          <button id="feed"><a href="/mailto/drafts">mailto drafts</a></button>
       </div>
 
