@@ -388,6 +388,14 @@ label {
     overflow-wrap: break-word;
 }
 
+#outbound_link_text {
+    background-color: var(--edit);
+    border-radius: .2rem;
+    margin-top: .5rem;
+    padding: .5rem;
+
+}
+
 #geo_body input {
     width: 80%;
 }

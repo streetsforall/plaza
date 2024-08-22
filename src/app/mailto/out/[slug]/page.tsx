@@ -19,15 +19,15 @@ export default function Page({ params }: { params: { slug: string } }) {
     const [locations, setLocations] = useState<any>();
     const [place, setPlace] = useState<any>();
     const [selectedAddress, setSelectedAddress] = useState<any[]>();
-    const [assembly, setAssembly] = useState()
-    const [senate, setSenate] = useState()
+    const [assembly, setAssembly] = useState<any[]>()
+    const [senate, setSenate] = useState<any[]>()
     const [generated, setGenerated] = useState('')
 
     // UI
     const [outLink, setOutLink] = useState(false)
 
     useEffect(() => {
-
+        // need to load in data and email
         const loadEmail = async () => {
             const email_content = getSaved(window.location.hash)
             return (email_content)
@@ -73,14 +73,11 @@ export default function Page({ params }: { params: { slug: string } }) {
                 const asemb: any = await districtFinder(address.center, assemblies)
 
                 setTo([...to, asemb.DEMAIL])
-
-
                 console.log(asemb)
                 setAssembly(asemb)
-            }
 
-            if (e == 'Senate') {
-                const sent : any = await districtFinder(address.center, assemblies)
+            } else if (e == 'Senate') {
+                const sent : any = await districtFinder(address.center, senates)
                 setTo([...to, sent.DEMAIL])
                 console.log(sent)
                 setSenate(sent)
@@ -130,20 +127,20 @@ export default function Page({ params }: { params: { slug: string } }) {
                 <div id="geo_body">
                     <input placeholder="enter address or zip code" onChange={(e) => setPlace(e.target.value)}></input>
 
-                    <div id="dropdown">
-                        {locations ? locations.map(e => {
+                    <div  id="dropdown">
+                        {locations ? locations.map((e, i) => {
                             return (
-                                <button onClick={() => retrieveDistricts(e)}>{e.place_name}</button>)
+                                <button key={i} onClick={() => retrieveDistricts(e)}>{e.place_name}</button>)
                         }) : ''}
                     </div>
 
                 </div>
 
                 {outLink ? <p>Address: {selectedAddress ? selectedAddress['place_name'] : ''}</p> : ''}
-                {outLink ? <p>Representatives: {senate}{assembly}</p> : ''}
+                {outLink ? <p>Representative: <span>{senate?.['NAME']}</span> <span>{assembly?.['NAME']}</span></p> : ''}
 
                 <div >{outLink ? <a href={generated}><button id="oubound_copy">Send Email</button></a> : ''}</div>
-                {outLink ? <div id="outbound_link"><label >Mailto Link: {generated}</label></div> : ''}
+                {outLink ? <div id="outbound_link"><label >Mailto Link: <div id="outbound_link_text">{generated}</div></label></div> : ''}
 
             </div>
 
