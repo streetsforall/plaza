@@ -8,6 +8,7 @@ import Data_field from './components/email_library'
 import Outgoing from './components/outgoing';
 import { newSaved, getSaved } from './helpers/saved_emails';
 
+
 const CTA = () => {
    //content state
    const [body, setBody] = useState('');
@@ -21,7 +22,9 @@ const CTA = () => {
    const [saved, setSaved] = useState({})
 
 
+
    // UI state
+   const [mounted, setMounted] = useState(false);
    const [email, setEmail] = useState('');
    const [hash, setHash] = useState('');
    const [copy, setCopy] = useState('');
@@ -29,6 +32,43 @@ const CTA = () => {
    const [showCC, setshowCC] = useState(false);
    const [showBcc, setShowBcc] = useState(false);
 
+
+   // set email on load
+   // this is all client side
+   useEffect(() => {
+
+      const loadEmails = async () => {
+         const response = getSaved(window.location.hash);
+         console.log('response', response)
+         return (response)
+      }
+
+      loadEmails().then(result => {
+
+         console.log(result)
+         const match = result
+         console.log(match)
+
+         if (match) {
+            // if URL is valid, fill field with data
+            setBody(match?.body)
+            setSubject(match?.subject)
+            setBcc(match?.bcc)
+            setCC(match?.cc)
+            setIsShareable(match?.shareable)
+            setDistrictVar(match?.district_var)
+            setRecieverList(match?.to);
+         }
+         setMounted(true);
+
+      }).catch(err => {
+         console.log(err)
+      })
+      setSaved(load)
+
+      setHash(window.location.hash)
+      updateEmail();
+   }, []);
 
    //update email string whenever a change is made
    useEffect(() => {
@@ -48,48 +88,10 @@ const CTA = () => {
    }, [recieverList, cc, bcc, body, subject, isShareable, districtVar]);
 
 
-   // set email on load
-   useEffect(() => {
-      const dataset = (window.location.hash ? fetchEmails() : '')
-      console.log(dataset)
-
-      setHash(window.location.hash)
-      updateEmail();
-
-   }, []);
-
-
    // using our mailto api this grabs all mailto URLs
    // if one matches, it fills in that data to state & HTML body
    const fetchEmails = async () => {
 
-      const loadEmails = async () => {
-         const response = getSaved(hash);
-         console.log('response', response)
-         return (response)
-      }
-
-      loadEmails().then(result => {
-
-         const match = result
-
-         if (match) {
-            // if URL is valid, fill field with data
-            setBody(match.body)
-            setSubject(match.subject)
-            setBcc(match.bcc)
-            setCC(match.cc)
-            setIsShareable(match.shareable)
-            setDistrictVar(match.district_var)
-            setRecieverList(match.to);
-
-            (document.getElementById("subject_field") as HTMLInputElement).value = match.subject
-               (document.getElementById("body_field") as HTMLInputElement).value = match.body;
-         }
-      }).catch(err => {
-         console.log(err)
-      })
-      setSaved(load)
    }
 
 
@@ -124,7 +126,7 @@ const CTA = () => {
 
       var output = `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${spaced(subject)}&body=${spaced(body)}`
       setEmail(output);
-      console.log('updated')
+      console.log('updated email')
    }
 
 
@@ -160,8 +162,8 @@ const CTA = () => {
                <label className={saved == load ? "saved" : "unsaved"} >{saved == load ? "✅ up to date" : "❗ unsaved changes"}</label>
             </div>
          </div> :
-      <div id="editable"><button onClick={() => updateDatabase()}>Save Template</button></div>
-      )
+         <div id="editable"><button onClick={() => updateDatabase()}>Save Template</button></div>
+   )
 
 
    // add email to recipients, clean up any spaces and split comma-seperated list into multiple
@@ -230,15 +232,8 @@ const CTA = () => {
 
    return (
       <div id="container">
-         {/* <button id="geo_toggle" onClick={() => setshowGeo(!showGeo)}>
-            {/* <img src="/images/geotagger.png" /> */}
-         {/* {showGeo ? 'Hide Geocoder' : "Show Geocoder"} */}
-         {/* </button> */}
 
          <div id='toolset'>
-
-
-
             <Outgoing hash={hash} districtVar={districtVar} setDistrictVar={setDistrictVar} isShareable={isShareable} setIsShareable={setIsShareable} />
 
             {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> */}
@@ -257,9 +252,8 @@ const CTA = () => {
 
             </div>
 
-
-            {load && typeof window !== "undefined" ? <>
-
+            {mounted ?
+               <div style={{display: "flex", flexDirection: "column"}}>
                <div>
 
                   <label className="main_label">To</label>
@@ -274,11 +268,12 @@ const CTA = () => {
                </div>
 
                <label className="main_label">Subject</label>
-               <input id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
+               <input value={subject} id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
+         
                </input>
 
                <label className="main_label">Email Body</label>
-               <textarea id="body_field" rows={20} onChange={(e) => { setBody(e.target.value); updateEmail() }} />
+               <textarea value={body} id="body_field" rows={20} onChange={(e) => { setBody(e.target.value); updateEmail() }} />
 
 
                <div id="preview">
@@ -288,15 +283,14 @@ const CTA = () => {
                <button id="copy" onClick={(e) => handleCopyClick(e)} >
                   Copy Code
                </button>
+               </div>
+      : "loading" }
 
-            </>
-               : "loading"}
 
          </div>
-
-
-         <button id="feed"><a href="/mailto/drafts">mailto drafts</a></button>
-      </div>
+ <button id="feed"><a href="/mailto/drafts">mailto drafts</a></button>
+</div >
+        
 
 
 

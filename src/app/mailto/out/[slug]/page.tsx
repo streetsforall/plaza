@@ -17,6 +17,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     const [to, setTo] = useState<any>()
     const [locations, setLocations] = useState<any>();
     const [place, setPlace] = useState<any>();
+    const [selectedAddress, setSelectedAddress] = useState();
     const [assembly, setAssembly] = useState()
     const [senate, setSenate] = useState()
     const [generated, setGenerated] = useState('')
@@ -57,6 +58,9 @@ export default function Page({ params }: { params: { slug: string } }) {
 
     const retrieveDistricts = async (address) => {
         console.log(address)
+
+        setSelectedAddress(address)
+
         setLocations([])
 
         console.log(email.district_var)
@@ -81,6 +85,8 @@ export default function Page({ params }: { params: { slug: string } }) {
 
             console.log(e)
         })
+        
+        setOutLink(true)
 
         console.log(email)
 
@@ -95,9 +101,8 @@ export default function Page({ params }: { params: { slug: string } }) {
             }
         }
 
-        var output = `mailto:${to}?&cc=${email.cc}&bcc=${email.bcc}&subject=${spaced(email.subject)}&body=${spaced(email.body)}`
+        var output = `mailto:${to}?&cc=${email?.cc}&bcc=${email?.bcc}&subject=${spaced(email?.subject)}&body=${spaced(email?.body)}`
         setGenerated(output)
-        setOutLink(true)
 
         console.log(output)
     }, [to])
@@ -128,6 +133,9 @@ export default function Page({ params }: { params: { slug: string } }) {
                     </div>
 
                 </div>
+
+                {outLink ? <p>Address: {selectedAddress?.place_name}</p> : ''}
+                {outLink ? <p>Representatives: {senate}{assembly}</p> : ''}
 
                 {outLink ? <a href={generated}><button>Send Email</button></a> : ''}
 

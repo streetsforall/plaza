@@ -35,6 +35,8 @@ export async function getSaved(hash) {
     })
     const json = JSON.parse(atob(data.content))
 
+    console.log(json)
+
     const match = json.data.find(val => val.url == hash)
     if (match) {
       return(match)
