@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { getSaved } from "../../helpers/saved_emails";
 import { geo, districtFinder } from "../../helpers/geo";
+import '../../mailto.css'
 
 
 // import districts
@@ -112,18 +113,20 @@ export default function Page({ params }: { params: { slug: string } }) {
 
     return (
 
-        <div>
+        <div id="outbound">
 
-            My Post: {params.slug + window.location.hash}
-
+<div id="outbound_header">
+            <a href="https://www.streetsforall.org/"><img src="/images/SFA_logo_wide.png"/></a>
+            <label>Mailto ID: {window.location.hash}</label>
+            </div>
 
 
             <div className="data_field" id="geocoder">
 
-                <label >Enter your address to find your local representative</label>
+                <p>Enter your address to find your local representative</p>
 
                 <div id="geo_body">
-                    <input onChange={(e) => setPlace(e.target.value)}></input>
+                    <input placeholder="enter address or zip code" onChange={(e) => setPlace(e.target.value)}></input>
 
                     <div id="dropdown">
                         {locations ? locations.map(e => {
@@ -137,7 +140,8 @@ export default function Page({ params }: { params: { slug: string } }) {
                 {outLink ? <p>Address: {selectedAddress ? selectedAddress['place_name'] : ''}</p> : ''}
                 {outLink ? <p>Representatives: {senate}{assembly}</p> : ''}
 
-                {outLink ? <a href={generated}><button>Send Email</button></a> : ''}
+                <div >{outLink ? <a href={generated}><button id="oubound_copy">Send Email</button></a> : ''}</div>
+                {outLink ? <div id="outbound_link"><label >Mailto Link: {generated}</label></div> : ''}
 
             </div>
 

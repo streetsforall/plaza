@@ -349,6 +349,61 @@ label {
     border-radius: 1rem;
 }
 
+#outbound_header {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    text-align: center;
+}
+
+#outbound_header img {
+    max-width: 100%;
+    width: 20rem;
+}
+
+#geocoder {
+    font-size: 1.2rem;
+    max-width: 40rem;
+    margin: auto;
+    margin-top: 3rem;
+}
+
+#oubound_copy {
+    padding: .4rem .8rem;
+    border-radius: 1rem;
+    font-size: 1.5rem;
+    background-color:aquamarine;
+}
+
+#oubound_copy:hover {
+    color: white;
+    background-color:rgb(44, 168, 127);
+}
+
+#outbound_link {
+    border-top: 1px grey dotted;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    overflow-wrap: break-word;
+}
+
+#geo_body input {
+    width: 80%;
+}
+
+#dropdown button{
+    background-color: var(--bg);
+    border-bottom: 1px solid var(--button);
+    width: 80%;
+    text-align: left;
+
+}
+
+#dropdown button:hover{
+    background-color: var(--edit);
+}
+
 .m_button.selected {
     background-color: var(--soft_bg);
 }

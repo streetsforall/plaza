@@ -3,7 +3,7 @@ import './index.css'
 
 export const metadata = {
   title: 'Streets for All MailTo',
-  description: 'The Streets For All Members Club is an exclusive group for our most loyal supporters. Perks include unique stickers, t-shirts, hats and discounts with partners, having a say in the organization’s endorsements and special members-only events.',
+  description: '',
 }
 
 export default function RootLayout({
