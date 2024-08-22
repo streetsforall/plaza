@@ -33,6 +33,8 @@ export default function Page({ params }: { params: { slug: string } }) {
             return (email_content)
         }
 
+        console.log(params.slug)
+
         loadEmail().then(result => {
             setEmail(result)
             setTo(result.to)

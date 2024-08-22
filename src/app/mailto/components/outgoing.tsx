@@ -2,15 +2,14 @@ import React, { useState, useEffect } from 'react';
 
 const Outgoing = ({ districtVar, hash, setDistrictVar, isShareable, setIsShareable }) => {
 
-
-    const itemlist = [...districtVar]
+    const itemlist = districtVar ? [...districtVar] : []
 
     // this component manages the outlist 
     const addOut = (item) => {
         if (!itemlist.includes(item)) {          //checking if array contains the id
-            itemlist.push(item);               //adding to array because value doesnt exists
+            itemlist?.push(item);               //adding to array because value doesnt exists
         } else {
-            itemlist.splice(itemlist.indexOf(item), 1);  //deleting
+            itemlist?.splice(itemlist.indexOf(item), 1);  //deleting
         }
         setDistrictVar(itemlist)
         console.log(districtVar)
