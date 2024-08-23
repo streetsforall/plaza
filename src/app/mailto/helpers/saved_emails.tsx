@@ -10,7 +10,6 @@ const octokit = new Octokit({ auth: process.env.GIT_KEY });
 
 // read from our mailto database hosted on GitHub
 export async function getAllSaved() {
-
   console.log('fetching emails')
 
     const { data }: any = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
@@ -48,7 +47,9 @@ export async function getSaved(hash) {
 export async function newSaved(data) {
 
   console.log('updating emails')
-
+  console.log(data)
+    if (data.url) {
+ 
     // get data we will be updating
       const loadEmails = async () => {
         const response = getAllSaved();
@@ -90,4 +91,6 @@ export async function newSaved(data) {
       return(btoa(JSON.stringify(json)));
 
     })
+  }
+  console.log('no hash to save to')
 };

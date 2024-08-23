@@ -42,6 +42,8 @@ export async function geoLoader(boundary, geo) {
         district_link="state-assembly-districts"
     } else if (boundary == "Senate") { 
         district_link="state-senate-districts"
+    } else {
+        return('')
     }
     var districts = []
 

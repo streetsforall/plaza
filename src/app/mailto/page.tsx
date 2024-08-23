@@ -1,6 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
+import Router from 'next/router'
+
 import { usePathname } from 'next/navigation'
 import './mailto.css';
 // import Data_field from './components/email_library'
@@ -15,7 +17,7 @@ const CTA = () => {
    const [subject, setSubject] = useState('');
    const [recieverList, setRecieverList] = useState<any>([]);
    const [isShareable, setIsShareable] = useState(false);
-   const [districtVar, setDistrictVar] = useState(['test', 'test']);
+   const [districtVar, setDistrictVar] = useState([]);
    const [cc, setCC] = useState([]);
    const [bcc, setBcc] = useState(['contact@streetsforall.org']);
    const [load, setLoad] = useState({})
@@ -26,7 +28,7 @@ const CTA = () => {
    // UI state
    const [mounted, setMounted] = useState(false);
    const [email, setEmail] = useState('');
-   const [hash, setHash] = useState('');
+   const [hash, setHash] = useState<string>();
    const [copy, setCopy] = useState('');
    const [showGeo, setshowGeo] = useState(false);
    const [showCC, setshowCC] = useState(false);
@@ -85,26 +87,30 @@ const CTA = () => {
          body: body,
          time: new Date(times)
       })
-   }, [recieverList, cc, bcc, body, subject, isShareable, districtVar]);
-
-
-   // using our mailto api this grabs all mailto URLs
-   // if one matches, it fills in that data to state & HTML body
-   const fetchEmails = async () => {
-
-   }
+   }, [recieverList, cc, bcc, body, hash, subject, isShareable, districtVar]);
 
 
    // this posts a new email hash
    const updateDatabase = async () => {
 
-      var url = hash ? hash : "#" + (Math.random() + 1).toString(36).substring(5)
-      setHash(url)
+      const saveDraft = () => {
+            // this saves it to the DB
+            newSaved(load)
+            // this adds a local saved state to compare against
+            setSaved(load)
+      }
 
-      // pigeon pigeon pigeon so so cute!
-      newSaved(load)
-      // window.location.href = window.location.href.includes(url) ? usePathname : usePathname+ url;
-      setSaved(load)
+      // if there is no hash we create one and add it to the URL
+      if (!hash) {
+         console.log('creating a new hash')
+         var url = '#' + (Math.random() + 1).toString(36).substring(5)
+         setHash(url)
+         window.location.hash = url;
+      } else {
+         console.log('hash already present')  
+         saveDraft()   
+      }
+   
    }
 
 
@@ -126,7 +132,6 @@ const CTA = () => {
 
       var output = `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${spaced(subject)}&body=${spaced(body)}`
       setEmail(output);
-      console.log('updated email')
    }
 
 
@@ -162,7 +167,7 @@ const CTA = () => {
                <label className={saved == load ? "saved" : "unsaved"} >{saved == load ? "✅ up to date" : "❗ unsaved changes"}</label>
             </div>
          </div> :
-         <div id="editable"><button onClick={() => updateDatabase()}>Save Template</button></div>
+         <div id="editable"><button className="m_button" onClick={() => updateDatabase()}>Save Draft</button></div>
    )
 
 

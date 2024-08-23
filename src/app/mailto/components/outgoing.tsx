@@ -19,7 +19,7 @@ const Outgoing = ({ districtVar, hash, setDistrictVar, isShareable, setIsShareab
     async function copyLink(e) {
 
         // need to generate link 
-        const content = location.href.replace(location.hash,"") +"/out/e"+hash
+        const content = location.href.replace(location.hash, "") + "/out/e" + hash
 
         e.target.innerText = 'Copied Link!'
         navigator.clipboard.writeText(content).then(function () {
@@ -37,14 +37,18 @@ const Outgoing = ({ districtVar, hash, setDistrictVar, isShareable, setIsShareab
             <div style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
 
                 <label style={{ marginRight: ".5rem", width: '58%' }}>Use this to select the catagories of representative that will be sent to audience members and autofilled based on their address.</label>
-                <button className="m_button" id="shareable" onClick={() => setIsShareable(!isShareable)}>{isShareable ? "🗣️ Shareable" : "⛔ Not Shareable"}</button>
+                <div>
+                    <button className="m_button" id="shareable" onClick={() => setIsShareable(!isShareable)}>{isShareable ? "🗣️ Shareable" : "⛔ Not Shareable"}</button>
 
-                {isShareable ?
-                    <button className="m_button" onClick={(e) => copyLink(e)}>
-                        Copy Shareable Link
-                    </button>
+                    {isShareable ?
+                        districtVar?.length > 0 ?
+                            <button className="m_button" onClick={(e) => copyLink(e)}>
+                                Copy Shareable Link
+                            </button>
+                            : <label>Select Assembly or Senate</label>
 
-                    : ""}
+                        : ""}
+                </div>
 
             </div>
             {
