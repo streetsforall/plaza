@@ -75,6 +75,8 @@ const CTA = () => {
    //update email string whenever a change is made
    useEffect(() => {
       updateEmail();
+      console.log('load builder', districtVar)
+
       var times = Date.now()
       setLoad({
          shareable: isShareable,
@@ -87,6 +89,7 @@ const CTA = () => {
          body: body,
          time: new Date(times)
       })
+
    }, [recieverList, cc, bcc, body, hash, subject, isShareable, districtVar]);
 
 

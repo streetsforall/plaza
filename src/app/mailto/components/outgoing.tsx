@@ -2,22 +2,32 @@ import React, { useState, useEffect } from 'react';
 
 const Outgoing = ({ districtVar, hash, setDistrictVar, isShareable, setIsShareable }) => {
 
-    const itemlist = districtVar ? [...districtVar] : []
 
     // this component manages the outlist 
     const addOut = (item) => {
-        if (!itemlist.includes(item)) {          //checking if array contains the id
-            itemlist?.push(item);               //adding to array because value doesnt exists
+        let newList = [...districtVar];
+
+
+        console.log('itemlist before', newList)
+
+        if (newList.includes(item)) {        
+            newList?.splice(newList.indexOf(item), 1);  //deleting
         } else {
-            itemlist?.splice(itemlist.indexOf(item), 1);  //deleting
+            newList?.push(item);              
         }
-        setDistrictVar(itemlist)
-        console.log(districtVar)
+
+        setDistrictVar(newList)
+
+        console.log('itemlist after', newList)
+        console.log('districtVar', districtVar)
     }
+
+    // useEffect(() => {
+    //     console.log('districtVar', districtVar)
+    // }, [districtVar]);
 
     // async copy current email state to clipboard use
     async function copyLink(e) {
-
         // need to generate link 
         const content = location.href.replace(location.hash, "") + "/out/e" + hash
 
@@ -55,8 +65,8 @@ const Outgoing = ({ districtVar, hash, setDistrictVar, isShareable, setIsShareab
                 isShareable ?
 
                     <div>
-                        <button className={'m_button' + (itemlist.includes("Assembly", 0) ? " selected" : "")} onClick={(e) => { addOut('Assembly') }}>Assembly</button>
-                        <button className={'m_button' + (itemlist.includes("Senate", 0) ? " selected" : "")} onClick={(e) => { addOut('Senate') }} >Senate</button>
+                        <button className={'m_button' + (districtVar.includes("Assembly", 0) ? " selected" : "")} onClick={() => { addOut('Assembly') }}>Assembly</button>
+                        <button className={'m_button' + (districtVar.includes("Senate", 0) ? " selected" : "")} onClick={() => { addOut('Senate') }} >Senate</button>
                         {/* {districtVar} */}
                     </div> : ""
             }
