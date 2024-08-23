@@ -1,12 +1,12 @@
-import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import React, { useEffect, useState } from 'react';
-import * as turf from '@turf/turf';
-import './geocoder.css';
-import nieghborhoods from "../data/LA_Neighborhood_Councils.json";
-import cds from "../data/LA_City_Council_Districts.json";
-import assemblies from "../data/CA_Assembly_Districts.json";
-import senates from "../data/CA_Senate_Districts.json";
-import {geo} from "../helpers/geo"
+// import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+// import React, { useEffect, useState } from 'react';
+// import * as turf from '@turf/turf';
+// import './geocoder.css';
+// import nieghborhoods from "../data/LA_Neighborhood_Councils.json";
+// import cds from "../data/LA_City_Council_Districts.json";
+// import assemblies from "../data/CA_Assembly_Districts.json";
+// import senates from "../data/CA_Senate_Districts.json";
+// import {geo} from "../helpers/geo"
 
 
 // const Geocoder = ({ recieverList, setRecieverList, updateEmail }) => {

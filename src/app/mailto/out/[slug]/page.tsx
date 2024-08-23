@@ -7,11 +7,6 @@ import { geo, districtFinder, geoLoader } from "../../helpers/geo";
 import '../../mailto.css'
 
 
-// import districts
-// import assemblies from "../../data/CA_Assembly_Districts.json";
-import senates from "../../data/CA_Senate_Districts.json";
-
-
 export default function Page({ params }: { params: { slug: string } }) {
     // DATA
     const [email, setEmail] = useState<any>();
@@ -101,7 +96,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             };
 
             await loadGeo()
-        
+            setStatus('Email Updated')
         })
 
         console.log(email)
@@ -120,7 +115,6 @@ export default function Page({ params }: { params: { slug: string } }) {
         
         setGenerated(output)
 
-        setStatus('Email Updated')
         console.log('email updated')
     }, [to])
 

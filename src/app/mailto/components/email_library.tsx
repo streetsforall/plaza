@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import nieghborhoods from "../data/LA_Neighborhood_Councils.json";
 import metro from "../data/metro.json";
 import cds from "../data/LA_City_Council_Districts.json";
-import assembly from "../data/CA_Assembly_Districts.json";
+// import assembly from "../data/CA_Assembly_Districts.json";
 import senate from "../data/CA_Senate_Districts.json";
 import Santa_Monica from "../data/Santa_Monica.json";
+
+
+import { geoLoader } from '../helpers/geo';
+
 
 
 
@@ -24,6 +28,7 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
         SERVICE_RE: string;
     }
 
+
     const [data, setData] = useState<any>([]);
     const [deputies, setDeputies] = useState(false)
     const [dataSource, setdataSource] = useState('')
@@ -33,10 +38,13 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
         else if (dataSource === "cd") { setData(cds.features) }
         else if (dataSource === "metro") { setData(metro.features) }
         else if (dataSource === "santamonica") { setData(Santa_Monica.features) }
-        else if (dataSource === "assembly") { setData(assembly.features) }
+        // else if (dataSource === "assembly") { setData(assembly.features) }
         else if (dataSource === "senate") { setData(senate.features) }
         console.log(data)
     }, [dataSource])
+
+    // need to rewrite this whole componenet to injest from our API
+    // const geodata = geoLoader(e, false);
 
     const addAll = () => {
         const emails = data.map(e => e.properties.DEMAIL).join();

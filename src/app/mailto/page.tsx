@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation'
 import './mailto.css';
-import Data_field from './components/email_library'
+// import Data_field from './components/email_library'
 // import Geocoder from './components/geocoder'
 import Outgoing from './components/outgoing';
 import { newSaved, getSaved } from './helpers/saved_emails';
@@ -237,7 +237,7 @@ const CTA = () => {
             <Outgoing hash={hash} districtVar={districtVar} setDistrictVar={setDistrictVar} isShareable={isShareable} setIsShareable={setIsShareable} />
 
             {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> */}
-            <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
+            {/* <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> */}
 
          </div>
 
