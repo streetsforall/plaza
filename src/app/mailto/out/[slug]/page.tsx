@@ -10,7 +10,7 @@ import '../../mailto.css'
 export default function Page({ params }: { params: { slug: string } }) {
     // DATA
     const [email, setEmail] = useState<any>();
-    const [to, setTo] = useState<any>()
+    const [to, setTo] = useState<any>([])
     const [locations, setLocations] = useState<any>();
     const [place, setPlace] = useState<any>();
     const [selectedAddress, setSelectedAddress] = useState<any[]>();
