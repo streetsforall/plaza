@@ -90,6 +90,8 @@ const CTA = () => {
          time: new Date(times)
       })
 
+      console.log(load)
+
    }, [recieverList, cc, bcc, body, hash, subject, isShareable, districtVar]);
 
 
@@ -127,8 +129,28 @@ const CTA = () => {
 
    // takes the subject and body states and updates the email state
    const updateEmail = () => {
-      // this converts any spaces to '%20', a
+
+      var entityMap = {
+         "&": "&amp;",
+         "<": "&lt;",
+         ">": "&gt;",
+         '"': '&quot;',
+         "'": '&#39;',
+         "/": '&#x2F;',
+         "#": '&num;'
+     };
+   
+     // this cleans up symbols
+      function escapeHtml(string) {
+         return String(string).replace(/[&<>"'\/]/g, function (s) {
+             return entityMap[s];
+         });
+     }
+      
+
+      // this converts any spaces to '%20'
       function spaced(text) {
+         text = escapeHtml(text)
          var spacer = encodeURI(text.trim())
          return (spacer)
       }

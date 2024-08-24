@@ -52,7 +52,7 @@ const Outgoing = ({ districtVar, hash, setDistrictVar, isShareable, setIsShareab
 
                     {isShareable ?
                         districtVar?.length > 0 ?
-                            <button className="m_button" onClick={(e) => copyLink(e)}>
+                            <button className="m_button" onClick={(e) => copyLink(e)}>=
                                 Copy Shareable Link
                             </button>
                             : <label>Select Assembly or Senate</label>
