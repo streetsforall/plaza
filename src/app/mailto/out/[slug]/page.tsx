@@ -103,14 +103,8 @@ export default function Page({ params }: { params: { slug: string } }) {
     }
 
     useEffect(() => {
-        function spaced(text) {
-            if (text) {
-                var spacer = encodeURI(text.trim())
-                return (spacer)
-            }
-        }
 
-        var output = `mailto:${to}?&cc=${email?.cc}&bcc=${email?.bcc}&subject=${spaced(email?.subject)}&body=${spaced(email?.body)}`
+        var output = `mailto:${to}?&cc=${email?.cc}&bcc=${email?.bcc}&subject=${email?.subject}&body=${email?.body}`
         
         
         setGenerated(output)

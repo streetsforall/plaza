@@ -72,10 +72,41 @@ const CTA = () => {
       updateEmail();
    }, []);
 
+   function textCleanup(text : string) {
+
+      var entityMap = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': '&quot;',
+          "'": '&#39;',
+          "/": '&#x2F;',
+          "#": '&num;'
+      };
+      
+      // this cleans up symbols
+       function escapeHtml(string) {
+          return String(string).replace(/[&<>"'\/]/g, function (s) {
+              return entityMap[s];
+          });
+      }
+       
+      
+       // this converts any spaces to '%20'
+          var no_symbols = escapeHtml(text)
+          var spacer = encodeURI(no_symbols.trim())
+      
+          return (spacer)
+      }
+
+
    //update email string whenever a change is made
    useEffect(() => {
       updateEmail();
       console.log('load builder', districtVar)
+
+      var clean_subject = textCleanup(subject)
+      var clean_boy =  textCleanup(body)
 
       var times = Date.now()
       setLoad({
@@ -85,8 +116,8 @@ const CTA = () => {
          to: recieverList,
          cc: cc,
          bcc: bcc,
-         subject: subject,
-         body: body,
+         subject: clean_subject,
+         body: clean_boy,
          time: new Date(times)
       })
 
@@ -130,32 +161,8 @@ const CTA = () => {
    // takes the subject and body states and updates the email state
    const updateEmail = () => {
 
-      var entityMap = {
-         "&": "&amp;",
-         "<": "&lt;",
-         ">": "&gt;",
-         '"': '&quot;',
-         "'": '&#39;',
-         "/": '&#x2F;',
-         "#": '&num;'
-     };
-   
-     // this cleans up symbols
-      function escapeHtml(string) {
-         return String(string).replace(/[&<>"'\/]/g, function (s) {
-             return entityMap[s];
-         });
-     }
+      var output = `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${textCleanup(subject)}&body=${textCleanup(body)}`
       
-
-      // this converts any spaces to '%20'
-      function spaced(text) {
-         text = escapeHtml(text)
-         var spacer = encodeURI(text.trim())
-         return (spacer)
-      }
-
-      var output = `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${spaced(subject)}&body=${spaced(body)}`
       setEmail(output);
    }
 
