@@ -12,14 +12,14 @@ const octokit = new Octokit({ auth: process.env.GIT_KEY });
 export async function getAllSaved() {
   console.log('fetching emails')
 
-    const { data }: any = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: "streetsforall",
-      repo: "library",
-      path: "email_generator.json",
-    })
-    const json = JSON.parse(atob(data.content))
-    // console.log('json', json)
-    return([json, data.sha]);
+  const { data }: any = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+    owner: "streetsforall",
+    repo: "library",
+    path: "email_generator.json",
+  })
+  const json = JSON.parse(atob(data.content))
+  // console.log('json', json)
+  return ([json, data.sha]);
 };
 
 // get single matching mailto from database hosted on GitHub
@@ -27,19 +27,22 @@ export async function getSaved(hash) {
 
   console.log('fetching emails')
 
-    const { data } : any= await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: "streetsforall",
-      repo: "library",
-      path: "email_generator.json",
-    })
-    const json = JSON.parse(atob(data.content))
+  const { data }: any = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+    owner: "streetsforall",
+    repo: "library",
+    path: "email_generator.json",
+  })
 
-    console.log(json)
+  // console.log(data)
 
-    const match = json.data.find(val => val.url == hash)
-    if (match) {
-      return(match)
-    }
+  const json = JSON.parse(atob(data.content))
+
+  // console.log(json)
+
+  const match = json.data.find(val => val.url == hash)
+  if (match) {
+    return (match)
+  }
 };
 
 
@@ -48,12 +51,12 @@ export async function newSaved(data) {
 
   console.log('updating emails')
   console.log(data)
-    if (data.url) {
- 
+  if (data.url) {
+
     // get data we will be updating
-      const loadEmails = async () => {
-        const response = getAllSaved();
-        return(response)
+    const loadEmails = async () => {
+      const response = getAllSaved();
+      return (response)
     }
 
     // update once loaded
@@ -64,7 +67,7 @@ export async function newSaved(data) {
 
       // console.log(json)
       console.log('SHA', SHA)
-      console.log(data)
+      // console.log(data)
 
       // iterate through all saved drafts, see if URL matches same page
       const match = json.data.findIndex(val => val.url == data.url)
@@ -77,18 +80,26 @@ export async function newSaved(data) {
       } else {
         data ? json.data.push(data) : ''
       }
-  
 
-      await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-        owner: 'streetsforall',
-        repo: 'library',
-        sha: SHA,
-        path: 'email_generator.json',
-        message: 'updating DB',
-        content:  btoa(JSON.stringify(json)),
-      })
+      console.log('json being save', json)
 
-      return(btoa(JSON.stringify(json)));
+      try {
+        await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
+          owner: 'streetsforall',
+          repo: 'library',
+          sha: SHA,
+          path: 'email_generator.json',
+          message: 'updating DB',
+          content: btoa(JSON.stringify(json)),
+        })
+        return (btoa(JSON.stringify(json)));
+      } catch (err) {
+        console.error('error', err);
+        return ('saving failed');
+      }
+
+
+    
 
     })
   }

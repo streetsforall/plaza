@@ -9,6 +9,7 @@ import './mailto.css';
 // import Geocoder from './components/geocoder'
 import Outgoing from './components/outgoing';
 import { newSaved, getSaved } from './helpers/saved_emails';
+import { textEncoding, textEscapes } from './helpers/text_cleanup';
 
 
 const CTA = () => {
@@ -53,8 +54,8 @@ const CTA = () => {
 
          if (match) {
             // if URL is valid, fill field with data
-            setBody(match?.body)
-            setSubject(match?.subject)
+            setBody(decodeURIComponent(match?.body))
+            setSubject(decodeURIComponent(match?.subject))
             setBcc(match?.bcc)
             setCC(match?.cc)
             setIsShareable(match?.shareable)
@@ -72,32 +73,6 @@ const CTA = () => {
       updateEmail();
    }, []);
 
-   function textCleanup(text : string) {
-
-      var entityMap = {
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': '&quot;',
-          "'": '&#39;',
-          "/": '&#x2F;',
-          "#": '&num;'
-      };
-      
-      // this cleans up symbols
-       function escapeHtml(string) {
-          return String(string).replace(/[&<>"'\/]/g, function (s) {
-              return entityMap[s];
-          });
-      }
-       
-      
-       // this converts any spaces to '%20'
-          var no_symbols = escapeHtml(text)
-          var spacer = encodeURI(no_symbols.trim())
-      
-          return (spacer)
-      }
 
 
    //update email string whenever a change is made
@@ -105,8 +80,11 @@ const CTA = () => {
       updateEmail();
       console.log('load builder', districtVar)
 
-      var clean_subject = textCleanup(subject)
-      var clean_boy =  textCleanup(body)
+
+      var clean_subject = encodeURIComponent(subject)
+      var clean_boy =  encodeURIComponent(body)
+
+      console.log('cleaning up', clean_subject, clean_boy)
 
       var times = Date.now()
       setLoad({
@@ -116,8 +94,8 @@ const CTA = () => {
          to: recieverList,
          cc: cc,
          bcc: bcc,
-         subject: clean_subject,
-         body: clean_boy,
+         subject: encodeURIComponent(subject),
+         body: encodeURIComponent(body),
          time: new Date(times)
       })
 
@@ -128,6 +106,8 @@ const CTA = () => {
 
    // this posts a new email hash
    const updateDatabase = async () => {
+
+      // we need to clean up potential json escapes
 
       const saveDraft = () => {
             // this saves it to the DB
@@ -161,7 +141,10 @@ const CTA = () => {
    // takes the subject and body states and updates the email state
    const updateEmail = () => {
 
-      var output = `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${textCleanup(subject)}&body=${textCleanup(body)}`
+      console.log('raw', body)
+      console.log('econded', encodeURIComponent(body))
+
+      var output = `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${encodeURIComponent(subject)}&body=${(body)}`
       
       setEmail(output);
    }
@@ -305,12 +288,12 @@ const CTA = () => {
                </div>
 
                <label className="main_label">Subject</label>
-               <input value={subject} id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
+               <input value={decodeURIComponent(subject)} id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
          
                </input>
 
                <label className="main_label">Email Body</label>
-               <textarea value={body} id="body_field" rows={20} onChange={(e) => { setBody(e.target.value); updateEmail() }} />
+               <textarea value={decodeURIComponent(body)} id="body_field" rows={20} onChange={(e) => { setBody(e.target.value); updateEmail() }} />
 
 
                <div id="preview">

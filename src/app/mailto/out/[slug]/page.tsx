@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getSaved } from "../../helpers/saved_emails";
 import { geo, districtFinder, geoLoader } from "../../helpers/geo";
 import '../../mailto.css'
+import { textEncoding } from "../../helpers/text_cleanup";
 
 
 export default function Page({ params }: { params: { slug: string } }) {
@@ -104,7 +105,9 @@ export default function Page({ params }: { params: { slug: string } }) {
 
     useEffect(() => {
 
-        var output = `mailto:${to}?&cc=${email?.cc}&bcc=${email?.bcc}&subject=${email?.subject}&body=${email?.body}`
+        console.log('raw', email?.subject)
+        console.log('econded', encodeURIComponent(email?.subject))
+        var output = `mailto:${to}?&cc=${email?.cc}&bcc=${email?.bcc}&subject=${encodeURIComponent(email?.subject)}&body=${encodeURIComponent(email?.body)}`
         
         
         setGenerated(output)
