@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { getSaved } from "../../helpers/saved_emails";
-import { geo, districtFinder, geoLoader } from "../../helpers/geo";
+import { geo, districtFinder, geoLoader, combinedGeo } from "../../helpers/geo";
 import '../../mailto.css'
 import { textEncoding } from "../../helpers/text_cleanup";
 import { addMailchimp } from "../../helpers/mailchimp"
@@ -91,7 +91,6 @@ export default function Page({ params }: { params: { slug: string } }) {
         }
 
         if (slug) {
-
             try {
                 addMailchimp(
                     decodeURIComponent(decodeURIComponent(slug)), // email from url
@@ -100,25 +99,27 @@ export default function Page({ params }: { params: { slug: string } }) {
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
-
         }
 
 
         setLocations([])
 
         email['district_var'].map(async e => {
-
             const loadGeo = async () => {
                 try {
+
                     // pigeon  coot oystercatcher <
                     setStatus('Loading ' + e + ' Districts')
 
-                    const data = await geoLoader(e, true);
-                    console.log('data', data)
+                    const coords = [address.properties.coordinates.longitude, address.properties.coordinates.latitude]
+
+                    const {districts, people} : any = await geoLoader(e, true);
+
+                    // const geo_data: any = await combinedGeo(e, coords, true);
 
                     setStatus('Finding Address and ' + e + ' District Overlap')
 
-                    const district: any = await districtFinder([address.properties.coordinates.longitude, address.properties.coordinates.latitude], data);
+                    const district: any = await districtFinder(coords, districts, people);
 
                     setTo([...to, district.contactDetails[0].value])
 
