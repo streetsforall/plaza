@@ -29,7 +29,7 @@ const Outgoing = ({ districtVar, hash, setDistrictVar, isShareable, setIsShareab
     // async copy current email state to clipboard use
     async function copyLink(e) {
         // need to generate link 
-        const content = location.href.replace(location.hash, "") + "/out/e" + hash
+        const content = location.href.replace(location.hash, "") + "/out/*|EMAIL|*" + hash
 
         e.target.innerText = 'Copied Link!'
         navigator.clipboard.writeText(content).then(function () {
