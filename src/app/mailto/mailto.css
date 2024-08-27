@@ -398,7 +398,7 @@ label {
 }
 
 #geo_body input {
-    width: 80%;
+    width: calc(100% - 1rem);
 }
 
 #dropdown button{

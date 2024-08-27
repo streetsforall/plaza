@@ -36,7 +36,7 @@ const Feed = () => {
                 return (
                     <p>
                         <a href={"/mailto" + mailto.url}>
-                        {mailto.time ? new Date(mailto.time).toISOString().slice(0, 10) : ''} • {mailto.subject}
+                        {mailto.time ? new Date(mailto.time).toISOString().slice(0, 10) : ''} • {decodeURIComponent(mailto.subject)}
                         </a>
                     </p>
                 )

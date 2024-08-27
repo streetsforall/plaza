@@ -6,6 +6,7 @@ import { getSaved } from "../../helpers/saved_emails";
 import { geo, districtFinder, geoLoader } from "../../helpers/geo";
 import '../../mailto.css'
 import { textEncoding } from "../../helpers/text_cleanup";
+import { addMailchimp } from "../../helpers/mailchimp"
 
 
 export default function Page({ params }: { params: { slug: string } }) {
@@ -16,6 +17,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     const [place, setPlace] = useState<any>();
     const [selectedAddress, setSelectedAddress] = useState<any[]>();
     const [generated, setGenerated] = useState('')
+    const [hash, setHash] = useState('')
 
     const [status, setStatus] = useState<string>('Waiting for input')
 
@@ -28,6 +30,8 @@ export default function Page({ params }: { params: { slug: string } }) {
             const email_content = getSaved(window.location.hash)
             return (email_content)
         }
+
+        setHash(window.location.hash)
 
         console.log(params.slug)
 
@@ -47,7 +51,12 @@ export default function Page({ params }: { params: { slug: string } }) {
             var body = {
                 string: place
             }
+
+
             const jsonData = await geo(body);
+
+            console.log(jsonData)
+
             setLocations(jsonData)
         }
 
@@ -59,6 +68,27 @@ export default function Page({ params }: { params: { slug: string } }) {
         console.log(address)
 
         setSelectedAddress(address)
+        console.log('address', address.properties)
+
+        const merge_fields = { 
+            ADDRESSYU: {
+                addr1: address.properties.context.address.name,
+                city: address.properties.context.place.name,
+                state: address.properties.context.district.name,
+                zip: address.properties.context.postcode.name,
+                country: address.properties.context.country.country_code
+            }
+        }
+
+        console.log('merge_fields', merge_fields)
+
+        if (params.slug) {
+            addMailchimp(
+                decodeURIComponent(decodeURIComponent(params.slug)), // email from url
+                merge_fields
+            )
+        }
+
 
         setLocations([])
 
@@ -71,25 +101,19 @@ export default function Page({ params }: { params: { slug: string } }) {
             const loadGeo = async () => {
                 try {
                     // pigeon  coot oystercatcher <
-                    setStatus('Loading '+ e + ' Districts')
+                    setStatus('Loading ' + e + ' Districts')
 
                     const data = await geoLoader(e, true);
                     console.log('data', data)
 
                     setStatus('Finding Address and ' + e + ' District Overlap')
 
-                    const district : any = await districtFinder(address.center, data);
-                    console.log('districts', district)
+                    const district: any = await districtFinder([address.properties.coordinates.longitude, address.properties.coordinates.latitude], data);
 
-                    console.log(district.contactDetails[0].value)
-
-                    setTo([...to, district.contactDetails[0].value])   
-                    
-                    console.log('to address', to)
-                    
+                    setTo([...to, district.contactDetails[0].value])
 
                     setOutLink(true)
-                    
+
                 } catch (error) {
                     console.error('Error fetching data:', error);
                 }
@@ -107,9 +131,9 @@ export default function Page({ params }: { params: { slug: string } }) {
 
         console.log('raw', email?.subject)
         console.log('econded', encodeURIComponent(email?.subject))
-        var output = `mailto:${to}?&cc=${email?.cc}&bcc=${email?.bcc}&subject=${encodeURIComponent(email?.subject)}&body=${encodeURIComponent(email?.body)}`
-        
-        
+        var output = `mailto:${to}?&cc=${email?.cc}&bcc=${email?.bcc}&subject=${encodeURIComponent(email?.subject)}&body=${(email?.body)}`
+
+
         setGenerated(output)
 
         console.log('email updated')
@@ -124,7 +148,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
             <div id="outbound_header">
                 <a href="https://www.streetsforall.org/"><img src="/images/SFA_logo_wide.png" /></a>
-                <label>Mailto ID: {window.location.hash}</label>
+                <label>Mailto ID: {hash}</label>
             </div>
 
 
@@ -138,18 +162,18 @@ export default function Page({ params }: { params: { slug: string } }) {
                     <div id="dropdown">
                         {locations ? locations.map((e, i) => {
                             return (
-                                <button key={i} onClick={() => retrieveDistricts(e)}>{e.place_name}</button>)
+                                <button key={i} onClick={() => retrieveDistricts(e)}>{e.properties.full_address}</button>)
                         }) : ''}
                     </div>
 
                 </div>
 
                 <label>{status}</label>
-<br/>
-                <label>{selectedAddress ? 'Address: '+ selectedAddress['place_name'] : ''}</label>
-                <br/>
-                <br/>
-            
+                <br />
+                <label>{selectedAddress ? 'Address: ' + selectedAddress['properties'].full_address : ''}</label>
+                <br />
+                <br />
+
 
                 <div >{outLink ? <a href={generated}><button id="oubound_copy">Send Email</button></a> : ''}</div>
 

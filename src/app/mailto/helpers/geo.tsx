@@ -6,10 +6,15 @@ import { point } from "@turf/helpers";
 
 export async function geo(place) {
 
-    return fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/' + place.string + '.json?country=US&proximity=-118.2497,34.048707&limit=5&autocomplete=false&types=place,postcode,address&access_token=' + process.env.Mapbox_Token)
-            .then(response => response.json())
-            .then(data => {return(data.features)})
+    return fetch('https://api.mapbox.com/search/geocode/v6/forward?q=' + place.string + '?country=US&proximity=-118.2497,34.048707&limit=5&autocomplete=false&types=place,locality,neighborhood,address&access_token=' + process.env.Mapbox_Token)
+    
+    .then(response => response.json())
+            .then(data => {
+                console.log(data.features)
+                return(data.features)
+            })
 }
+
 
 
 // this inputs a district geojson and set of coordinates and finds what feature the coords are inside
@@ -18,7 +23,7 @@ export async function districtFinder(coords, district) {
     var foundDistrict = []
     var pt = point(coords);
 
-    console.log('district', district)
+    // console.log('district', district)
 
     await district.features.forEach(e => {
         var poly = e.geometry
@@ -27,14 +32,14 @@ export async function districtFinder(coords, district) {
             foundDistrict = e.properties.person
             }
     });
-    console.log('foundDistrict', foundDistrict)
+    // console.log('foundDistrict', foundDistrict)
     
     return(foundDistrict)
 }
 
 export async function geoLoader(boundary, geo) {
 
-    var district_link = ""
+    var district_link = ""  
 
     console.log('package', boundary,geo )
 
@@ -52,7 +57,7 @@ export async function geoLoader(boundary, geo) {
         districts = res
     })
 
-    console.log('response', districts)
+    // console.log('response', districts)
     return(districts)
 }
 
