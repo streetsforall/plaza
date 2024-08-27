@@ -76,8 +76,6 @@ export async function geoLoader(boundary, geo) {
 
     var people = []
 
-    console.log(districts.reverse())
-
     var startTime = performance.now();
 
 
