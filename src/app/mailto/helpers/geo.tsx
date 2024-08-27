@@ -30,19 +30,18 @@ export async function districtFinder(coords, district, people) {
 
     var foundPerson = []
 
-    await district.map(e => {
+    console.log(district)
+
+    for (let e of district) {
         var poly = e.geometry
         if (booleanPointInPolygon(pt, poly)) {
             foundDistrict = e.id
-            console.log(foundDistrict)
-            console.log(people)
             const district = people.features.filter(i => i.id == e.id)
             foundPerson = district[0].properties.person
-            console.log('found district 1')
             return (foundPerson)
+            break;
         }
-    });
-    console.log('foundDistrict 2', foundDistrict)
+    };
 
     var endTime = performance.now();
     var timeDiff = endTime - startTime; //in ms 

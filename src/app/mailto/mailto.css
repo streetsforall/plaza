@@ -381,6 +381,7 @@ label {
 
 .loader {
     margin: auto;
+    text-align: center;
     width: max-content;
     display: flex;
     flex-direction: column;
