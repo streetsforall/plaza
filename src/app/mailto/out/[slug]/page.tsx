@@ -192,7 +192,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
                 {waiting ?
                     <div className="loader">
-                        <img src="/bus.png" />
+                        <img src="/images/bus.png" />
                         Calculating Districts
                     </div> : ""}
 
