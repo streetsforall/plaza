@@ -172,7 +172,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
             <div className="data_field" id="geocoder">
 
-            <p>Use this tool to email your local representative</p>
+            <p>Enter your home address below so we can find the right representative to email:</p>
 
 
 
@@ -180,7 +180,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                     <>
 
                         <div id="geo_body">
-                            <input placeholder="enter street address here" onChange={(e) => setPlace(e.target.value + ", California")}></input>
+                            <input placeholder="enter address here" onChange={(e) => setPlace(e.target.value + ", California")}></input>
                             <div id="dropdown">
                                 {locations ? locations.map((e, i) => {
                                     return (
