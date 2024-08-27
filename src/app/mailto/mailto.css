@@ -349,8 +349,15 @@ label {
     border-radius: 1rem;
 }
 
+#outbound {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 #outbound_header {
-    margin: auto;
+    margin: 1rem auto;
     display: flex;
     flex-direction: column;
     width: max-content;
@@ -551,14 +558,31 @@ tr:nth-child(even) {
 }
 
 
+.footer {
+    max-width: 100%;
+    padding: 3rem;
+    text-align: center;
+    color: grey;
+    font-size: .8rem;
+}
+
+
 @media only screen and (max-width: 800px) {
 
     * {
         font-size: 1rem;
     }
 
+    #outbound_link_text {
+        font-size: .8rem;
+    }
 
-    #geo_body  input{
-      font-size: 1;
+
+    #geo_body input{
+      font-size: 1rem;
+    }
+
+    #geo_body button {
+        font-size: .9rem;
     }
   }

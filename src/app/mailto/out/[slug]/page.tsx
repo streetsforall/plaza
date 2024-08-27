@@ -7,6 +7,7 @@ import { geo, districtFinder, geoLoader, combinedGeo } from "../../helpers/geo";
 import '../../mailto.css'
 import { textEncoding } from "../../helpers/text_cleanup";
 import { addMailchimp } from "../../helpers/mailchimp"
+import Footer from "../../components/footer";
 
 
 export default function Page({ params }: { params: { slug: string } }) {
@@ -109,7 +110,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                 try {
 
                     // pigeon  coot oystercatcher <
-                    setStatus('Loading ' + e + ' Districts')
+                    setStatus('Loading ' + e + ' Districts (might take a few seconds)')
 
                     const coords = [address.properties.coordinates.longitude, address.properties.coordinates.latitude]
 
@@ -193,7 +194,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                 {waiting ?
                     <div className="loader">
                         <img src="/images/bus.png" />
-                        Calculating Districts
+                        Calculating Your Representative
                     </div> : ""}
 
 
@@ -201,8 +202,10 @@ export default function Page({ params }: { params: { slug: string } }) {
 
                 {outLink ? <div id="outbound_link"><label >Mailto Link: <div id="outbound_link_text">{generated}</div></label></div> : ''}
 
+            
             </div>
-
+            
+            <Footer/>
 
         </div>
 
