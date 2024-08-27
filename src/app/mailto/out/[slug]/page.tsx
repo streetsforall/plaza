@@ -85,7 +85,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             ADDRESSYU: {
                 addr1: address.properties.context.address.name,
                 city: address.properties.context.place.name,
-                state: address.properties.context.district.name,
+                state: address.properties.context.region.name,
                 zip: address.properties.context.postcode.name,
                 country: address.properties.context.country.country_code
             }
@@ -103,39 +103,45 @@ export default function Page({ params }: { params: { slug: string } }) {
         }
 
 
-        setLocations([])
+        if (address.properties.context.region.name == "California") {
 
-        email['district_var'].map(async e => {
-            const loadGeo = async () => {
-                try {
+            setLocations([])
 
-                    // pigeon  coot oystercatcher <
-                    setStatus('Loading ' + e + ' Districts (might take a few seconds)')
+            email['district_var'].map(async e => {
+                const loadGeo = async () => {
+                    try {
 
-                    const coords = [address.properties.coordinates.longitude, address.properties.coordinates.latitude]
+                        // pigeon  coot oystercatcher <
+                        setStatus('Loading ' + e + ' Districts (might take a few seconds)')
 
-                    const {districts, people} : any = await geoLoader(e, true);
+                        const coords = [address.properties.coordinates.longitude, address.properties.coordinates.latitude]
 
-                    // const geo_data: any = await combinedGeo(e, coords, true);
+                        const { districts, people }: any = await geoLoader(e, true);
 
-                    setStatus('Finding Address and ' + e + ' District Overlap')
+                        // const geo_data: any = await combinedGeo(e, coords, true);
 
-                    const district: any = await districtFinder(coords, districts, people);
+                        setStatus('Finding Address and ' + e + ' District Overlap')
 
-                    setTo([...to, district.contactDetails[0].value])
+                        const district: any = await districtFinder(coords, districts, people);
 
-                    setOutLink(true)
+                        setTo([...to, district.contactDetails[0].value])
 
-                } catch (error) {
-                    console.error('Error fetching data:', error);
-                }
+                        setOutLink(true)
 
-            };
+                    } catch (error) {
+                        console.error('Error fetching data:', error);
+                    }
 
-            await loadGeo()
+                };
+
+                await loadGeo()
+                setWaiting(false)
+                setStatus('Email Updated')
+            })
+        } else {
             setWaiting(false)
-            setStatus('Email Updated')
-        })
+            setStatus("Sorry, looks like you aren't in California! :'(")
+        }
     }
 
     useEffect(() => {
@@ -203,10 +209,10 @@ export default function Page({ params }: { params: { slug: string } }) {
 
                 {outLink ? <div id="outbound_link"><label >Mailto Link: <div id="outbound_link_text">{generated}</div></label></div> : ''}
 
-            
+
             </div>
 
-            <Footer/>
+            <Footer />
 
         </div>
 
