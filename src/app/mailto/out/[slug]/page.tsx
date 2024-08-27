@@ -22,7 +22,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     const [slug, setSlug] = useState('')
     const [waiting, setWaiting] = useState(false)
 
-    const [status, setStatus] = useState<string>('Waiting for input')
+    const [status, setStatus] = useState<string>('Waiting for street adrress')
     const [generateToggle, setGenerateToggle] = useState<any>(false)
 
     // UI
@@ -180,7 +180,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                     <>
 
                         <div id="geo_body">
-                            <input placeholder="enter address here" onChange={(e) => setPlace(e.target.value + ", California")}></input>
+                            <input placeholder="enter street address here" onChange={(e) => setPlace(e.target.value + ", California")}></input>
                             <div id="dropdown">
                                 {locations ? locations.map((e, i) => {
                                     return (
