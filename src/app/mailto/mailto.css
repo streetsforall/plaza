@@ -399,7 +399,8 @@ label {
 
 #geocoder {
     font-size: 1.2rem;
-    max-width: 40rem;
+    max-width: 35rem;
+    width: 100%;
     margin: auto;
     margin-top: 3rem;
 }
