@@ -399,13 +399,16 @@ label {
 
 #geo_body input {
     width: calc(100% - 1rem);
+    font-size: 1.3rem;
 }
 
 #dropdown button{
     background-color: var(--bg);
     border-bottom: 1px solid var(--button);
-    width: 80%;
+    width: 100%;
+    padding: .4rem 0;
     text-align: left;
+    font-size: 1.1rem;
 
 }
 

@@ -18,6 +18,8 @@ export default function Page({ params }: { params: { slug: string } }) {
     const [selectedAddress, setSelectedAddress] = useState<any[]>();
     const [generated, setGenerated] = useState('')
     const [hash, setHash] = useState('')
+    const [slug, setSlug] = useState('')
+    const [waiting, setWaiting] = useState(false)
 
     const [status, setStatus] = useState<string>('Waiting for input')
 
@@ -31,9 +33,20 @@ export default function Page({ params }: { params: { slug: string } }) {
             return (email_content)
         }
 
-        setHash(window.location.hash)
+        function validateEmail(email) {
+            var re = /\S+@\S+\.\S+/;
+            return re.test(email);
+        }
 
-        console.log(params.slug)
+        if (validateEmail(params.slug)) { // validate if email
+            console.log('valid email')
+            setSlug(params.slug)
+        } else {
+            console.log('invalid email')
+            setSlug('')
+        }
+
+        setHash(window.location.hash)
 
         loadEmail().then(result => {
             setEmail(result)
@@ -52,10 +65,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                 string: place
             }
 
-
             const jsonData = await geo(body);
-
-            console.log(jsonData)
 
             setLocations(jsonData)
         }
@@ -65,12 +75,12 @@ export default function Page({ params }: { params: { slug: string } }) {
 
 
     const retrieveDistricts = async (address) => {
-        console.log(address)
+
+        setWaiting(true)
 
         setSelectedAddress(address)
-        console.log('address', address.properties)
 
-        const merge_fields = { 
+        const merge_fields = {
             ADDRESSYU: {
                 addr1: address.properties.context.address.name,
                 city: address.properties.context.place.name,
@@ -80,21 +90,21 @@ export default function Page({ params }: { params: { slug: string } }) {
             }
         }
 
-        console.log('merge_fields', merge_fields)
+        if (slug) {
 
-        if (params.slug) {
-            addMailchimp(
-                decodeURIComponent(decodeURIComponent(params.slug)), // email from url
-                merge_fields
-            )
+            try {
+                addMailchimp(
+                    decodeURIComponent(decodeURIComponent(slug)), // email from url
+                    merge_fields
+                )
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+
         }
 
 
         setLocations([])
-
-        console.log(email.district_var)
-
-
 
         email['district_var'].map(async e => {
 
@@ -121,17 +131,16 @@ export default function Page({ params }: { params: { slug: string } }) {
             };
 
             await loadGeo()
+            setWaiting(false)
             setStatus('Email Updated')
         })
-
-        console.log(email)
     }
 
     useEffect(() => {
 
-        console.log('raw', email?.subject)
-        console.log('econded', encodeURIComponent(email?.subject))
-        var output = `mailto:${to}?&cc=${email?.cc}&bcc=${email?.bcc}&subject=${encodeURIComponent(email?.subject)}&body=${(email?.body)}`
+        // console.log('raw', email?.subject)
+        // console.log('econded', encodeURIComponent(email?.subject))
+        var output = `mailto:${to}?&cc=${email?.cc}&bcc=${email?.bcc}&subject=${(email?.subject)}&body=${(email?.body)}`
 
 
         setGenerated(output)
@@ -154,25 +163,37 @@ export default function Page({ params }: { params: { slug: string } }) {
 
             <div className="data_field" id="geocoder">
 
-                <p>Enter your address to find your local representative</p>
 
-                <div id="geo_body">
-                    <input placeholder="enter address or zip code" onChange={(e) => setPlace(e.target.value)}></input>
 
-                    <div id="dropdown">
-                        {locations ? locations.map((e, i) => {
-                            return (
-                                <button key={i} onClick={() => retrieveDistricts(e)}>{e.properties.full_address}</button>)
-                        }) : ''}
-                    </div>
+                {outLink ? ' ' :
+                    <>
 
-                </div>
+                        <p>Enter your address to find your local representative</p>
+                        <div id="geo_body">
+                            <input placeholder="enter address or zip code" onChange={(e) => setPlace(e.target.value)}></input>
 
-                <label>{status}</label>
-                <br />
-                <label>{selectedAddress ? 'Address: ' + selectedAddress['properties'].full_address : ''}</label>
-                <br />
-                <br />
+                            <div id="dropdown">
+                                {locations ? locations.map((e, i) => {
+                                    return (
+                                        <button key={i} onClick={() => retrieveDistricts(e)}>{e.properties.full_address}</button>)
+                                }) : ''}
+                            </div>
+
+                        </div>
+
+                        <label>{status}</label>
+                        <br />
+                        <label>{selectedAddress ? 'Address: ' + selectedAddress['properties'].full_address : ''}</label>
+                        <br />
+                        <br />
+                    </>
+                }
+
+                {waiting ?
+                    <div className="loader">
+                        <img src="/bus.png" />
+                        Calculating Districts
+                    </div> : ""}
 
 
                 <div >{outLink ? <a href={generated}><button id="oubound_copy">Send Email</button></a> : ''}</div>

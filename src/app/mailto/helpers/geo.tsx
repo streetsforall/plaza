@@ -10,7 +10,6 @@ export async function geo(place) {
     
     .then(response => response.json())
             .then(data => {
-                console.log(data.features)
                 return(data.features)
             })
 }
@@ -25,20 +24,34 @@ export async function districtFinder(coords, district) {
 
     // console.log('district', district)
 
-    await district.features.forEach(e => {
+    var startTime = performance.now();
+
+    await district.features.map(e => {
         var poly = e.geometry
-        console.log(e)
         if (booleanPointInPolygon(pt, poly)) {
             foundDistrict = e.properties.person
+            console.log('found district 1')
+            return('')
             }
+            
     });
-    // console.log('foundDistrict', foundDistrict)
+    console.log('foundDistrict 2', foundDistrict)
+
+    var endTime = performance.now();
+    var timeDiff = endTime - startTime; //in ms 
+    // strip the ms 
+    timeDiff /= 1000; 
+    
+    // get seconds 
+    var seconds = Math.round(timeDiff);
+    console.log(seconds + " seconds to calculate ");
     
     return(foundDistrict)
 }
 
-export async function geoLoader(boundary, geo) {
 
+// this loads all districts
+export async function geoLoader(boundary, geo) {
     var district_link = ""  
 
     console.log('package', boundary,geo )
@@ -50,46 +63,25 @@ export async function geoLoader(boundary, geo) {
     } else {
         return('')
     }
+
     var districts = []
+
+    var startTime = performance.now();
 
     await fetch(`https://geo-api-8a9lx.ondigitalocean.app/v1/`+district_link+`?geom=`+geo)
     .then((response => response.json())).then((res) =>  {
         districts = res
     })
 
+    var endTime = performance.now();
+    var timeDiff = endTime - startTime; //in ms 
+    // strip the ms 
+    timeDiff /= 1000; 
+    
+    // get seconds 
+    var seconds = Math.round(timeDiff);
+    console.log(seconds + " seconds to load"+boundary);
+
     // console.log('response', districts)
     return(districts)
 }
-
-
-
-
-
-
-
-
-// export async function districtFinder(localEmail) {
-//     const addEmail = (localEmail) => {
-//         var list = recieverList
-//         localEmail = localEmail.toString()
-//         var localEmail = localEmail.split(",").flat().filter(Boolean)
-//         if (!list.includes(localEmail)) {
-//             list.push(localEmail);
-//         } else {
-//             list.splice(list.indexOf(localEmail), 1);
-//         }
-//         list = list.flat()
-//         setRecieverList(list)
-//         updateEmail()
-//     }
-
-
-// const getCoords = async () => {
-
-//     var body = {
-//         string: place
-//     }
-
-//     const jsonData = await geo(body);
-
-// }
