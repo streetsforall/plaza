@@ -178,8 +178,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
                         <p>Enter your address to find your local representative</p>
                         <div id="geo_body">
-                            <input placeholder="enter address or zip code" onChange={(e) => setPlace(e.target.value)}></input>
-
+                            <input placeholder="enter address here" onChange={(e) => setPlace(e.target.value)}></input>
                             <div id="dropdown">
                                 {locations ? locations.map((e, i) => {
                                     return (
