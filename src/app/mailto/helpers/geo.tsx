@@ -32,7 +32,7 @@ export async function districtFinder(coords, district, people) {
 
     console.log(district)
 
-    for (let e of district) {
+    for (let e of district.reverse()) {
         var poly = e.geometry
         if (booleanPointInPolygon(pt, poly)) {
             foundDistrict = e.id
@@ -72,11 +72,11 @@ export async function geoLoader(boundary, geo) {
         return ('')
     }
 
-    var districts = CA_AD
+    var districts : any = CA_AD
 
-    var people = CA_AD
+    var people = []
 
-    console.log(districts)
+    console.log(districts.reverse())
 
     var startTime = performance.now();
 

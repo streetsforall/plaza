@@ -389,7 +389,7 @@ label {
 
 .loader img { 
     max-width: 10rem;
-
+    margin: auto;
     -webkit-animation-name: wobble; 
     animation-name: wobble; 
     animation-duration: 2s;
@@ -577,6 +577,10 @@ tr:nth-child(even) {
 
     #outbound_link_text {
         font-size: .8rem;
+    }
+
+    #footer {
+        font-size: .7rem;
     }
 
 

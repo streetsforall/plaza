@@ -195,6 +195,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                     <div className="loader">
                         <img src="/images/bus.png" />
                         Calculating Your Representative
+                        <label>(this may take a moment)</label>
                     </div> : ""}
 
 
@@ -204,7 +205,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
             
             </div>
-            
+
             <Footer/>
 
         </div>
