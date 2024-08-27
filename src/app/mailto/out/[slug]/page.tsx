@@ -23,6 +23,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     const [waiting, setWaiting] = useState(false)
 
     const [status, setStatus] = useState<string>('Waiting for input')
+    const [generateToggle, setGenerateToggle] = useState<any>(false)
 
     // UI
     const [outLink, setOutLink] = useState(false)
@@ -171,14 +172,15 @@ export default function Page({ params }: { params: { slug: string } }) {
 
             <div className="data_field" id="geocoder">
 
+            <p>Use this tool to email your local representative</p>
+
 
 
                 {outLink ? ' ' :
                     <>
 
-                        <p>Enter your address to find your local representative</p>
                         <div id="geo_body">
-                            <input placeholder="enter address here" onChange={(e) => setPlace(e.target.value)}></input>
+                            <input placeholder="enter address here" onChange={(e) => setPlace(e.target.value + ", California")}></input>
                             <div id="dropdown">
                                 {locations ? locations.map((e, i) => {
                                     return (
@@ -204,9 +206,15 @@ export default function Page({ params }: { params: { slug: string } }) {
                     </div> : ""}
 
 
-                <div >{outLink ? <a href={generated}><button id="oubound_copy">Send Email</button></a> : ''}</div>
+                <div >{outLink ? <a href={generated}><button id="oubound_copy">Click here to send email</button></a> : ''}</div>
 
-                {outLink ? <div id="outbound_link"><label >Mailto Link: <div id="outbound_link_text">{generated}</div></label></div> : ''}
+                {outLink ? <div id="outbound_link"><label > <div onClick={() => setGenerateToggle(!generateToggle)}>Mailto Link</div> 
+                {generateToggle ? 
+                    <div id="outbound_link_text">
+                    {generated}
+                    </div>
+                     : "" }
+                </label></div> : ''}
 
 
             </div>
