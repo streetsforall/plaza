@@ -10,10 +10,12 @@ export default async function handler(
     if (req.method === "GET") {
         try {
             const mailchimpData = await getMailchimp()
+            console.log(mailchimpData)
 
             res.status(200).send(mailchimpData)
 
         } catch (error: any) {
+            
             if (error instanceof Error) {
                 console.error(`An error occurred retrieving emails: ${error.message}`);
             }
