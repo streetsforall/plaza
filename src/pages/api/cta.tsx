@@ -8,19 +8,19 @@ export default async function handler(
 ) {
 
     if (req.method === "GET") {
-        try {
+        // try {
             const mailchimpData = await getMailchimp()
             console.log(mailchimpData)
 
             res.status(200).send(mailchimpData)
 
-        } catch (error: any) {
+        // } catch (error: any) {
             
-            if (error instanceof Error) {
-                console.error(`An error occurred retrieving emails: ${error.message}`);
-            }
+        //     if (error instanceof Error) {
+        //         console.error(`An error occurred retrieving emails: ${error.message}`);
+        //     }
 
-            res.status(500).send("An error occurred retrieving emails");
-        }
+        //     res.status(500).send("An error occurred retrieving emails");
+        // }
     }
 }
