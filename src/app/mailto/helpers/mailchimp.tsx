@@ -25,3 +25,19 @@ export async function addMailchimp(email: string, merge_fields: any) {
   run();
 
 }
+
+export async function getMailchimp() {
+  const response = await client.campaigns.list({ list_id: "948112d831", status: "sent", sort_field: "send_time", sort_dir: "DESC" });
+
+  var campaign = response['campaigns'][0]
+
+  var campaign_url = campaign['long_archive_url']
+  var campaign_subject = campaign['settings']['subject_line']
+  var campaign_time = campaign['send_time']
+  return [{
+      'url': campaign_url,
+      'subject': campaign_subject,
+      'date': campaign_time
+  }];
+}
+
