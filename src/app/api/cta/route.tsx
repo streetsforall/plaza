@@ -8,11 +8,11 @@ export const fetchCache = "force-no-store";
 
 export async function GET(request: Request) {
   const mailchimpData = await getMailchimp()
-  if (!mailchimpData) {
-    return NextResponse.json({
-      notFound: true,
-    })
-  }
+  // if (!mailchimpData) {
+  //   return NextResponse.json({
+  //     notFound: true,
+  //   })
+  // }
   return NextResponse.json(mailchimpData)
 
 
