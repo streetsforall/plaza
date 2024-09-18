@@ -2,6 +2,9 @@
 
 const client = require("@mailchimp/mailchimp_marketing");
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 client.setConfig({
   apiKey: process.env.MAILCHIMP_KEY,
   server: "us4",

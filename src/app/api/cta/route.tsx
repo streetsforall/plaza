@@ -1,4 +1,4 @@
-const dynamic = "force-dynamic"
+
 
 import { NextResponse } from 'next/server'
 import {getMailchimp} from "../../mailto/helpers/mailchimp"
