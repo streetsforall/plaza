@@ -41,6 +41,7 @@ const CTA = () => {
    useEffect(() => {
 
       const loadEmails = async () => {
+         console.log('loading emails')
          const response = getSaved(window.location.hash);
          console.log('response', response)
          return (response)

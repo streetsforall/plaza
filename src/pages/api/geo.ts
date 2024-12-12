@@ -10,6 +10,6 @@ if (req.method === 'POST') {
 } else {
   // Handle any other HTTP method
   res.setHeader('Allow', ['GET']);
-  res.status(405).end(`Method ${req.method} Not Allowed`);
+  res.status(200).end(`Method ${req.method} Not Allowed`, req.body);
 }
 }
