@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import nieghborhoods from "../data/LA_Neighborhood_Councils.json";
 import metro from "../data/metro.json";
 import cds from "../data/LA_City_Council_Districts.json";
-// import assembly from "../data/CA_Assembly_Districts.json";
+import assembly from "../data/CA_Assembly_Districts.json";
 import senate from "../data/CA_Senate_Districts.json";
 import Santa_Monica from "../data/Santa_Monica.json";
 
@@ -112,7 +112,7 @@ const Data_field = ({ recieverList, setRecieverList, updateEmail }) => {
     return (
         <div className="data_field">
 <h3>Email Library</h3>     
-<label>Use this to select emails of representatives</label> <br/> <br/>
+<label>Use this to select emails of representatives. NOTE: These have not been updated post 2024 Nov. election</label> <br/> <br/>
             <div id="filter" >
                 <button className={dataSource === 'nc' ? 'selected': ""} onClick={() => { setdataSource('nc'); setDeputies(false) }}>LA Nieghborhood Councils</button>
                 <button className={dataSource === 'cd' ? 'selected': ""}onClick={() => { setdataSource('cd') }}>LA City Council</button>

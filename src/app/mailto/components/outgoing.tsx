@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const Outgoing = ({ districtVar, hash, setDistrictVar, isShareable, setIsShareable }) => {
+const Outgoing = ({ actionable, setActionable, districtVar, hash, setDistrictVar, isShareable, setIsShareable }) => {
 
 
     // this component manages the outlist 
@@ -47,12 +47,30 @@ const Outgoing = ({ districtVar, hash, setDistrictVar, isShareable, setIsShareab
             <div style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
 
                 <label style={{ marginRight: ".5rem", width: '58%' }}>Use this to select the catagories of representative that will be sent to audience members and autofilled based on their address.</label>
+                
                 <div>
                     <button className="m_button" id="shareable" onClick={() => setIsShareable(!isShareable)}>{isShareable ? "🗣️ Shareable" : "⛔ Not Shareable"}</button>
+                </div>
 
-                    {isShareable ?
+        
+
+            </div>
+
+            <div style={{ display: "flex",marginTop: "1rem", width: "100%", justifyContent: "space-between" }}>
+            
+            {
+                isShareable ?
+
+                    <div style={{ marginTop: ".5rem"}}>
+                        <button className={'m_button' + (districtVar.includes("Assembly", 0) ? " selected" : "")} onClick={() => { addOut('Assembly') }}>Assembly</button>
+                        <button className={'m_button' + (districtVar.includes("Senate", 0) ? " selected" : "")} onClick={() => { addOut('Senate') }} >Senate</button>
+                        {/* {districtVar} */}
+                    </div> : ""
+            }
+            <div  style={{ marginTop: "rem", justifyContent: "space-between" }}>
+                {isShareable ?
                         districtVar?.length > 0 ?
-                            <button className="m_button" onClick={(e) => copyLink(e)}>=
+                            <button className="l_button" onClick={(e) => copyLink(e)}>
                                 Copy Shareable Link
                             </button>
                             : <label>Select Assembly or Senate</label>
@@ -61,15 +79,11 @@ const Outgoing = ({ districtVar, hash, setDistrictVar, isShareable, setIsShareab
                 </div>
 
             </div>
-            {
-                isShareable ?
-
-                    <div>
-                        <button className={'m_button' + (districtVar.includes("Assembly", 0) ? " selected" : "")} onClick={() => { addOut('Assembly') }}>Assembly</button>
-                        <button className={'m_button' + (districtVar.includes("Senate", 0) ? " selected" : "")} onClick={() => { addOut('Senate') }} >Senate</button>
-                        {/* {districtVar} */}
-                    </div> : ""
-            }
+            <div style={{ display: "flex", flexDirection: "column" }}> 
+            <label className="main_label">Header for sharable link</label>
+            <textarea id="header_field" value={decodeURIComponent(actionable)} rows={1} onChange={(e) => { setActionable(e.target.value); }} />
+            </div>
+          
         </div >
 
     )

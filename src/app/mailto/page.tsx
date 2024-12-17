@@ -5,7 +5,7 @@ import Router from 'next/router'
 
 import { usePathname } from 'next/navigation'
 import './mailto.css';
-// import Data_field from './components/email_library'
+import Data_field from './components/email_library'
 // import Geocoder from './components/geocoder'
 import Outgoing from './components/outgoing';
 import { newSaved, getSaved } from './helpers/saved_emails';
@@ -19,6 +19,7 @@ const CTA = () => {
    const [recieverList, setRecieverList] = useState<any>([]);
    const [isShareable, setIsShareable] = useState(false);
    const [districtVar, setDistrictVar] = useState([]);
+   const [actionable, setActionable] = useState([]);
    const [cc, setCC] = useState([]);
    const [bcc, setBcc] = useState(['contact@streetsforall.org']);
    const [load, setLoad] = useState({})
@@ -59,6 +60,7 @@ const CTA = () => {
             setSubject(decodeURIComponent(match?.subject))
             setBcc(match?.bcc)
             setCC(match?.cc)
+            setActionable(match?.actionable)
             setIsShareable(match?.shareable)
             setDistrictVar(match?.district_var)
             setRecieverList(match?.to);
@@ -83,7 +85,7 @@ const CTA = () => {
 
 
       var clean_subject = encodeURIComponent(subject)
-      var clean_boy =  encodeURIComponent(body)
+      var clean_boy = encodeURIComponent(body)
 
       console.log('cleaning up', clean_subject, clean_boy)
 
@@ -92,6 +94,7 @@ const CTA = () => {
          shareable: isShareable,
          district_var: districtVar,
          url: hash,
+         actionable: actionable,
          to: recieverList,
          cc: cc,
          bcc: bcc,
@@ -102,7 +105,7 @@ const CTA = () => {
 
       console.log(load)
 
-   }, [recieverList, cc, bcc, body, hash, subject, isShareable, districtVar]);
+   }, [recieverList,actionable, cc, bcc, body, hash, subject, isShareable, districtVar]);
 
 
    // this posts a new email hash
@@ -111,10 +114,10 @@ const CTA = () => {
       // we need to clean up potential json escapes
 
       const saveDraft = () => {
-            // this saves it to the DB
-            newSaved(load)
-            // this adds a local saved state to compare against
-            setSaved(load)
+         // this saves it to the DB
+         newSaved(load)
+         // this adds a local saved state to compare against
+         setSaved(load)
       }
 
       // if there is no hash we create one and add it to the URL
@@ -124,10 +127,10 @@ const CTA = () => {
          setHash(url)
          window.location.hash = url;
       } else {
-         console.log('hash already present')  
-         saveDraft()   
+         console.log('hash already present')
+         saveDraft()
       }
-   
+
    }
 
 
@@ -146,7 +149,7 @@ const CTA = () => {
       console.log('econded', encodeURIComponent(body))
 
       var output = `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${encodeURIComponent(subject)}&body=${(body)}`
-      
+
       setEmail(output);
    }
 
@@ -255,10 +258,17 @@ const CTA = () => {
       <div id="container">
 
          <div id='toolset'>
-            <Outgoing hash={hash} districtVar={districtVar} setDistrictVar={setDistrictVar} isShareable={isShareable} setIsShareable={setIsShareable} />
+            <Outgoing 
+            actionable={actionable} 
+            setActionable={setActionable}
+            hash={hash}
+            districtVar={districtVar}
+            setDistrictVar={setDistrictVar}
+            isShareable={isShareable}
+            setIsShareable={setIsShareable} />
 
             {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> */}
-            {/* <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> */}
+            <Data_field setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} />
 
          </div>
 
@@ -274,44 +284,44 @@ const CTA = () => {
             </div>
 
             {mounted ?
-               <div style={{display: "flex", flexDirection: "column"}}>
-               <div>
+               <div style={{ display: "flex", flexDirection: "column" }}>
+                  <div>
 
-                  <label className="main_label">To</label>
-                  <RecipientForm name="to" list={recieverList} setList={setRecieverList} />
+                     <label className="main_label">To</label>
+                     <RecipientForm name="to" list={recieverList} setList={setRecieverList} />
 
-                  <label className={showCC === true ? "label_header full" : "label_header"} onClick={() => setshowCC(!showCC)}>Cc</label>
-                  {showCC === true ? < RecipientForm list={cc} name="cc" setList={setCC} /> : ''}
+                     <label className={showCC === true ? "label_header full" : "label_header"} onClick={() => setshowCC(!showCC)}>Cc</label>
+                     {showCC === true ? < RecipientForm list={cc} name="cc" setList={setCC} /> : ''}
 
-                  <label className={showBcc === true ? "label_header full" : "label_header"} onClick={() => setShowBcc(!showBcc)}>Bcc</label>
-                  {showBcc === true ? <RecipientForm name="bcc" list={bcc} setList={setBcc} /> : ''}
+                     <label className={showBcc === true ? "label_header full" : "label_header"} onClick={() => setShowBcc(!showBcc)}>Bcc</label>
+                     {showBcc === true ? <RecipientForm name="bcc" list={bcc} setList={setBcc} /> : ''}
 
+                  </div>
+
+                  <label className="main_label">Subject</label>
+                  <input value={decodeURIComponent(subject)} id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
+
+                  </input>
+
+                  <label className="main_label">Email Body</label>
+                  <textarea value={decodeURIComponent(body)} id="body_field" rows={20} onChange={(e) => { setBody(e.target.value); updateEmail() }} />
+
+
+                  <div id="preview">
+                     {email}
+                  </div>
+
+                  <button id="copy" onClick={(e) => handleCopyClick(e)} >
+                     Copy Code
+                  </button>
                </div>
-
-               <label className="main_label">Subject</label>
-               <input value={decodeURIComponent(subject)} id="subject_field" onChange={(e) => { setSubject(e.target.value); updateEmail() }}>
-         
-               </input>
-
-               <label className="main_label">Email Body</label>
-               <textarea value={decodeURIComponent(body)} id="body_field" rows={20} onChange={(e) => { setBody(e.target.value); updateEmail() }} />
-
-
-               <div id="preview">
-                  {email}
-               </div>
-
-               <button id="copy" onClick={(e) => handleCopyClick(e)} >
-                  Copy Code
-               </button>
-               </div>
-      : "loading" }
+               : "loading"}
 
 
          </div>
- <button id="feed"><a href="/mailto/drafts">mailto drafts</a></button>
-</div >
-        
+         <button id="feed"><a href="/mailto/drafts">mailto drafts</a></button>
+      </div >
+
 
 
 

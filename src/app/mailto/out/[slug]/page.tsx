@@ -108,24 +108,22 @@ export default function Page({ params }: { params: { slug: string } }) {
 
             setLocations([])
 
-            email['district_var'].map(async e => {
+            email['district_var'].map(async boundary => {
                 const loadGeo = async () => {
                     try {
 
                         // pigeon  coot oystercatcher <
-                        setStatus('Loading ' + e + ' Districts (might take a few seconds)')
+                        setStatus('Loading ' + boundary + ' Districts (might take a few seconds)')
 
                         const coords = [address.properties.coordinates.longitude, address.properties.coordinates.latitude]
 
-                        const { districts, people }: any = await geoLoader(e, true);
+                        const geo_data: any = await combinedGeo(boundary, coords, true);
+                        console.log(geo_data)
 
-                        // const geo_data: any = await combinedGeo(e, coords, true);
+                        setStatus('Finding Address and ' + boundary + ' District Overlap')
 
-                        setStatus('Finding Address and ' + e + ' District Overlap')
 
-                        const district: any = await districtFinder(coords, districts, people);
-
-                        setTo([...to, district.contactDetails[0].value])
+                        setTo([...to, geo_data.contactDetails[0].value])
 
                         setOutLink(true)
 
@@ -169,10 +167,14 @@ export default function Page({ params }: { params: { slug: string } }) {
                 <label>Mailto ID: {hash}</label>
             </div>
 
+           
+
 
             <div className="data_field" id="geocoder">
 
-            <p>Enter your home address below so we can find the right representative to email:</p>
+            <h2 style={{marginBottom: "2rem"}}>{email?.actionable}</h2>
+
+                <p>Enter your home address below so we can find the right representative to email:</p>
 
 
 
@@ -208,12 +210,14 @@ export default function Page({ params }: { params: { slug: string } }) {
 
                 <div >{outLink ? <a href={generated}><button id="oubound_copy">Click here to send email</button></a> : ''}</div>
 
-                {outLink ? <div id="outbound_link"><label > <div onClick={() => setGenerateToggle(!generateToggle)}>Mailto Link</div> 
-                {generateToggle ? 
-                    <div id="outbound_link_text">
-                    {generated}
-                    </div>
-                     : "" }
+                {outLink ? <div id="outbound_link"><label > <div onClick={() => setGenerateToggle(!generateToggle)}>
+                    {generateToggle ? "▼" : "▶"} Mailto Link
+                </div>
+                    {generateToggle ?
+                        <div id="outbound_link_text">
+                            {generated}
+                        </div>
+                        : ""}
                 </label></div> : ''}
 
 
