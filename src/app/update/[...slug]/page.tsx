@@ -215,15 +215,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                       id="mce-ADD_CITY"
                     />
                   </div>
-                  <div className="mc-field-group">
-                    <label htmlFor="mce-ADD_ZIP">Zip Code </label>
-                    <input
-                      type="text"
-                      name="ADD_ZIP"
-                      className=" text"
-                      id="mce-ADD_ZIP"
-                    />
-                  </div>
+
                   <div className="mc-field-group">
                     <label htmlFor="mce-MMERGE33">State </label>
                     <input
@@ -231,6 +223,15 @@ export default function Page({ params }: { params: { slug: string } }) {
                       name="MMERGE33"
                       className=" text"
                       id="mce-MMERGE33"
+                    />
+                  </div>
+                  <div className="mc-field-group">
+                    <label htmlFor="mce-ADD_ZIP">Zip Code </label>
+                    <input
+                      type="text"
+                      name="ADD_ZIP"
+                      className=" text"
+                      id="mce-ADD_ZIP"
                     />
                   </div>
                   <div id="mce-responses" className="clear">
