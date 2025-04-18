@@ -6,18 +6,19 @@ const App = () => {
 
 
     return (
-    <div className="home">
-    <div id="welcome">
-      <h1>Welcome to the <a href="https://www.streetsforall.org/">Streets for All</a> Plaza</h1>
-      <p>this is a public square where all our small projects and tools hang out</p>
+    <div style={{fontFamily: 'monospace'}}className="home">
+      <p>Welcome to the <a href="https://www.streetsforall.org/">Streets for All</a> Plaza</p>
    
-  
-   <div>
+      <div>
     <a href="/mailto">Call to Action Builder</a>
    </div>
+
+
+   <pre>
+   </pre>
+
    
     </div>
-  </div>
     )
 }
 
