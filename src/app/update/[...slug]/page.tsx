@@ -78,8 +78,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   return (
     <>
       <Head>
-      <script defer src="https://cloud.umami.is/script.js" data-website-id="79af4e69-5da3-464f-a844-ecfa00f5b7c3"></script>
-        <script src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js" />
+                <script src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js" />
         <link
           href="//cdn-images.mailchimp.com/embedcode/classic-061523.css"
           rel="stylesheet"
