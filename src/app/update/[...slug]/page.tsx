@@ -141,6 +141,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                 name="mc-embedded-subscribe-form"
                 className="validate"
                 target="_blank"
+                 data-umami-event="{mailchimp_user_submit}"
               >
                 <div id="mc_embed_signup_scroll">
                   <div className="indicates-required">
