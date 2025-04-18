@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import "../../mailto/mailto.css";
 import "./update.css";
 import Head from "next/head";
-import {
-  geo
-} from "../../mailto/helpers/geo";
+import { geo } from "../../mailto/helpers/geo";
 import { textEncoding } from "../../mailto/helpers/text_cleanup";
 import { addMailchimp } from "../../mailto/helpers/mailchimp";
 import Footer from "../../mailto/components/footer";
@@ -20,25 +18,22 @@ export default function Page({ params }: { params: { slug: string } }) {
   const [selectedAddress, setSelectedAddress] = useState<any[]>();
   const [waiting, setWaiting] = useState(false);
 
-
   // Set the initial slug value directly
   useEffect(() => {
-
     function validateEmail(email) {
       var re = /\S+@\S+\.\S+/;
       return re.test(email);
     }
 
-    console.log("initial slug", params.slug.toString()); 
+    console.log("initial slug", params.slug.toString());
     if (params.slug) {
       setSlug(decodeURIComponent(decodeURIComponent(params.slug.toString())));
     }
   }, []);
 
   useEffect(() => {
-    console.log(slug)
-  }, [slug]); 
-
+    console.log(slug);
+  }, [slug]);
 
   useEffect(() => {
     // this updates the list of addresses on when the field changes
@@ -83,6 +78,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   return (
     <>
       <Head>
+      <script defer src="https://cloud.umami.is/script.js" data-website-id="79af4e69-5da3-464f-a844-ecfa00f5b7c3"></script>
         <script src="//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js" />
         <link
           href="//cdn-images.mailchimp.com/embedcode/classic-061523.css"
@@ -101,13 +97,14 @@ export default function Page({ params }: { params: { slug: string } }) {
         <div className="data_field" id="geocoder">
           <h2>Update your Streets for All contact information</h2>
           <label className="intro">
-            Address information is used to send you more relevant calls to
-            action. A full address is not required - even a zip code helps. This
-            information is stored securely.{" "}
+            We ask for your address to make sure you only get calls to action
+            relevant to your area. Even a zip code helps. This keeps spam out of your inbox and helps
+            our work be as effective as it can be. We will never distribute your
+            personal information. 
           </label>
 
           {/* AUTO ADDRESS */}
-{/* 
+          {/* 
           <div id="geo_body">
             <input
               placeholder="enter address here"
@@ -133,8 +130,6 @@ export default function Page({ params }: { params: { slug: string } }) {
           </label>
           <br />
           <br /> */}
-
-
 
           {/* MANUAL ADDRESS */}
 
@@ -257,6 +252,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                   </div>
                   <div className="clear">
                     <input
+                      data-umami-event="{mailchimp_user_update}"
                       type="submit"
                       name="subscribe"
                       id="mc-embedded-subscribe"
