@@ -10,10 +10,10 @@ const Outgoing = ({ actionable, setActionable, districtVar, hash, setDistrictVar
 
         console.log('itemlist before', newList)
 
-        if (newList.includes(item)) {        
+        if (newList.includes(item)) {
             newList?.splice(newList.indexOf(item), 1);  //deleting
         } else {
-            newList?.push(item);              
+            newList?.push(item);
         }
 
         setDistrictVar(newList)
@@ -47,28 +47,28 @@ const Outgoing = ({ actionable, setActionable, districtVar, hash, setDistrictVar
             <div style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
 
                 <label style={{ marginRight: ".5rem", width: '58%' }}>Use this to select the catagories of representative that will be sent to audience members and autofilled based on their address.</label>
-                
+
                 <div>
                     <button className="m_button" id="shareable" onClick={() => setIsShareable(!isShareable)}>{isShareable ? "🗣️ Shareable" : "⛔ Not Shareable"}</button>
                 </div>
 
-        
+
 
             </div>
 
-            <div style={{ display: "flex",marginTop: "1rem", width: "100%", justifyContent: "space-between" }}>
-            
-            {
-                isShareable ?
+            <div style={{ display: "flex", marginTop: "1rem", width: "100%", justifyContent: "space-between" }}>
 
-                    <div style={{ marginTop: ".5rem"}}>
-                        <button className={'m_button' + (districtVar.includes("Assembly", 0) ? " selected" : "")} onClick={() => { addOut('Assembly') }}>Assembly</button>
-                        <button className={'m_button' + (districtVar.includes("Senate", 0) ? " selected" : "")} onClick={() => { addOut('Senate') }} >Senate</button>
-                        {/* {districtVar} */}
-                    </div> : ""
-            }
-            <div  style={{ marginTop: "rem", justifyContent: "space-between" }}>
-                {isShareable ?
+                {
+                    isShareable ?
+
+                        <div style={{ marginTop: ".5rem" }}>
+                            <button className={'m_button' + (districtVar.includes("Assembly", 0) ? " selected" : "")} onClick={() => { addOut('Assembly') }}>Assembly</button>
+                            <button className={'m_button' + (districtVar.includes("Senate", 0) ? " selected" : "")} onClick={() => { addOut('Senate') }} >Senate</button>
+                            {/* {districtVar} */}
+                        </div> : ""
+                }
+                <div style={{ marginTop: "rem", justifyContent: "space-between" }}>
+                    {isShareable ?
                         districtVar?.length > 0 ?
                             <button className="l_button" onClick={(e) => copyLink(e)}>
                                 Copy Shareable Link
@@ -79,11 +79,14 @@ const Outgoing = ({ actionable, setActionable, districtVar, hash, setDistrictVar
                 </div>
 
             </div>
-            <div style={{ display: "flex", flexDirection: "column" }}> 
-            <label className="main_label">Header for sharable link</label>
-            <textarea id="header_field" value={decodeURIComponent(actionable)} rows={1} onChange={(e) => { setActionable(e.target.value); }} />
-            </div>
-          
+            {
+                isShareable ?
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        <label className="main_label">Header for sharable link</label>
+                        <textarea id="header_field" value={decodeURIComponent(actionable)} rows={1} onChange={(e) => { setActionable(e.target.value); }} />
+                    </div>
+                    : ""}
+
         </div >
 
     )

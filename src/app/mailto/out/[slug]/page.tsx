@@ -66,9 +66,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             var body = {
                 string: place
             }
-
             const jsonData = await geo(body);
-
             setLocations(jsonData)
         }
 
@@ -83,13 +81,11 @@ export default function Page({ params }: { params: { slug: string } }) {
         setSelectedAddress(address)
 
         const merge_fields = {
-            ADDRESSYU: {
-                addr1: address.properties.context.address.name,
-                city: address.properties.context.place.name,
-                state: address.properties.context.region.name,
-                zip: address.properties.context.postcode.name,
-                country: address.properties.context.country.country_code
-            }
+            ADD_ST: address.properties.context.address.name || "",
+            ADD_CITY: address.properties.context.place.name || "",
+            ADD_ZIP:address.properties.context.postcode.name || "",
+            ADD_STATE: address.properties.context.region.name  || '',
+            ADD_COUNTR: address.properties.context.country.country_code || "",
         }
 
         if (slug) {
