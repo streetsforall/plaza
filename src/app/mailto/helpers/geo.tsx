@@ -137,8 +137,8 @@ export async function combinedGeo(boundary, coords, geo) {
 
             // Check if the point is inside the district's polygon
             if (booleanPointInPolygon(pt, poly)) {
-                foundDistrict = district.properties.person; // Store district info if found
-                console.log(district.properties.person)
+                foundDistrict = district; // Store district info if found
+                console.log(district)
                 console.log('found district');
                 break; // Exit loop once the district is found
             }

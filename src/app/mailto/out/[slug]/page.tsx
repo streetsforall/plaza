@@ -7,6 +7,7 @@ import "../../mailto.css";
 import { textEncoding } from "../../helpers/text_cleanup";
 import { addMailchimp } from "../../helpers/mailchimp";
 import Footer from "../../components/footer";
+import metadata from "../../data/memeber_meta.json";
 
 export default function Page({ params }: { params: { slug: string } }) {
   // DATA
@@ -17,6 +18,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   const [selectedAddress, setSelectedAddress] = useState<any[]>();
   const [generated, setGenerated] = useState("");
   const [hash, setHash] = useState("");
+  const [phoneNum, setPhoneNum] = useState("");
   const [slug, setSlug] = useState("");
   const [waiting, setWaiting] = useState(false);
 
@@ -61,8 +63,8 @@ export default function Page({ params }: { params: { slug: string } }) {
   }, []);
 
   useEffect(() => {
-    console.log('to', to)
-  },[to])
+    console.log("to", to);
+  }, [to]);
 
   useEffect(() => {
     // this updates the list of addresses on when the field changes
@@ -121,9 +123,28 @@ export default function Page({ params }: { params: { slug: string } }) {
 
             const geo_data: any = await combinedGeo(boundary, coords, true);
 
+            console.log(geo_data);
+
             setStatus("Finding Address and " + boundary + " District Overlap");
 
-            setTo(prevTo => [geo_data.contactDetails[0].value, ...prevTo]);
+            setTo((prevTo) => [
+              geo_data.properties.person.contactDetails[0].value,
+              ...prevTo,
+            ]);
+            // find matching member meta
+            const boundaryData = metadata[boundary];
+
+            console.log(boundaryData, boundary);
+
+            var phone = 0;
+            // Check if this boundary has the required fields and matching District Number
+            const matchingFeature = Object.values(boundaryData).find(
+              (feature) =>
+                String(feature!["District Number"].toLowerCase()) ===
+                String(geo_data.id.toLowerCase())
+            );
+
+            setPhoneNum(matchingFeature!["Phone Number"]);
 
             setOutLink(true);
           } catch (error) {
@@ -152,6 +173,37 @@ export default function Page({ params }: { params: { slug: string } }) {
     console.log("email updated");
   }, [to]);
 
+  const renderTextWithLinks = (text) => {
+    // Add null/undefined check at the beginning
+    if (!text) return "";
+    
+    console.log(text);
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+    
+    return parts.map((part, index) => {
+      if (part.match(urlRegex)) {
+        // Clean up the display text by removing protocol and www
+        const displayText = part
+          .replace(/^https?:\/\//, '') // Remove http:// or https://
+          .replace(/^www\./, '');      // Remove www.
+        
+        return (
+          <a 
+            key={index}
+            href={part} // Keep original URL for the actual link
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:underline"
+          >
+            {displayText}
+          </a>
+        );
+      }
+      return part;
+    });
+  }
+  
   return (
     <div id="outbound">
       <div id="outbound_header">
@@ -162,7 +214,12 @@ export default function Page({ params }: { params: { slug: string } }) {
       </div>
 
       <div className="data_field" id="geocoder">
-        <h2 style={{ marginBottom: "2rem" }}>{email?.actionable}</h2>
+        <h2 style={{ marginBottom: "2rem" }}>{email?.actionable?.header}</h2>
+        <p style={{ marginBottom: "2rem" }}>
+          {email?.actionable?.body
+            ? renderTextWithLinks(email.actionable.body)
+            : ""}
+        </p>
 
         <p>
           Enter your home address below so we can find the right representative
@@ -214,6 +271,15 @@ export default function Page({ params }: { params: { slug: string } }) {
         )}
 
         <div>
+          {outLink ? (
+            <div>
+              <span>Call your representative:</span>
+              <a href={"tel:" + phoneNum}>{phoneNum}</a>
+            </div>
+          ) : (
+            ""
+          )}
+
           {outLink ? (
             <a href={generated}>
               <button id="oubound_copy">Click here to send email</button>
