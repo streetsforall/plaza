@@ -355,7 +355,7 @@ export default function Page({ params }: { params: { slug: string } }) {
             >
               <a href={generated}>
                 <button id="oubound_copy">
-                  Click here to email your representative
+                  Email your representative (Customize the bottom)
                 </button>
               </a>
             </div>
