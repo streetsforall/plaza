@@ -22,6 +22,8 @@ export default function Page({ params }: { params: { slug: string } }) {
   const [slug, setSlug] = useState("");
   const [waiting, setWaiting] = useState(false);
 
+  const [districtInfo, setDistrictInfo] = useState<any>();
+
   const [status, setStatus] = useState<string>("Waiting for street adrress");
   const [generateToggle, setGenerateToggle] = useState<any>(false);
 
@@ -85,13 +87,15 @@ export default function Page({ params }: { params: { slug: string } }) {
     setWaiting(true);
 
     setSelectedAddress(address);
+    console.log(address)
 
+    setSelectedAddress(address);
     const merge_fields = {
-      ADD_ST: address.properties.context.address.name || "",
-      ADD_CITY: address.properties.context.place.name || "",
-      ADD_ZIP: address.properties.context.postcode.name || "",
-      ADD_STATE: address.properties.context.region.name || "",
-      ADD_COUNTR: address.properties.context.country.country_code || "",
+      ADD_ST: address?.properties?.context?.address?.name || "",
+      ADD_CITY: address?.properties?.context?.place?.name || "",
+      ADD_ZIP: address?.properties?.context?.postcode?.name || "",
+      ADD_STATE: address?.properties?.context?.region?.name || "",
+      ADD_COUNTR: address?.properties?.context?.country?.country_code || "",
     };
 
     if (slug) {
@@ -123,6 +127,7 @@ export default function Page({ params }: { params: { slug: string } }) {
 
             const geo_data: any = await combinedGeo(boundary, coords, true);
 
+            setDistrictInfo(geo_data);
             console.log(geo_data);
 
             setStatus("Finding Address and " + boundary + " District Overlap");
@@ -176,20 +181,35 @@ export default function Page({ params }: { params: { slug: string } }) {
   const renderTextWithLinks = (text) => {
     // Add null/undefined check at the beginning
     if (!text) return "";
+
+    const districtData = {
+      district: districtInfo.id,
+      legislator: districtInfo.properties.person.name,
+      role: districtInfo.properties.post.role
+    }
     
-    console.log(text);
+    // First, replace variables with data
+    let processedText = text;
+    const variableRegex = /\[\[([^\]]+)\]\]/g;
+    
+    processedText = processedText.replace(variableRegex, (match, variableName) => {
+      // Return the data value if it exists, otherwise keep the original bracket format
+      return districtData[variableName] || match;
+    });
+    
+    // Then handle URLs
     const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts = text.split(urlRegex);
+    const parts = processedText.split(urlRegex);
     
     return parts.map((part, index) => {
       if (part.match(urlRegex)) {
         // Clean up the display text by removing protocol and www
         const displayText = part
-          .replace(/^https?:\/\//, '') // Remove http:// or https://
-          .replace(/^www\./, '');      // Remove www.
+          .replace(/^https?:\/\//, "") // Remove http:// or https://
+          .replace(/^www\./, ""); // Remove www.
         
         return (
-          <a 
+          <a
             key={index}
             href={part} // Keep original URL for the actual link
             target="_blank"
@@ -202,8 +222,8 @@ export default function Page({ params }: { params: { slug: string } }) {
       }
       return part;
     });
-  }
-  
+  };
+
   return (
     <div id="outbound">
       <div id="outbound_header">
@@ -215,16 +235,24 @@ export default function Page({ params }: { params: { slug: string } }) {
 
       <div className="data_field" id="geocoder">
         <h2 style={{ marginBottom: "2rem" }}>{email?.actionable?.header}</h2>
-        <p style={{ marginBottom: "2rem" }}>
+        {outLink ? (
+        <p style={{ paddingBottom: "2rem", color: "grey", whiteSpace: "pre-wrap" }}>
           {email?.actionable?.body
             ? renderTextWithLinks(email.actionable.body)
             : ""}
         </p>
+        ) : (
+          ""
+        )}
 
-        <p>
-          Enter your home address below so we can find the right representative
-          to email:
-        </p>
+        {!outLink ? (
+          <p>
+            Enter your home address below so we can find the right
+            representative to contact:
+          </p>
+        ) : (
+          ""
+        )}
 
         {outLink ? (
           " "
@@ -272,8 +300,34 @@ export default function Page({ params }: { params: { slug: string } }) {
 
         <div>
           {outLink ? (
-            <div>
-              <span>Call your representative:</span>
+            <div
+              style={{
+                marginBottom: "2rem",
+                border: "1px dotted black",
+                padding: "1rem",
+              }}
+            >
+              <span>
+                {`You are represented by ${
+                  districtInfo?.properties.post.role
+                } ${
+                  districtInfo?.properties.person.name
+                } in district ${districtInfo?.id.toUpperCase()}`}{" "}
+              </span>
+            </div>
+          ) : (
+            ""
+          )}
+
+          {outLink ? (
+            <div
+              style={{
+                marginBottom: "2rem",
+                border: "1px dotted black",
+                padding: "1rem",
+              }}
+            >
+              <b>Call your representative: </b>
               <a href={"tel:" + phoneNum}>{phoneNum}</a>
             </div>
           ) : (
@@ -281,9 +335,19 @@ export default function Page({ params }: { params: { slug: string } }) {
           )}
 
           {outLink ? (
-            <a href={generated}>
-              <button id="oubound_copy">Click here to send email</button>
-            </a>
+            <div
+              style={{
+                marginBottom: "2rem",
+                border: "1px dotted black",
+                padding: "1rem",
+              }}
+            >
+              <a href={generated}>
+                <button id="oubound_copy">
+                  Click here to email your representative
+                </button>
+              </a>
+            </div>
           ) : (
             ""
           )}

@@ -17,7 +17,7 @@ export async function getAllSaved() {
     repo: "library",
     path: "email_generator.json",
   })
-  const json = JSON.parse(atob(data.content))
+  const json = JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'));
   // console.log('json', json)
   return ([json, data.sha]);
 };
@@ -35,7 +35,7 @@ export async function getSaved(hash) {
 
   // console.log(data)
 
-  const json = JSON.parse(atob(data.content))
+  const json = JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'));
 
   // console.log(json)
 
@@ -83,6 +83,8 @@ export async function newSaved(data) {
 
       console.log('json being save', json)
 
+      const bufferEncode = Buffer.from(JSON.stringify(json), 'utf8').toString('base64')
+
       try {
         await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
           owner: 'streetsforall',
@@ -90,9 +92,9 @@ export async function newSaved(data) {
           sha: SHA,
           path: 'email_generator.json',
           message: 'updating DB',
-          content: btoa(JSON.stringify(json)),
+          content: bufferEncode,
         })
-        return (btoa(JSON.stringify(json)));
+        return (Buffer.from(JSON.stringify(json), 'utf8').toString('base64'));;
       } catch (err) {
         console.error('error', err);
         return ('saving failed');

@@ -40,6 +40,11 @@ const CTA = () => {
     const loadEmails = async () => {
       console.log("loading emails");
       const response = getSaved(window.location.hash);
+
+      // send hash and username/pwd
+      // return data if valid
+      // otherwise say invalid pwd
+
       console.log("response", response);
       return response;
     };
