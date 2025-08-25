@@ -6,8 +6,6 @@ import { Octokit, App } from "octokit";
 const octokit = new Octokit({ auth: process.env.GIT_KEY });
 
 
-
-
 // read from our mailto database hosted on GitHub
 export async function getAllSaved() {
   console.log('fetching emails')

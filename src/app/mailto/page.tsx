@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Router from "next/router";
 
 import { usePathname } from "next/navigation";
@@ -10,6 +10,8 @@ import Data_field from "./components/email_library";
 import Outgoing from "./components/outgoing";
 import { newSaved, getSaved } from "./helpers/saved_emails";
 import { textEncoding, textEscapes } from "./helpers/text_cleanup";
+import { validateString } from "./helpers/validator";
+import Feed from "./drafts/page";
 
 const CTA = () => {
   //content state
@@ -26,6 +28,7 @@ const CTA = () => {
   const [isPhone, setPhone] = useState({});
 
   // UI state
+  const [validated, setValidated] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState("");
   const [hash, setHash] = useState<string>();
@@ -33,50 +36,59 @@ const CTA = () => {
   const [showGeo, setshowGeo] = useState(false);
   const [showCC, setshowCC] = useState(false);
   const [showBcc, setShowBcc] = useState(false);
+  const [feed, setFeed] = useState(false);
+
+  const pwdInputRef = useRef<HTMLInputElement>(null);
+
+  const validate = (event) => {
+    event.preventDefault(); // Prevent default page refresh
+
+    const word = pwdInputRef.current?.value;
+
+    setValidated(validateString(word ? word.toString() : ""));
+  };
 
   // set email on load
   // this is all client side
-  useEffect(() => {
-    const loadEmails = async () => {
-      console.log("loading emails");
-      const response = getSaved(window.location.hash);
-
-      // send hash and username/pwd
-      // return data if valid
-      // otherwise say invalid pwd
-
-      console.log("response", response);
-      return response;
-    };
-
-    loadEmails()
-      .then((result) => {
-        console.log(result);
-        const match = result;
-        console.log(match);
-
-        if (match) {
-          // if URL is valid, fill field with data
-          setBody(decodeURIComponent(match?.body));
-          setSubject(decodeURIComponent(match?.subject));
-          setBcc(match?.bcc);
-          setCC(match?.cc);
-          setActionable(match?.actionable);
-          setIsShareable(match?.shareable);
-          setDistrictVar(match?.district_var);
-          setRecieverList(match?.to);
-          setPhone(match?.phone);
-        }
-        setMounted(true);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    setSaved(load);
-
-    setHash(window.location.hash);
-    updateEmail();
-  }, []);
+    useEffect(() => {
+      const loadEmails = async () => {
+         console.log("loading emails");
+         const response = getSaved(window.location.hash);
+   
+         console.log("response", response);
+         return response;
+       };
+   
+       if (validated) {
+         loadEmails()
+           .then((result) => {
+             console.log(result);
+             const match = result;
+             console.log(match);
+   
+             if (match) {
+               // if URL is valid, fill field with data
+               setBody(decodeURIComponent(match?.body));
+               setSubject(decodeURIComponent(match?.subject));
+               setBcc(match?.bcc);
+               setCC(match?.cc);
+               setActionable(match?.actionable);
+               setIsShareable(match?.shareable);
+               setDistrictVar(match?.district_var);
+               setRecieverList(match?.to);
+               setPhone(match?.phone);
+             }
+             setMounted(true);
+           })
+           .catch((err) => {
+             console.log(err);
+           });
+         setSaved(load);
+   
+         setHash(window.location.hash);
+         updateEmail();
+       }
+    }, []);
 
   //update email string whenever a change is made
   useEffect(() => {
@@ -327,106 +339,122 @@ const CTA = () => {
   };
 
   return (
-    <div id="container">
-      <div id="toolset">
-        <Outgoing
-          actionable={actionable}
-          setActionable={setActionable}
-          hash={hash}
-          districtVar={districtVar}
-          setDistrictVar={setDistrictVar}
-          isShareable={isShareable}
-          setIsShareable={setIsShareable}
-          isPhone={isPhone}
-          setPhone={setPhone}
-        />
-
-        {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> */}
-        <Data_field
-          setRecieverList={setRecieverList}
-          recieverList={recieverList}
-          updateEmail={updateEmail}
-        />
+    <div id="page">
+      <div hidden={validated ? true : false} id="log-in">
+        Please log in to access the mailto tool
+        <form onSubmit={validate}>
+          <div>
+            <label>Password</label>
+            <input ref={pwdInputRef} id="password" />
+          </div>
+          <button className="button_m" type="submit">
+            Submit
+          </button>
+        </form>
       </div>
 
-      <div className="window" id="mailer">
-        <div id="mailer_head">
-          <div>
-            <h1>MailTo</h1>
-            <label>Use this to generate an email</label>
-          </div>
-          {editable}
+      <div hidden={validated ? false : true} id="container">
+        <div id="toolset">
+          <Outgoing
+            actionable={actionable}
+            setActionable={setActionable}
+            hash={hash}
+            districtVar={districtVar}
+            setDistrictVar={setDistrictVar}
+            isShareable={isShareable}
+            setIsShareable={setIsShareable}
+            isPhone={isPhone}
+            setPhone={setPhone}
+          />
+
+          {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> */}
+          <Data_field
+            setRecieverList={setRecieverList}
+            recieverList={recieverList}
+            updateEmail={updateEmail}
+          />
         </div>
 
-        {mounted ? (
-          <div style={{ display: "flex", flexDirection: "column" }}>
+        <div className="window" id="mailer">
+          <div id="mailer_head">
             <div>
-              <label className="main_label">To</label>
-              <RecipientForm
-                name="to"
-                list={recieverList}
-                setList={setRecieverList}
+              <h1>MailTo</h1>
+              <label>Use this to generate an email</label>
+            </div>
+            {editable}
+          </div>
+
+          {mounted ? (
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <div>
+                <label className="main_label">To</label>
+                <RecipientForm
+                  name="to"
+                  list={recieverList}
+                  setList={setRecieverList}
+                />
+
+                <label
+                  className={
+                    showCC === true ? "label_header full" : "label_header"
+                  }
+                  onClick={() => setshowCC(!showCC)}
+                >
+                  Cc
+                </label>
+                {showCC === true ? (
+                  <RecipientForm list={cc} name="cc" setList={setCC} />
+                ) : (
+                  ""
+                )}
+
+                <label
+                  className={
+                    showBcc === true ? "label_header full" : "label_header"
+                  }
+                  onClick={() => setShowBcc(!showBcc)}
+                >
+                  Bcc
+                </label>
+                {showBcc === true ? (
+                  <RecipientForm name="bcc" list={bcc} setList={setBcc} />
+                ) : (
+                  ""
+                )}
+              </div>
+
+              <label className="main_label">Subject</label>
+              <input
+                value={decodeURIComponent(subject)}
+                id="subject_field"
+                onChange={(e) => {
+                  setSubject(e.target.value);
+                  updateEmail();
+                }}
+              ></input>
+
+              <label className="main_label">Email Body</label>
+              <textarea
+                value={decodeURIComponent(body)}
+                id="body_field"
+                rows={20}
+                onChange={(e) => {
+                  setBody(e.target.value);
+                  updateEmail();
+                }}
               />
 
-              <label
-                className={
-                  showCC === true ? "label_header full" : "label_header"
-                }
-                onClick={() => setshowCC(!showCC)}
-              >
-                Cc
-              </label>
-              {showCC === true ? (
-                <RecipientForm list={cc} name="cc" setList={setCC} />
-              ) : (
-                ""
-              )}
+              <div id="preview">{email}</div>
 
-              <label
-                className={
-                  showBcc === true ? "label_header full" : "label_header"
-                }
-                onClick={() => setShowBcc(!showBcc)}
-              >
-                Bcc
-              </label>
-              {showBcc === true ? (
-                <RecipientForm name="bcc" list={bcc} setList={setBcc} />
-              ) : (
-                ""
-              )}
+              <button id="copy" onClick={(e) => handleCopyClick(e)}>
+                Copy Code
+              </button>
             </div>
-
-            <label className="main_label">Subject</label>
-            <input
-              value={decodeURIComponent(subject)}
-              id="subject_field"
-              onChange={(e) => {
-                setSubject(e.target.value);
-                updateEmail();
-              }}
-            ></input>
-
-            <label className="main_label">Email Body</label>
-            <textarea
-              value={decodeURIComponent(body)}
-              id="body_field"
-              rows={20}
-              onChange={(e) => {
-                setBody(e.target.value);
-                updateEmail();
-              }}
-            />
-
-            <div id="preview">{email}</div>
-
-            <button id="copy" onClick={(e) => handleCopyClick(e)}>
-              Copy Code
-            </button>
-          </div>
-        ) : (
-          "loading"
-        )}
+          ) : (
+            "loading"
+          )}
+        </div>
+        
       </div>
       <button id="feed">
         <a href="/mailto/drafts">mailto drafts</a>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Head from 'next/head'
 import { getSaved } from "../../helpers/saved_emails";
 import { geo, districtFinder, geoLoader, combinedGeo } from "../../helpers/geo";
 import "../../mailto.css";
@@ -226,6 +227,12 @@ export default function Page({ params }: { params: { slug: string } }) {
 
   return (
     <div id="outbound">
+      <Head>
+        <title>{email?.actionable?.header}</title>
+        <meta property="og:title" content={email?.actionable?.header} key="title" />
+        <link rel="icon" href="/images/SFA_logo.png"/>
+      </Head>
+
       <div id="outbound_header">
         <a href="https://www.streetsforall.org/">
           <img src="/images/SFA_logo_wide.png" />
@@ -236,7 +243,7 @@ export default function Page({ params }: { params: { slug: string } }) {
       <div className="data_field" id="geocoder">
         <h2 style={{ marginBottom: "2rem" }}>{email?.actionable?.header}</h2>
         {outLink ? (
-        <p style={{ paddingBottom: "2rem", color: "grey", whiteSpace: "pre-wrap" }}>
+        <p style={{ paddingBottom: "2rem", color: "#575757", whiteSpace: "pre-wrap" }}>
           {email?.actionable?.body
             ? renderTextWithLinks(email.actionable.body)
             : ""}
