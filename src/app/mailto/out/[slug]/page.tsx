@@ -183,7 +183,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     if (!text) return "";
 
     const districtData = {
-      district: districtInfo.id,
+      district: districtInfo.id.toUpperCase(),
       legislator: districtInfo.properties.person.name,
       role: districtInfo.properties.post.role
     }
