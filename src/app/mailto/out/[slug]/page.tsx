@@ -242,6 +242,29 @@ export default function Page({ params }: { params: { slug: string } }) {
 
       <div className="data_field" id="geocoder">
         <h2 style={{ marginBottom: "2rem" }}>{email?.actionable?.header}</h2>
+
+
+        {outLink ? (
+            <div
+              style={{
+                marginBottom: "2rem",
+                border: "1px dotted black",
+                padding: "1rem",
+              }}
+            >
+              <span>
+                {`You are represented by ${
+                  districtInfo?.properties.post.role
+                } ${
+                  districtInfo?.properties.person.name
+                } in district ${districtInfo?.id.toUpperCase()}`}{" "}
+              </span>
+            </div>
+          ) : (
+            ""
+          )}
+
+
         {outLink ? (
         <p style={{ paddingBottom: "2rem", color: "#575757", whiteSpace: "pre-wrap" }}>
           {email?.actionable?.body
@@ -306,25 +329,6 @@ export default function Page({ params }: { params: { slug: string } }) {
         )}
 
         <div>
-          {outLink ? (
-            <div
-              style={{
-                marginBottom: "2rem",
-                border: "1px dotted black",
-                padding: "1rem",
-              }}
-            >
-              <span>
-                {`You are represented by ${
-                  districtInfo?.properties.post.role
-                } ${
-                  districtInfo?.properties.person.name
-                } in district ${districtInfo?.id.toUpperCase()}`}{" "}
-              </span>
-            </div>
-          ) : (
-            ""
-          )}
 
           {outLink ? (
             <div
