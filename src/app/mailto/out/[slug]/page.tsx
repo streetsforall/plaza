@@ -297,7 +297,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                 {locations
                   ? locations.map((e, i) => {
                       return (
-                        <button key={i} onClick={() => retrieveDistricts(e)}>
+                        <button data-umami-event="cta_select_address" key={i} onClick={() => retrieveDistricts(e)}>
                           {e.properties.full_address}
                         </button>
                       );
@@ -339,7 +339,7 @@ export default function Page({ params }: { params: { slug: string } }) {
               }}
             >
               <b>Call your representative: </b>
-              <a href={"tel:" + phoneNum}>{phoneNum}</a>
+              <a style={{whiteSpace: "nowrap"}} data-umami-event="cta_click_phone" href={"tel:" + phoneNum}>{phoneNum}</a>
             </div>
           ) : (
             ""
@@ -354,7 +354,7 @@ export default function Page({ params }: { params: { slug: string } }) {
               }}
             >
               <a href={generated}>
-                <button id="oubound_copy">
+                <button data-umami-event="cta_click_phone" id="oubound_copy">
                   Email your representative (Customize the bottom)
                 </button>
               </a>
