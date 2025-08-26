@@ -14,82 +14,81 @@ import { validateString } from "./helpers/validator";
 import Feed from "./drafts/page";
 
 const CTA = () => {
-  //content state
-  const [body, setBody] = useState("");
-  const [subject, setSubject] = useState("");
-  const [recieverList, setRecieverList] = useState<any>([]);
-  const [isShareable, setIsShareable] = useState(false);
-  const [districtVar, setDistrictVar] = useState([]);
-  const [actionable, setActionable] = useState({ body: "", header: "" });
-  const [cc, setCC] = useState([]);
-  const [bcc, setBcc] = useState(["contact@streetsforall.org"]);
-  const [load, setLoad] = useState({});
-  const [saved, setSaved] = useState({});
-  const [isPhone, setPhone] = useState({});
-
-  // UI state
-  const [validated, setValidated] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [email, setEmail] = useState("");
-  const [hash, setHash] = useState<string>();
-  const [copy, setCopy] = useState("");
-  const [showGeo, setshowGeo] = useState(false);
-  const [showCC, setshowCC] = useState(false);
-  const [showBcc, setShowBcc] = useState(false);
-  const [feed, setFeed] = useState(false);
+   interface SavedEmail {
+      body?: string;
+      subject?: string;
+      bcc?: string[];
+      cc?: string[];
+      actionable?: { body: string; header: string };
+      shareable?: boolean;
+      district_var?: any[];
+      to?: any[];
+      phone?: any;
+    }
+    
+    // Update your state declarations with proper types:
+    const [body, setBody] = useState<string>("");
+    const [subject, setSubject] = useState<string>("");
+    const [recieverList, setRecieverList] = useState<any[]>([]);
+    const [isShareable, setIsShareable] = useState<boolean>(false);
+    const [districtVar, setDistrictVar] = useState<any[]>([]);
+    const [actionable, setActionable] = useState<{ body: string; header: string }>({ body: "", header: "" });
+    const [cc, setCC] = useState<string[]>([]);
+    const [bcc, setBcc] = useState<string[]>(["contact@streetsforall.org"]);
+    const [load, setLoad] = useState<any>({});
+    const [saved, setSaved] = useState<any>({});
+    const [isPhone, setPhone] = useState<any>({});
+    const [match, setMatch] = useState<SavedEmail | null>(null); // This is the key fix!
+    
+    // UI state
+    const [validated, setValidated] = useState<boolean>(false);
+    const [mounted, setMounted] = useState<boolean>(false);
+    const [email, setEmail] = useState<string>("");
+    const [hash, setHash] = useState<string>();
+    const [copy, setCopy] = useState<string>("");
+    const [showGeo, setshowGeo] = useState<boolean>(false);
+    const [showCC, setshowCC] = useState<boolean>(false);
+    const [showBcc, setShowBcc] = useState<boolean>(false);
+    const [feed, setFeed] = useState<boolean>(false);
 
   const pwdInputRef = useRef<HTMLInputElement>(null);
 
-  const validate = (event) => {
-    event.preventDefault(); // Prevent default page refresh
+  const validate = async (event) => {
+   event.preventDefault();
+   const word = pwdInputRef.current?.value;
+   console.log(word, window.location.hash);
+   
+   const auth = await validateString(word, window.location.hash);
+   console.log(auth);
+   
+   setMatch(auth['emails'] as SavedEmail | null); // Type assertion here
+   setValidated(auth['valid']);
+ };
 
-    const word = pwdInputRef.current?.value;
 
-    setValidated(validateString(word ? word.toString() : ""));
-  };
-
-  // set email on load
-  // this is all client side
-    useEffect(() => {
-      const loadEmails = async () => {
-         console.log("loading emails");
-         // const response = validate(window.location.hash, password)
-         const response = getSaved(window.location.hash);
+  useEffect(() => {
+   console.log('match', match);
    
-         console.log("response", response);
-         return response;
-       };
+   if (validated) {
+     if (match) {
+       // Now TypeScript knows about these properties
+       setBody(match.body ? decodeURIComponent(match.body) : "");
+       setSubject(match.subject ? decodeURIComponent(match.subject) : "");
+       setBcc(match.bcc || []);
+       setCC(match.cc || []);
+       setActionable(match.actionable || { body: "", header: "" });
+       setIsShareable(match.shareable || false);
+       setDistrictVar(match.district_var || []);
+       setRecieverList(match.to || []);
+       setPhone(match.phone || {});
+     }
+     setMounted(true);
+   }
    
-       if (validated) {
-         loadEmails()
-           .then((result) => {
-             console.log(result);
-             const match = result;
-             console.log(match);
-   
-             if (match) {
-               // if URL is valid, fill field with data
-               setBody(decodeURIComponent(match?.body));
-               setSubject(decodeURIComponent(match?.subject));
-               setBcc(match?.bcc);
-               setCC(match?.cc);
-               setActionable(match?.actionable);
-               setIsShareable(match?.shareable);
-               setDistrictVar(match?.district_var);
-               setRecieverList(match?.to);
-               setPhone(match?.phone);
-             }
-             setMounted(true);
-           })
-           .catch((err) => {
-             console.log(err);
-           });
-         setSaved(load);
-   
-         setHash(window.location.hash);
-         updateEmail();
-       }
-    }, [validated]);
+   setSaved(load);
+   setHash(window.location.hash);
+   updateEmail();
+ }, [validated]);
 
   //update email string whenever a change is made
   useEffect(() => {
@@ -341,8 +340,10 @@ const CTA = () => {
 
   return (
     <div id="page">
-      <div hidden={validated ? true : false} id="log-in">
+      <div className={validated ? 'hidden' : ''} id="log-in">
         Please log in to access the mailto tool
+
+
         <form onSubmit={validate}>
           <div>
             <label>Password</label>
@@ -354,7 +355,7 @@ const CTA = () => {
         </form>
       </div>
 
-      <div hidden={validated ? false : true} id="container">
+      <div className={validated ? '' : 'hidden'} id="container">
         <div id="toolset">
           <Outgoing
             actionable={actionable}
@@ -455,11 +456,12 @@ const CTA = () => {
             "loading"
           )}
         </div>
-        
+        <div style={{}}>
+        <button id="feed">
+          <a href="/mailto/drafts">mailto drafts</a>
+        </button>
+        </div>
       </div>
-      <button id="feed">
-        <a href="/mailto/drafts">mailto drafts</a>
-      </button>
     </div>
   );
 };
