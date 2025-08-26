@@ -39,6 +39,23 @@
     bottom: 1rem;
     left: 1rem;
 }
+.cta_box {
+    margin-bottom: 2rem;
+    border: 1px dotted black;
+    padding: 1rem;
+    background: var(--edit);
+    position: relative;
+}
+
+.cta_pointer {
+    position: absolute;
+  left: -2.4rem;
+  font-size: 3rem;
+  top: 0;
+  margin-top: .5rem;
+  rotate: -5deg;
+}
+
 
 #feeder p {
     text-decoration: none;
@@ -430,7 +447,7 @@ label {
 #oubound_copy {
     padding: .4rem .8rem;
     border-radius: 1rem;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     border: rgb(44, 168, 127) solid 1px;
     background-color:aquamarine;
 }

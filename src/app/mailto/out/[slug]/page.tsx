@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Head from 'next/head'
+import Head from "next/head";
 import { getSaved } from "../../helpers/saved_emails";
 import { geo, districtFinder, geoLoader, combinedGeo } from "../../helpers/geo";
 import "../../mailto.css";
@@ -88,7 +88,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     setWaiting(true);
 
     setSelectedAddress(address);
-    console.log(address)
+    console.log(address);
 
     setSelectedAddress(address);
     const merge_fields = {
@@ -186,29 +186,32 @@ export default function Page({ params }: { params: { slug: string } }) {
     const districtData = {
       district: districtInfo.id.toUpperCase(),
       legislator: districtInfo.properties.person.name,
-      role: districtInfo.properties.post.role
-    }
-    
+      role: districtInfo.properties.post.role,
+    };
+
     // First, replace variables with data
     let processedText = text;
     const variableRegex = /\[\[([^\]]+)\]\]/g;
-    
-    processedText = processedText.replace(variableRegex, (match, variableName) => {
-      // Return the data value if it exists, otherwise keep the original bracket format
-      return districtData[variableName] || match;
-    });
-    
+
+    processedText = processedText.replace(
+      variableRegex,
+      (match, variableName) => {
+        // Return the data value if it exists, otherwise keep the original bracket format
+        return districtData[variableName] || match;
+      }
+    );
+
     // Then handle URLs
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const parts = processedText.split(urlRegex);
-    
+
     return parts.map((part, index) => {
       if (part.match(urlRegex)) {
         // Clean up the display text by removing protocol and www
         const displayText = part
           .replace(/^https?:\/\//, "") // Remove http:// or https://
           .replace(/^www\./, ""); // Remove www.
-        
+
         return (
           <a
             key={index}
@@ -229,8 +232,12 @@ export default function Page({ params }: { params: { slug: string } }) {
     <div id="outbound">
       <Head>
         <title>{email?.actionable?.header}</title>
-        <meta property="og:title" content={email?.actionable?.header} key="title" />
-        <link rel="icon" href="/images/SFA_logo.png"/>
+        <meta
+          property="og:title"
+          content={email?.actionable?.header}
+          key="title"
+        />
+        <link rel="icon" href="/images/SFA_logo.png" />
       </Head>
 
       <div id="outbound_header">
@@ -243,34 +250,36 @@ export default function Page({ params }: { params: { slug: string } }) {
       <div className="data_field" id="geocoder">
         <h2 style={{ marginBottom: "2rem" }}>{email?.actionable?.header}</h2>
 
+        {outLink ? (
+          <div
+            style={{
+              marginBottom: "2rem",
+              border: "1px dotted black",
+              padding: "1rem",
+            }}
+          >
+            <span>
+              {`You are represented by ${districtInfo?.properties.post.role} ${
+                districtInfo?.properties.person.name
+              } in district ${districtInfo?.id.toUpperCase()}`}{" "}
+            </span>
+          </div>
+        ) : (
+          ""
+        )}
 
         {outLink ? (
-            <div
-              style={{
-                marginBottom: "2rem",
-                border: "1px dotted black",
-                padding: "1rem",
-              }}
-            >
-              <span>
-                {`You are represented by ${
-                  districtInfo?.properties.post.role
-                } ${
-                  districtInfo?.properties.person.name
-                } in district ${districtInfo?.id.toUpperCase()}`}{" "}
-              </span>
-            </div>
-          ) : (
-            ""
-          )}
-
-
-        {outLink ? (
-        <p style={{ paddingBottom: "2rem", color: "#575757", whiteSpace: "pre-wrap" }}>
-          {email?.actionable?.body
-            ? renderTextWithLinks(email.actionable.body)
-            : ""}
-        </p>
+          <p
+            style={{
+              paddingBottom: "2rem",
+              color: "#575757",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {email?.actionable?.body
+              ? renderTextWithLinks(email.actionable.body)
+              : ""}
+          </p>
         ) : (
           ""
         )}
@@ -297,7 +306,11 @@ export default function Page({ params }: { params: { slug: string } }) {
                 {locations
                   ? locations.map((e, i) => {
                       return (
-                        <button data-umami-event="cta_select_address" key={i} onClick={() => retrieveDistricts(e)}>
+                        <button
+                          data-umami-event="cta_select_address"
+                          key={i}
+                          onClick={() => retrieveDistricts(e)}
+                        >
                           {e.properties.full_address}
                         </button>
                       );
@@ -329,33 +342,37 @@ export default function Page({ params }: { params: { slug: string } }) {
         )}
 
         <div>
-
           {outLink ? (
-            <div
-              style={{
-                marginBottom: "2rem",
-                border: "1px dotted black",
-                padding: "1rem",
-              }}
-            >
+            <div className="cta_box">
+              <div
+                className="cta_pointer"
+              >
+                👉
+              </div>
               <b>Call your representative: </b>
-              <a style={{whiteSpace: "nowrap"}} data-umami-event="cta_click_phone" href={"tel:" + phoneNum}>{phoneNum}</a>
+              <a
+                style={{ whiteSpace: "nowrap" }}
+                data-umami-event="cta_click_phone"
+                href={"tel:" + phoneNum}
+              >
+                {phoneNum}
+              </a>
             </div>
           ) : (
             ""
           )}
 
           {outLink ? (
-            <div
-              style={{
-                marginBottom: "2rem",
-                border: "1px dotted black",
-                padding: "1rem",
-              }}
-            >
+            <div className="cta_box">
+              <div
+                className="cta_pointer"
+              >
+                👉
+              </div>
               <a href={generated}>
-                <button data-umami-event="cta_click_phone" id="oubound_copy">
-                  Email your representative (Customize the bottom)
+                <button data-umami-event="cta_click_email" id="oubound_copy">
+                  <b style={{ whiteSpace: "nowrap" }}>Email your representative </b>  <> </>
+                  <span style={{ whiteSpace: "nowrap" }}>(Customize the bottom)</span>
                 </button>
               </a>
             </div>
