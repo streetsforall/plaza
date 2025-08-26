@@ -28,7 +28,7 @@ const CTA = () => {
   const [isPhone, setPhone] = useState({});
 
   // UI state
-  const [validated, setValidated] = useState(true);
+  const [validated, setValidated] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [email, setEmail] = useState("");
   const [hash, setHash] = useState<string>();
@@ -53,6 +53,7 @@ const CTA = () => {
     useEffect(() => {
       const loadEmails = async () => {
          console.log("loading emails");
+         // const response = validate(window.location.hash, password)
          const response = getSaved(window.location.hash);
    
          console.log("response", response);
@@ -88,7 +89,7 @@ const CTA = () => {
          setHash(window.location.hash);
          updateEmail();
        }
-    }, []);
+    }, [validated]);
 
   //update email string whenever a change is made
   useEffect(() => {

@@ -320,14 +320,11 @@ export default function Page({ params }: { params: { slug: string } }) {
             </div>
 
             <label>{status}</label>
-            <br />
             <label>
               {selectedAddress
                 ? "Address: " + selectedAddress["properties"].full_address
                 : ""}
             </label>
-            <br />
-            <br />
           </>
         )}
 

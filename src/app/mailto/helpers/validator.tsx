@@ -1,12 +1,9 @@
+import { NextResponse } from "next/server";
 
-
-
-export function validateString(pwd : string) {
-
-    if (pwd == "silverlake") {
-        return true
-    } else {
-        return false
-    }
-
-   }
+export function validateString(pwd: string) {
+  if (pwd == process.env.PASSWORD) {
+    return true;
+  } else {
+    return false;
+  }
+}

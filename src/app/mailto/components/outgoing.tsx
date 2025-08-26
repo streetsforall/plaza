@@ -143,7 +143,7 @@ const Outgoing = ({
           <textarea
             id="header_field"
             value={decodeURIComponent(actionable.body)}
-            rows={4}
+            rows={10}
             onChange={(e) => {
               setActionable({"header": actionable.header, "body" : e.target.value});
             }}
