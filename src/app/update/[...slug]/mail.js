@@ -61,5 +61,10 @@
   ftypes[4] = "phone";
   fnames[25] = "TEXTDDEFC";
   ftypes[25] = "text";
+  fnames[22]='PREFERENCE';
+  ftypes[22]='dropdown';
 })(jQuery);
 var $mcj = jQuery.noConflict(true);
+
+
+

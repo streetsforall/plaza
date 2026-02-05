@@ -221,13 +221,28 @@ export default function Page({ params }: { params: { slug: string } }) {
                     />
                   </div>
                   <div className="mc-field-group">
-                    <label htmlFor="mce-ADD_ZIP">Zip Code </label>
+                    <label htmlFor="mce-ADD_ZIP">Zip Code <span className="asterisk">*</span></label>
                     <input
                       type="text"
                       name="ADD_ZIP"
-                      className=" text"
+                      className="required text"
                       id="mce-ADD_ZIP"
+                      required
                     />
+                  </div>
+                  <div className="mc-field-group">
+                    <label htmlFor="mce-PREFERENCE">What do you want to receive emails about?</label>
+                    <select
+                      name="PREFERENCE"
+                      className=""
+                      id="mce-PREFERENCE"
+                    >
+                      <option value="">-- Select --</option>
+                      <option selected value="Statewide">State-wide updates</option>
+                      <option value="County">County-wide updates</option>
+                      {/* <option value="Regional">Regional updates</option> */}
+                      <option value="City">Just my neighborhood or City</option>
+                    </select>
                   </div>
                   <div id="mce-responses" className="clear">
                     <div
@@ -257,7 +272,7 @@ export default function Page({ params }: { params: { slug: string } }) {
                       name="subscribe"
                       id="mc-embedded-subscribe"
                       className="button"
-                      value="Subscribe"
+                      value="Submit"
                     />
                   </div>
                 </div>
