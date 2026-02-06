@@ -238,7 +238,8 @@ export default function Page({ params }: { params: { slug: string } }) {
                       id="mce-PREFERENCE"
                     >
                       <option value="">-- Select --</option>
-                      <option selected value="Statewide">State-wide updates</option>
+                      <option selected value="All">All</option>
+                      <option value="Statewide">State-wide updates</option>
                       <option value="County">County-wide updates</option>
                       {/* <option value="Regional">Regional updates</option> */}
                       <option value="City">Just my neighborhood or City</option>
