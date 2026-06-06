@@ -1,54 +1,40 @@
-'use client'
+'use client';
 
 import React, { useState, useEffect } from 'react';
-import {getAllSaved} from '../helpers/saved_emails'
-import './../mailto.css';
+import { Prisma } from 'generated/prisma/client';
+import { getAllEmailTemplates } from '../helpers/db';
+import '../mailto.css';
 
-const Feed = () => {
+function Drafts() {
+  const [drafts, setDrafts] = useState<Prisma.EmailTemplateModel[]>();
 
-    const [feed, setFeed] = useState<any[]>([])
+  useEffect(() => {
+    async function loadEmailTemplates() {
+      const emailTemplates = await getAllEmailTemplates();
 
-    useEffect(() => {
+      setDrafts(emailTemplates);
+    }
 
-        const loadEmails = async () => {
-            const response = getAllSaved();
-            console.log('response', response)
-            return(response)
-        }
+    loadEmailTemplates();
+  }, []);
 
-
-        loadEmails().then(result => {
-            console.log('result', result[0]) 
-            setFeed(result[0].data)
-        }).catch(err => {
-            console.log(err)
-        })
-
-    
-    
-    }, []);
-    
-    return (
-        <div id="feeder">
-
-            {feed ? feed.map((mailto) => {
-
-                return (
-                    <p>
-                        <a href={"/mailto" + mailto.url}>
-                        {mailto.time ? new Date(mailto.time).toISOString().slice(0, 10) : ''} • {decodeURIComponent(mailto.subject)}
-                        </a>
-                    </p>
-                )
-            })
-
-                : ''
-
-            }
-        </div>
-
-    )
-
+  return (
+    <div id="feeder">
+      {drafts &&
+        drafts.map((draft) => {
+          return (
+            <p key={draft.id}>
+              <a href={'/mailto' + draft.url}>
+                {draft.time
+                  ? new Date(draft.time).toISOString().slice(0, 10)
+                  : ''}{' '}
+                • {decodeURIComponent(draft.subject)}
+              </a>
+            </p>
+          );
+        })}
+    </div>
+  );
 }
 
-export default Feed;
+export default Drafts;

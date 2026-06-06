@@ -14,7 +14,7 @@ type EmailTemplateActionable {
   header String
 }
 
-model emailTemplate {
+model EmailTemplate {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   actionable   Json?
   bcc          String[]
@@ -25,7 +25,9 @@ model emailTemplate {
   phone        Boolean?
   shareable    Boolean?
   subject      String
-  time         String
+  time         DateTime
   to           String[]
-  url          String
+  url          String   @unique
+
+  @@map("emailTemplate")
 }

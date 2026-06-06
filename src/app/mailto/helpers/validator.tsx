@@ -1,7 +1,6 @@
 "use server";
 
-import { NextResponse } from "next/server";
-import { getSaved } from "./saved_emails";
+import { getEmailTemplate } from "./db";
 
 export async function validateString(pwd, hash) {
     console.log(pwd, hash);
@@ -13,11 +12,14 @@ export async function validateString(pwd, hash) {
 
     try {
       console.log("loading emails");
-      const emails = await getSaved(hash);
+
+      const emails = await getEmailTemplate(hash);
       console.log("response", emails);
+
       return { 'emails': emails, 'valid': true };
     } catch (err) {
       console.error("Error in validateString:", err);
+
       return { 'emails': {}, 'valid': true };
     }
   }
