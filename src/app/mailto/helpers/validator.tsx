@@ -1,25 +1,21 @@
-"use server";
+'use server';
 
-import { getEmailTemplate } from "./db";
+import { getEmailTemplate } from './db';
 
-export async function validateString(pwd, hash) {
-    console.log(pwd, hash);
-    console.log(process.env.LOGIN);
-  
-    if (pwd !== process.env.LOGIN) {
-      return { 'emails': {}, 'valid': false };
-    }
-
-    try {
-      console.log("loading emails");
-
-      const emails = await getEmailTemplate(hash);
-      console.log("response", emails);
-
-      return { 'emails': emails, 'valid': true };
-    } catch (err) {
-      console.error("Error in validateString:", err);
-
-      return { 'emails': {}, 'valid': true };
-    }
+/**
+ * Validate password and load saved email template
+ * @param pwd - Supplied password to validate
+ * @param hash - URL hash (including #) of the email template to load
+ * @returns Email template and password validation status
+ */
+async function validateString(pwd, hash) {
+  if (pwd !== process.env.LOGIN) {
+    return { emails: {}, valid: false };
   }
+
+  const emails = (await getEmailTemplate(hash)) || {};
+
+  return { emails: emails, valid: true };
+}
+
+export { validateString };

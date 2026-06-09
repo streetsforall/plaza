@@ -10,7 +10,7 @@ import prisma from '../../../lib/prisma';
  */
 async function getEmailTemplate(hash: string) {
   try {
-    console.log('Fetching email templates');
+    console.log(`Fetching email template ${hash}`);
 
     const emailTemplate = await prisma.emailTemplate.findUnique({
       where: { url: hash },
@@ -30,7 +30,7 @@ async function getEmailTemplate(hash: string) {
  */
 async function getAllEmailTemplates() {
   try {
-    console.log('Fetching email templates')
+    console.log('Fetching all email templates');
 
     const emailTemplates = await prisma.emailTemplate.findMany();
 
@@ -45,7 +45,6 @@ async function getAllEmailTemplates() {
 /**
  * Save mailto to database
  * @param data - JSON object
- * @returns 
  */
 async function setEmailTemplate(data: Prisma.EmailTemplateCreateInput) {
   try {

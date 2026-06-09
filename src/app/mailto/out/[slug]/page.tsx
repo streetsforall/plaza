@@ -57,7 +57,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     loadEmail()
       .then((result) => {
         setEmail(result);
-        setTo(result.to);
+        setTo(result?.to);
         console.log(result);
       })
       .catch((err) => {
