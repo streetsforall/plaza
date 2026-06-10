@@ -8,7 +8,7 @@ import "./mailto.css";
 import Data_field from "./components/email_library";
 // import Geocoder from './components/geocoder'
 import Outgoing from "./components/outgoing";
-import { newSaved, getSaved } from "./helpers/saved_emails";
+import { setEmailTemplate } from "./helpers/db";
 import { textEncoding, textEscapes } from "./helpers/text_cleanup";
 import { validateString } from "./helpers/validator";
 import Feed from "./drafts/page";
@@ -23,7 +23,7 @@ const CTA = () => {
       shareable?: boolean;
       district_var?: any[];
       to?: any[];
-      phone?: any;
+      phone?: boolean;
     }
     
     // Update your state declarations with proper types:
@@ -37,7 +37,7 @@ const CTA = () => {
     const [bcc, setBcc] = useState<string[]>(["contact@streetsforall.org"]);
     const [load, setLoad] = useState<any>({});
     const [saved, setSaved] = useState<any>({});
-    const [isPhone, setPhone] = useState<any>({});
+    const [isPhone, setPhone] = useState<boolean>(true); // Default to displaying phone CTA
     const [match, setMatch] = useState<SavedEmail | null>(null); // This is the key fix!
     
     // UI state
@@ -53,6 +53,7 @@ const CTA = () => {
 
   const pwdInputRef = useRef<HTMLInputElement>(null);
 
+  // Validate password and load saved email template
   const validate = async (event) => {
    event.preventDefault();
    const word = pwdInputRef.current?.value;
@@ -80,7 +81,7 @@ const CTA = () => {
        setIsShareable(match.shareable || false);
        setDistrictVar(match.district_var || []);
        setRecieverList(match.to || []);
-       setPhone(match.phone || {});
+       setPhone(match.phone || false);
      }
      setMounted(true);
    }
@@ -135,7 +136,7 @@ const CTA = () => {
 
     const saveDraft = () => {
       // this saves it to the DB
-      newSaved(load);
+      setEmailTemplate(load);
       // this adds a local saved state to compare against
       setSaved(load);
     };

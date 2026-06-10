@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import { getSaved } from "../../helpers/saved_emails";
+import { getEmailTemplate } from "../../helpers/db";
 import { geo, districtFinder, geoLoader, combinedGeo } from "../../helpers/geo";
-import "../../mailto.css";
 import { textEncoding } from "../../helpers/text_cleanup";
 import { addMailchimp } from "../../helpers/mailchimp";
 import Footer from "../../components/footer";
 import metadata from "../../data/memeber_meta.json";
+import "../../mailto.css";
 
 export default function Page({ params }: { params: { slug: string } }) {
   // DATA
@@ -34,7 +34,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   useEffect(() => {
     // need to load in data and email
     const loadEmail = async () => {
-      const email_content = getSaved(window.location.hash);
+      const email_content = await getEmailTemplate(window.location.hash);
       return email_content;
     };
 
@@ -57,7 +57,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     loadEmail()
       .then((result) => {
         setEmail(result);
-        setTo(result.to);
+        setTo(result?.to);
         console.log(result);
       })
       .catch((err) => {

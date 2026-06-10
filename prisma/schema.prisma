@@ -1,0 +1,33 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../generated/prisma"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+type EmailTemplateActionable {
+  body   String
+  header String
+}
+
+model EmailTemplate {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  actionable   Json?
+  bcc          String[]
+  body         String
+  cc           String[]
+  district_var String[]
+  editable     Boolean?
+  phone        Boolean?
+  shareable    Boolean?
+  subject      String
+  time         DateTime
+  to           String[]
+  url          String   @unique
+
+  @@map("emailTemplate")
+}
