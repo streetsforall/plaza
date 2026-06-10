@@ -23,7 +23,7 @@ const CTA = () => {
       shareable?: boolean;
       district_var?: any[];
       to?: any[];
-      phone?: any;
+      phone?: boolean;
     }
     
     // Update your state declarations with proper types:
@@ -37,7 +37,7 @@ const CTA = () => {
     const [bcc, setBcc] = useState<string[]>(["contact@streetsforall.org"]);
     const [load, setLoad] = useState<any>({});
     const [saved, setSaved] = useState<any>({});
-    const [isPhone, setPhone] = useState<boolean>(false);
+    const [isPhone, setPhone] = useState<boolean>(true); // Default to displaying phone CTA
     const [match, setMatch] = useState<SavedEmail | null>(null); // This is the key fix!
     
     // UI state
@@ -81,7 +81,7 @@ const CTA = () => {
        setIsShareable(match.shareable || false);
        setDistrictVar(match.district_var || []);
        setRecieverList(match.to || []);
-       setPhone(match.phone || {});
+       setPhone(match.phone || false);
      }
      setMounted(true);
    }
