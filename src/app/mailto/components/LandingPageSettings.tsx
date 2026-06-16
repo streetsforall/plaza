@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Outgoing({
+export default function LandingPageSettings({
   hash,
   isShareable,
   setIsShareable,
@@ -52,7 +52,7 @@ export default function Outgoing({
 
   return (
     <div className="data_field">
-      <h3>Sharable Link Generator</h3>
+      <h3>Landing Page Settings</h3>
 
       {/* Toggle */}
       <div

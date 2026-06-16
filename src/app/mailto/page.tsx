@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 // import Geocoder from './components/geocoder'
-import Data_field from "./components/email_library";
-import Outgoing from './components/outgoing';
+import ContactLibrary from "./components/ContactLibrary";
+import LandingPageSettings from './components/LandingPageSettings';
 import { setEmailTemplate } from './helpers/db';
 import { textEncoding, textEscapes } from './helpers/text_cleanup';
 import { validateString } from './helpers/validator';
@@ -350,7 +350,7 @@ export default function Page() {
 
       <div className={validated ? '' : 'hidden'} id="container">
         <div id="toolset">
-          <Outgoing
+          <LandingPageSettings
             hash={hash}
             isShareable={isShareable}
             setIsShareable={setIsShareable}
@@ -363,7 +363,7 @@ export default function Page() {
           />
 
           {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> */}
-          <Data_field
+          <ContactLibrary
             recipients={recieverList}
             setRecipients={setRecieverList}
             updateEmail={updateEmail}

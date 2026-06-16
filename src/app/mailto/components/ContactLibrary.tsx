@@ -21,7 +21,7 @@ interface datafeatures {
   SERVICE_RE: string;
 }
 
-export default function Data_field({
+export default function ContactLibrary({
   recipients,
   setRecipients,
   updateEmail,
@@ -114,7 +114,7 @@ export default function Data_field({
 
   return (
     <div className="data_field">
-      <h3>Email Library</h3>
+      <h3>Contact Library</h3>
       <label>
         Use this to select emails of representatives. NOTE: These have not been
         updated post 2024 Nov. election
