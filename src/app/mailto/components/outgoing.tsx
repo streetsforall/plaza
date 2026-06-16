@@ -1,66 +1,68 @@
-import React, { useState, useEffect } from "react";
+import React from 'react';
 
-const Outgoing = ({
-  actionable,
-  setActionable,
-  districtVar,
+export default function Outgoing({
   hash,
-  setDistrictVar,
   isShareable,
   setIsShareable,
+  legislativeTargets,
+  setLegislativeTargets,
+  actionable,
+  setActionable,
   isPhone,
-  setPhone,
-}) => {
-  // this component manages the outlist
-  const addOut = (item) => {
-    let newList = [...districtVar];
+  setIsPhone,
+}) {
+  /**
+   * Update list by toggling specified legslative body
+   * @param target - `Assembly` or `Senate`
+   */
+  function updateLegislativeTargets(target) {
+    let updatedTargets;
 
-    console.log("itemlist before", newList);
-
-    if (newList.includes(item)) {
-      newList?.splice(newList.indexOf(item), 1); //deleting
+    if (legislativeTargets.includes(target)) {
+      // Remove
+      updatedTargets = legislativeTargets.toSpliced(
+        legislativeTargets.indexOf(target),
+        1,
+      );
     } else {
-      newList?.push(item);
+      // Add
+      updatedTargets = [...legislativeTargets, target];
     }
 
-    setDistrictVar(newList);
+    setLegislativeTargets(updatedTargets);
 
-    console.log("itemlist after", newList);
-    console.log("districtVar", districtVar);
-  };
+    return;
+  }
 
-  // useEffect(() => {
-  //     console.log('districtVar', districtVar)
-  // }, [districtVar]);
+  /**
+   * Copy link to clipboard
+   * @param event - Mouse event
+   */
+  async function copyLink(event) {
+    // Generate URL and copy to clipboard
+    const url =
+      location.href.replace(location.hash, '') + '/out/*|EMAIL|*' + hash;
+    navigator.clipboard.writeText(url);
 
-  // async copy current email state to clipboard use
-  async function copyLink(e) {
-    // need to generate link
-    const content =
-      location.href.replace(location.hash, "") + "/out/*|EMAIL|*" + hash;
+    // Update UI
+    event.target.innerText = 'Copied Link!';
 
-    e.target.innerText = "Copied Link!";
-    navigator.clipboard.writeText(content).then(
-      function () {
-        console.log("Async: Copying to clipboard was successful!");
-      },
-      function (err) {
-        console.error("Async: Could not copy text: ", err);
-      }
-    );
+    return;
   }
 
   return (
     <div className="data_field">
       <h3>Sharable Link Generator</h3>
+
+      {/* Toggle */}
       <div
         style={{
-          display: "flex",
-          width: "100%",
-          justifyContent: "space-between",
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'space-between',
         }}
       >
-        <label style={{ marginRight: ".5rem", width: "58%" }}>
+        <label style={{ marginRight: '.5rem', width: '58%' }}>
           Use this to select the catagories of representative that will be sent
           to audience members and autofilled based on their address.
         </label>
@@ -71,99 +73,98 @@ const Outgoing = ({
             id="shareable"
             onClick={() => setIsShareable(!isShareable)}
           >
-            {isShareable ? "🗣️ Shareable" : "⛔ Not Shareable"}
+            {isShareable ? '🗣️ Shareable' : '⛔ Not Shareable'}
           </button>
         </div>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          marginTop: "1rem",
-          width: "100%",
-          justifyContent: "space-between",
-        }}
-      >
-        {isShareable ? (
-          <div style={{ marginTop: ".5rem" }}>
-            <button
-              className={
-                "m_button" +
-                (districtVar.includes("Assembly", 0) ? " selected" : "")
-              }
-              onClick={() => {
-                addOut("Assembly");
-              }}
-            >
-              Assembly
-            </button>
-            <button
-              className={
-                "m_button" +
-                (districtVar.includes("Senate", 0) ? " selected" : "")
-              }
-              onClick={() => {
-                addOut("Senate");
-              }}
-            >
-              Senate
-            </button>
-            {/* {districtVar} */}
-          </div>
-        ) : (
-          ""
-        )}
-        <div style={{ marginTop: "rem", justifyContent: "space-between" }}>
-          {isShareable ? (
-            districtVar?.length > 0 ? (
-              <button className="m_button" onClick={(e) => copyLink(e)}>
-                Copy Shareable Link
-              </button>
-            ) : (
-              <label>Select Assembly or Senate</label>
-            )
-          ) : (
-            ""
-          )}
-        </div>
-      </div>
-      {isShareable ? (
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <label className="main_label">Header for sharable link</label>
-          <textarea
-            id="header_field"
-            value={decodeURIComponent(actionable.header)}
-            rows={1}
-            onChange={(e) => {
-              setActionable({"header": e.target.value, "body" : actionable.body});
+      {isShareable && (
+        <>
+          {/* Assembly/Senate selector */}
+          <div
+            style={{
+              display: 'flex',
+              marginTop: '1rem',
+              width: '100%',
+              justifyContent: 'space-between',
             }}
-          />
-
-          <label className="main_label">Body for sharable link</label>
-          <textarea
-            id="header_field"
-            value={decodeURIComponent(actionable.body)}
-            rows={10}
-            onChange={(e) => {
-              setActionable({"header": actionable.header, "body" : e.target.value});
-            }}
-          />
-
-          <div>
-            {isShareable ? (
-              <button className="l_button" onClick={(e) => setPhone(!isPhone)}>
-                {isPhone ? "☎️ Phone CTA" : " Not Phone CTA"}
+          >
+            <div style={{ marginTop: '.5rem' }}>
+              <button
+                className={
+                  'm_button' +
+                  (legislativeTargets.includes('Assembly') ? ' selected' : '')
+                }
+                onClick={() => {
+                  updateLegislativeTargets('Assembly');
+                }}
+              >
+                Assembly
               </button>
-            ) : (
-              ""
-            )}
+              <button
+                className={
+                  'm_button' +
+                  (legislativeTargets.includes('Senate') ? ' selected' : '')
+                }
+                onClick={() => {
+                  updateLegislativeTargets('Senate');
+                }}
+              >
+                Senate
+              </button>
+            </div>
+
+            <div style={{ marginTop: 'rem', justifyContent: 'space-between' }}>
+              {legislativeTargets?.length > 0 ? (
+                <button className="m_button" onClick={(e) => copyLink(e)}>
+                  Copy Shareable Link
+                </button>
+              ) : (
+                <label>Select Assembly or Senate</label>
+              )}
+            </div>
           </div>
-        </div>
-      ) : (
-        ""
+
+          {/* Content */}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <label className="main_label">Heading</label>
+            <textarea
+              id="header_field"
+              value={decodeURIComponent(actionable.header)}
+              rows={1}
+              onChange={(e) => {
+                setActionable({
+                  header: e.target.value,
+                  body: actionable.body,
+                });
+              }}
+            />
+
+            <label className="main_label">Body</label>
+            <textarea
+              id="header_field"
+              value={decodeURIComponent(actionable.body)}
+              rows={10}
+              onChange={(e) => {
+                setActionable({
+                  header: actionable.header,
+                  body: e.target.value,
+                });
+              }}
+            />
+
+            {/* Phone CTA toggle */}
+            <div>
+              <button
+                className="l_button"
+                onClick={(e) => setIsPhone(!isPhone)}
+              >
+                {isPhone ? '☎️ Phone CTA' : ' Not Phone CTA'}
+              </button>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
-};
-
-export default Outgoing;
+}
