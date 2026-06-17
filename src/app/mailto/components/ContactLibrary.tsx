@@ -24,7 +24,6 @@ interface datafeatures {
 export default function ContactLibrary({
   recipients,
   setRecipients,
-  updateEmail,
 }) {
   const [data, setData] = useState<any>([]);
   const [areDeputiesShown, setAreDeputiesShown] = useState(false);
@@ -78,9 +77,6 @@ export default function ContactLibrary({
 
     // Replace the existing list, not append to it
     setRecipients(updatedRecipients);
-
-    // TODO: Move to effect in page.tsx
-    updateEmail();
   }
 
   /**
@@ -107,9 +103,6 @@ export default function ContactLibrary({
     });
 
     setRecipients(updatedRecipients);
-
-    // TODO: Move to effect in page.tsx
-    updateEmail();
   }
 
   return (

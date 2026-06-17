@@ -188,7 +188,7 @@ export default function Page() {
   // UI state
   const [validated, setValidated] = useState<boolean>(false);
   const [mounted, setMounted] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>('');
+  const [mailtoLink, setMailtoLink] = useState<string>('');
   const [hash, setHash] = useState<string>();
   const [copy, setCopy] = useState<string>('');
   const [showGeo, setshowGeo] = useState<boolean>(false);
@@ -231,17 +231,6 @@ export default function Page() {
       // Add local saved state to compare against
       setSaved(load);
     }
-  }
-
-  /**
-   * Take subject and body and update mailto link
-   */
-  function updateEmail() {
-    var output = `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${encodeURIComponent(
-      subject,
-    )}&body=${body}`;
-
-    setEmail(output);
   }
 
   /**
@@ -296,15 +285,12 @@ export default function Page() {
 
     setSaved(load);
     setHash(window.location.hash);
-    updateEmail();
   }, [validated]);
 
   /**
    * Update data whenever a change is made
    */
   useEffect(() => {
-    updateEmail();
-
     const times = Date.now();
 
     setLoad({
@@ -320,6 +306,10 @@ export default function Page() {
       time: new Date(times),
       phone: isPhone,
     });
+
+    setMailtoLink(`mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${encodeURIComponent(
+      subject,
+    )}&body=${body}`);
   }, [
     recieverList,
     actionable,
@@ -362,11 +352,10 @@ export default function Page() {
             setIsPhone={setPhone}
           />
 
-          {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} updateEmail={updateEmail} /> */}
+          {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} /> */}
           <ContactLibrary
             recipients={recieverList}
             setRecipients={setRecieverList}
-            updateEmail={updateEmail}
           />
         </div>
 
@@ -490,7 +479,6 @@ export default function Page() {
                 id="subject_field"
                 onChange={(e) => {
                   setSubject(e.target.value);
-                  updateEmail();
                 }}
               />
 
@@ -502,13 +490,12 @@ export default function Page() {
                 rows={20}
                 onChange={(e) => {
                   setBody(e.target.value);
-                  updateEmail();
                 }}
               />
 
-              <div id="preview">{email}</div>
+              <div id="preview">{mailtoLink}</div>
 
-              <button id="copy" onClick={(e) => copyTextToClipboard(email, e)}>
+              <button id="copy" onClick={(e) => copyTextToClipboard(mailtoLink, e)}>
                 Copy Code
               </button>
             </div>
