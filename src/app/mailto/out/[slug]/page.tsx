@@ -22,6 +22,7 @@ export default function Page({ params }: { params: { slug: string } }) {
   const [phoneNum, setPhoneNum] = useState("");
   const [slug, setSlug] = useState("");
   const [waiting, setWaiting] = useState(false);
+  const [isFound, setIsFound] = useState(true);
 
   const [districtInfo, setDistrictInfo] = useState<any>();
 
@@ -56,6 +57,8 @@ export default function Page({ params }: { params: { slug: string } }) {
 
     loadEmail()
       .then((result) => {
+        if (!result) setIsFound(false);
+
         setEmail(result);
         setTo(result?.to);
         console.log(result);
@@ -228,7 +231,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     });
   };
 
-  return (
+  return isFound ? (
     <div id="outbound">
       <Head>
         <title>{email?.actionable?.header}</title>
@@ -395,6 +398,22 @@ export default function Page({ params }: { params: { slug: string } }) {
         ) : (
           ""
         )}
+      </div>
+
+      <Footer />
+    </div>
+  ) : (
+    <div id="outbound">
+      <div id="outbound_header">
+        <a href="https://www.streetsforall.org/">
+          <img src="/images/SFA_logo_wide.png" />
+        </a>
+      </div>
+
+      <div className="data_field" id="geocoder" style={{ textAlign: "center" }}>
+        <h2>Not Found</h2>
+
+        <p>Sorry, but the page you're looking for doesn't exist.</p>
       </div>
 
       <Footer />
