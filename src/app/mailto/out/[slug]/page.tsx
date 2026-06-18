@@ -413,7 +413,7 @@ export default function Page({ params }: { params: { slug: string } }) {
       <div className="data_field" id="geocoder" style={{ textAlign: "center" }}>
         <h2>Not Found</h2>
 
-        <p>Sorry, but the page you're looking doesn't exist.</p>
+        <p>Sorry, but the page you're looking for doesn't exist.</p>
       </div>
 
       <Footer />
