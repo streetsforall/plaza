@@ -132,7 +132,7 @@ export default function Page() {
    */
   useEffect(() => {
     if (validated) {
-      if (match) {
+      if (hash && match) {
         // Now TypeScript knows about these properties
         setBody(match.body ? decodeURIComponent(match.body) : '');
         setSubject(match.subject ? decodeURIComponent(match.subject) : '');
