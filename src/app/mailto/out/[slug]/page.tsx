@@ -187,9 +187,9 @@ export default function Page({ params }: { params: { slug: string } }) {
     if (!text) return "";
 
     const districtData = {
-      district: districtInfo.id.toUpperCase(),
-      legislator: districtInfo.properties.person.name,
-      role: districtInfo.properties.post.role,
+      district: districtInfo?.id.toUpperCase(),
+      legislator: districtInfo?.properties.person.name,
+      role: districtInfo?.properties.post.role,
     };
 
     // First, replace variables with data
@@ -253,53 +253,13 @@ export default function Page({ params }: { params: { slug: string } }) {
       <div className="data_field" id="geocoder">
         <h2 style={{ marginBottom: "2rem" }}>{email?.actionable?.header}</h2>
 
-        {outLink ? (
-          <div
-            style={{
-              marginBottom: "2rem",
-              border: "1px dotted black",
-              padding: "1rem",
-            }}
-          >
-            <span>
-              {`You are represented by ${districtInfo?.properties.post.role} ${
-                districtInfo?.properties.person.name
-              } in district ${districtInfo?.id.toUpperCase()}`}{" "}
-            </span>
-          </div>
-        ) : (
-          ""
-        )}
-
-        {outLink ? (
-          <p
-            style={{
-              paddingBottom: "2rem",
-              color: "#575757",
-              whiteSpace: "pre-wrap",
-            }}
-          >
-            {email?.actionable?.body
-              ? renderTextWithLinks(email.actionable.body)
-              : ""}
-          </p>
-        ) : (
-          ""
-        )}
-
-        {!outLink ? (
-          <p>
-            Enter your home address below so we can find the right
-            representative to contact:
-          </p>
-        ) : (
-          ""
-        )}
-
-        {outLink ? (
-          " "
-        ) : (
+        {(email?.district_var.length && !outLink) ? (
           <>
+            <p>
+              Enter your home address below so we can find the right
+              representative to contact:
+            </p>
+
             <div id="geo_body">
               <input
                 placeholder="enter address here"
@@ -329,40 +289,58 @@ export default function Page({ params }: { params: { slug: string } }) {
                 : ""}
             </label>
           </>
-        )}
-
-        {waiting ? (
-          <div className="loader">
-            <img src="/images/bus.png" />
-            Calculating Your Representative
-            <label>(this may take a moment)</label>
-          </div>
         ) : (
-          ""
-        )}
-
-        <div>
-          {outLink ? (
-            <div className="cta_box">
+          <div>
+            {/* Legislator info */}
+            {districtInfo && (
               <div
-                className="cta_pointer"
+                style={{
+                  marginBottom: "2rem",
+                  border: "1px dotted black",
+                  padding: "1rem",
+                }}
               >
-                👉
+                <span>
+                  {`You are represented by ${districtInfo?.properties.post.role} ${
+                    districtInfo?.properties.person.name
+                  } in district ${districtInfo?.id.toUpperCase()}`}{" "}
+                </span>
               </div>
-              <b>Call your representative: </b>
-              <a
-                style={{ whiteSpace: "nowrap" }}
-                data-umami-event="cta_click_phone"
-                href={"tel:" + phoneNum}
-              >
-                {phoneNum}
-              </a>
-            </div>
-          ) : (
-            ""
-          )}
+            )}
 
-          {outLink ? (
+            {/* Body */}
+            {email?.actionable?.body && (
+              <p
+                style={{
+                  paddingBottom: "2rem",
+                  color: "#575757",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {renderTextWithLinks(email.actionable.body)}
+              </p>
+            )}
+
+            {/* Phone CTA - requires geographic legislator lookup */}
+            {districtInfo && email?.phone && (
+              <div className="cta_box">
+                <div
+                  className="cta_pointer"
+                >
+                  👉
+                </div>
+                <b>Call your representative: </b>
+                <a
+                  style={{ whiteSpace: "nowrap" }}
+                  data-umami-event="cta_click_phone"
+                  href={"tel:" + phoneNum}
+                >
+                  {phoneNum}
+                </a>
+              </div>
+            )}
+
+            {/* Email CTA */}
             <div className="cta_box">
               <div
                 className="cta_pointer"
@@ -376,24 +354,29 @@ export default function Page({ params }: { params: { slug: string } }) {
                 </button>
               </a>
             </div>
-          ) : (
-            ""
-          )}
-        </div>
 
-        {outLink ? (
-          <div id="outbound_link">
-            <label>
-              {" "}
-              <div onClick={() => setGenerateToggle(!generateToggle)}>
-                {generateToggle ? "▼" : "▶"} Mailto Link
-              </div>
-              {generateToggle ? (
-                <div id="outbound_link_text">{generated}</div>
-              ) : (
-                ""
-              )}
-            </label>
+            {/* Mailto link */}
+            <div id="outbound_link">
+              <label>
+                {" "}
+                <div onClick={() => setGenerateToggle(!generateToggle)}>
+                  {generateToggle ? "▼" : "▶"} Mailto Link
+                </div>
+                {generateToggle ? (
+                  <div id="outbound_link_text">{generated}</div>
+                ) : (
+                  ""
+                )}
+              </label>
+            </div>
+          </div>
+        )}
+
+        {waiting ? (
+          <div className="loader">
+            <img src="/images/bus.png" />
+            Calculating Your Representative
+            <label>(this may take a moment)</label>
           </div>
         ) : (
           ""

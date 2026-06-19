@@ -197,8 +197,6 @@ export default function Page() {
         <div id="toolset">
           <LandingPageSettings
             hash={hash}
-            isShareable={isShareable}
-            setIsShareable={setIsShareable}
             legislativeTargets={districtVar}
             setLegislativeTargets={setDistrictVar}
             actionable={actionable}
