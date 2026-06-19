@@ -77,7 +77,6 @@ button:hover {
     border-radius: .5rem;
     border: 1px solid var(--copyhigh);
     padding: .25rem .5rem;
-    margin-top: .5rem;
     font-size: 1rem;
 }
 

@@ -2,8 +2,6 @@ import React from 'react';
 
 export default function LandingPageSettings({
   hash,
-  isShareable,
-  setIsShareable,
   legislativeTargets,
   setLegislativeTargets,
   actionable,
@@ -52,44 +50,70 @@ export default function LandingPageSettings({
 
   return (
     <div className="data_field">
-      <h3>Landing Page Settings</h3>
-
-      {/* Toggle */}
-      <div
+      <header
         style={{
           display: 'flex',
           width: '100%',
           justifyContent: 'space-between',
         }}
       >
-        <label style={{ marginRight: '.5rem', width: '58%' }}>
-          Use this to select the catagories of representative that will be sent
-          to audience members and autofilled based on their address.
-        </label>
+        <h3>Landing Page Settings</h3>
 
-        <div>
-          <button
-            className="m_button"
-            id="shareable"
-            onClick={() => setIsShareable(!isShareable)}
-          >
-            {isShareable ? '🗣️ Shareable' : '⛔ Not Shareable'}
-          </button>
+        {/* Shareable link */}
+        <div style={{ marginTop: 'rem', justifyContent: 'space-between' }}>
+          {hash ? (
+            <button className="m_button" onClick={(e) => copyLink(e)}>
+              Copy Shareable Link
+            </button>
+          ) : (
+            <label>Save to generate a shareable link</label>
+          )}
         </div>
-      </div>
+      </header>
 
-      {isShareable && (
-        <>
-          {/* Assembly/Senate selector */}
+      {/* Content */}
+      <section
+        style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
+      >
+        {/* Heading */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label htmlFor="header_field" className="main_label">
+            Heading (required)
+          </label>
+          <input
+            id="header_field"
+            value={decodeURIComponent(actionable.header)}
+            onChange={(e) => {
+              setActionable({
+                header: e.target.value,
+                body: actionable.body,
+              });
+            }}
+            required
+          />
+        </div>
+
+        {/* Assembly/Senate selector */}
+        <div>
+          <label style={{ display: 'block', marginBottom: '0.5rem' }}>
+            Use this if you'd like to include an address lookup that will
+            dyanmically add state legislators as recipients based on the user's
+            geographic location.
+          </label>
           <div
             style={{
+              alignItems: 'center',
               display: 'flex',
-              marginTop: '1rem',
               width: '100%',
-              justifyContent: 'space-between',
             }}
           >
-            <div style={{ marginTop: '.5rem' }}>
+            {/* Legislative category */}
+            <div
+              style={{
+                display: 'flex',
+                flexGrow: 1,
+              }}
+            >
               <button
                 className={
                   'm_button' +
@@ -114,57 +138,40 @@ export default function LandingPageSettings({
               </button>
             </div>
 
-            <div style={{ marginTop: 'rem', justifyContent: 'space-between' }}>
-              {legislativeTargets?.length > 0 ? (
-                <button className="m_button" onClick={(e) => copyLink(e)}>
-                  Copy Shareable Link
+            {/* Phone CTA toggle - only show if legislative target is activated */}
+            {legislativeTargets.length ? (
+              <div>
+                <button
+                  className="l_button"
+                  onClick={(e) => setIsPhone(!isPhone)}
+                >
+                  {isPhone ? '☎️ Phone CTA' : ' Not Phone CTA'}
                 </button>
-              ) : (
-                <label>Select Assembly or Senate</label>
-              )}
-            </div>
+              </div>
+            ) : (
+              ''
+            )}
           </div>
+        </div>
 
-          {/* Content */}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label className="main_label">Heading</label>
-            <textarea
-              id="header_field"
-              value={decodeURIComponent(actionable.header)}
-              rows={1}
-              onChange={(e) => {
-                setActionable({
-                  header: e.target.value,
-                  body: actionable.body,
-                });
-              }}
-            />
-
-            <label className="main_label">Body</label>
-            <textarea
-              id="header_field"
-              value={decodeURIComponent(actionable.body)}
-              rows={10}
-              onChange={(e) => {
-                setActionable({
-                  header: actionable.header,
-                  body: e.target.value,
-                });
-              }}
-            />
-
-            {/* Phone CTA toggle */}
-            <div>
-              <button
-                className="l_button"
-                onClick={(e) => setIsPhone(!isPhone)}
-              >
-                {isPhone ? '☎️ Phone CTA' : ' Not Phone CTA'}
-              </button>
-            </div>
-          </div>
-        </>
-      )}
+        {/* Body */}
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <label htmlFor="body_field" className="main_label">
+            Body
+          </label>
+          <textarea
+            id="body_field"
+            value={decodeURIComponent(actionable.body)}
+            rows={10}
+            onChange={(e) => {
+              setActionable({
+                header: actionable.header,
+                body: e.target.value,
+              });
+            }}
+          />
+        </div>
+      </section>
     </div>
   );
 }
