@@ -78,7 +78,7 @@ export default function LandingPageSettings({
         {/* Heading */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <label htmlFor="header_field" className="main_label">
-            Heading
+            Heading (required)
           </label>
           <input
             id="header_field"
@@ -89,42 +89,68 @@ export default function LandingPageSettings({
                 body: actionable.body,
               });
             }}
+            required
           />
         </div>
 
         {/* Assembly/Senate selector */}
         <div>
           <label style={{ display: 'block', marginBottom: '0.5rem' }}>
-            Use this if you'd like to include an address lookup that will dyanmically add state legislators as recipients based on the user's geographic location.
+            Use this if you'd like to include an address lookup that will
+            dyanmically add state legislators as recipients based on the user's
+            geographic location.
           </label>
           <div
             style={{
+              alignItems: 'center',
               display: 'flex',
               width: '100%',
             }}
           >
-            <button
-              className={
-                'm_button' +
-                (legislativeTargets.includes('Assembly') ? ' selected' : '')
-              }
-              onClick={() => {
-                updateLegislativeTargets('Assembly');
+            {/* Legislative category */}
+            <div
+              style={{
+                display: 'flex',
+                flexGrow: 1,
               }}
             >
-              Assembly
-            </button>
-            <button
-              className={
-                'm_button' +
-                (legislativeTargets.includes('Senate') ? ' selected' : '')
-              }
-              onClick={() => {
-                updateLegislativeTargets('Senate');
-              }}
-            >
-              Senate
-            </button>
+              <button
+                className={
+                  'm_button' +
+                  (legislativeTargets.includes('Assembly') ? ' selected' : '')
+                }
+                onClick={() => {
+                  updateLegislativeTargets('Assembly');
+                }}
+              >
+                Assembly
+              </button>
+              <button
+                className={
+                  'm_button' +
+                  (legislativeTargets.includes('Senate') ? ' selected' : '')
+                }
+                onClick={() => {
+                  updateLegislativeTargets('Senate');
+                }}
+              >
+                Senate
+              </button>
+            </div>
+
+            {/* Phone CTA toggle - only show if legislative target is activated */}
+            {legislativeTargets.length ? (
+              <div>
+                <button
+                  className="l_button"
+                  onClick={(e) => setIsPhone(!isPhone)}
+                >
+                  {isPhone ? '☎️ Phone CTA' : ' Not Phone CTA'}
+                </button>
+              </div>
+            ) : (
+              ''
+            )}
           </div>
         </div>
 
@@ -144,13 +170,6 @@ export default function LandingPageSettings({
               });
             }}
           />
-        </div>
-
-        {/* Phone CTA toggle */}
-        <div>
-          <button className="l_button" onClick={(e) => setIsPhone(!isPhone)}>
-            {isPhone ? '☎️ Phone CTA' : ' Not Phone CTA'}
-          </button>
         </div>
       </section>
     </div>

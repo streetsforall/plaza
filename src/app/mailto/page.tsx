@@ -50,6 +50,7 @@ export default function Page() {
   const [showCC, setshowCC] = useState<boolean>(false);
   const [showBcc, setShowBcc] = useState<boolean>(false);
   const [feed, setFeed] = useState<boolean>(false);
+  const [error, setError] = useState('');
 
   const pwdInputRef = useRef<HTMLInputElement>(null);
 
@@ -72,6 +73,14 @@ export default function Page() {
    */
   async function updateDatabase() {
     // TODO: Clean up potential json escapes
+
+    setError('');
+
+    if (!subject || !body || !actionable.header) {
+      setError('Please fill in the required fields.');
+
+      return;
+    }
 
     if (!hash) {
       // If no hash, create one and add to URL
@@ -192,6 +201,12 @@ export default function Page() {
           </button>
         </form>
       </div>
+
+      {error && (
+        <div style={{ color: 'red', textAlign: 'center' }}>
+          {error}
+        </div>
+      )}
 
       <div className={validated ? '' : 'hidden'} id="container">
         <div id="toolset">
@@ -326,17 +341,18 @@ export default function Page() {
               </div>
 
               {/* Subject */}
-              <label className="main_label">Subject</label>
+              <label className="main_label">Subject (required)</label>
               <input
                 value={decodeURIComponent(subject)}
                 id="subject_field"
                 onChange={(e) => {
                   setSubject(e.target.value);
                 }}
+                required
               />
 
               {/* Body */}
-              <label className="main_label">Email Body</label>
+              <label className="main_label">Email Body (required)</label>
               <textarea
                 value={decodeURIComponent(body)}
                 id="body_field"
@@ -344,6 +360,7 @@ export default function Page() {
                 onChange={(e) => {
                   setBody(e.target.value);
                 }}
+                required
               />
 
               <div id="preview">{mailtoLink}</div>
