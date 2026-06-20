@@ -34,7 +34,8 @@
     "./dist/types/**/*.ts",
     "src/pages/layout.jsx",
     "dist/types/**/*.ts",
-    "dist/dev/types/**/*.ts"
+    "dist/dev/types/**/*.ts",
+    "./dist/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"
