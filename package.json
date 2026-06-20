@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@mailchimp/mailchimp_marketing": "^3.0.80",
-    "@mapbox/mapbox-gl-geocoder": "^5.0.1",
+    "@mapbox/mapbox-gl-geocoder": "^5.1.2",
     "@prisma/client": "^6.19.3",
-    "@turf/turf": "^6.5.0",
+    "@turf/turf": "^7.3.5",
     "dotenv": "^16.0.3",
     "next": "16.2.9",
     "react": "19.2.4",
