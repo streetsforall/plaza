@@ -188,19 +188,21 @@ export default function Page() {
   ]);
 
   return (
-    <div id="page">
-      <div className={validated ? 'hidden' : ''} id="log-in">
-        Please log in to access the mailto tool
-        <form onSubmit={validate}>
-          <div>
-            <label>Password</label>
-            <input ref={pwdInputRef} id="password" />
-          </div>
-          <button className="button_m" type="submit">
-            Submit
-          </button>
-        </form>
-      </div>
+    <div>
+      {!validated && (
+        <div className="bg-bg m-auto mt-[30vh] p-8">
+          Please log in to access the mailto tool
+          <form onSubmit={validate}>
+            <div>
+              <label>Password</label>
+              <input ref={pwdInputRef} id="password" />
+            </div>
+            <button className="button_m" type="submit">
+              Submit
+            </button>
+          </form>
+        </div>
+      )}
 
       {error && (
         <div style={{ color: 'red', textAlign: 'center' }}>

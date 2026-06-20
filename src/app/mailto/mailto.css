@@ -27,13 +27,6 @@
     }
 }
 
-#log-in {
-    margin: auto;
-    margin-top: 30vh;
-    background-color: var(--bg);
-    padding: 2rem;
-}
-
 #feed {
     position: absolute;
     bottom: 1rem;

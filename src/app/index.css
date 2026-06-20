@@ -6,6 +6,8 @@
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --font-mono:
     source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+
+  --color-bg: rgb(241, 241, 240);
 }
 
 @layer base {
