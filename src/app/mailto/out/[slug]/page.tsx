@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Head from "next/head";
 import { getEmailTemplate } from "../../helpers/db";
 import { geo, districtFinder, geoLoader, combinedGeo } from "../../helpers/geo";
@@ -10,7 +10,11 @@ import Footer from "../../components/footer";
 import metadata from "../../data/memeber_meta.json";
 import "../../mailto.css";
 
-export default function Page({ params }: { params: { slug: string } }) {
+export default function Page({ params }: { params: Promise<{ slug: string }> }) {
+  // Handle async promise
+  const parameters = use(params);
+  const { slug } = parameters;
+
   // DATA
   const [email, setEmail] = useState<any>();
   const [to, setTo] = useState<any>([]);
@@ -20,7 +24,6 @@ export default function Page({ params }: { params: { slug: string } }) {
   const [generated, setGenerated] = useState("");
   const [hash, setHash] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
-  const [slug, setSlug] = useState("");
   const [waiting, setWaiting] = useState(false);
   const [isFound, setIsFound] = useState(true);
 
@@ -42,15 +45,6 @@ export default function Page({ params }: { params: { slug: string } }) {
     function validateEmail(email) {
       var re = /\S+@\S+\.\S+/;
       return re.test(email);
-    }
-
-    if (validateEmail(params.slug)) {
-      // validate if email
-      console.log("valid email");
-      setSlug(params.slug);
-    } else {
-      console.log("invalid email");
-      setSlug("");
     }
 
     setHash(window.location.hash);
