@@ -11,6 +11,7 @@
   --color-edit: rgb(249, 248, 246);
   --color-button: rgb(212, 204, 204);
   --color-soft-bg: rgb(216, 228, 238);
+  --color-bold: rgb(34, 40, 219);
   --color-copy: rgb(213, 245, 186);;
   --color-copyhigh: rgb(135, 214, 151);
 }
@@ -34,14 +35,6 @@
     margin: 1rem;
     padding: 1rem;
     width: 20rem;
-  }
-
-  .shown {
-    display: block;
-  }
-
-  .hidden {
-    display: none !important;
   }
 
   [hidden] {

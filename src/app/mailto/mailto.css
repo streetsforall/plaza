@@ -59,99 +59,6 @@ input:focus-within {
     outline: none;
 }
 
-.recipient_list {
-    padding: .3rem;
-    padding-bottom: 0;
-    border: 1px dotted grey;
-    border-radius: .5rem;
-    background: var(--edit);
-    display: flex;
-    flex-wrap: wrap;
-    color: var(--bg);
-}
-
-#recipients_form input:hover,
-#recipients_form input:focus {
-    background-color: var(--soft_bg);
-}
-
-
-
-.recipient_menu {
-    display: none;
-    position: absolute;
-    background-color: var(--bg);
-    box-shadow: 0 .2rem .4rem lightgray;
-    padding: .2rem .2rem;
-    border-radius: .3rem;
-}
-
-
-.recipient:hover>.recipient_menu {
-    display: flex;
-    cursor: pointer;
-    font-size: .9rem;
-    border: 1px solid var(--button);
-}
-
-
-.recipient_menu span {
-    /* background-color: var(--edit); */
-    padding: .1rem .2rem;
-    border-radius: .5rem;
-    margin: .1rem;
-    border: .5px solid var(--edit);
-}
-
-.recipient_menu span:hover {
-    cursor: pointer;
-    text-decoration: underline;
-}
-
-.recipient_menu .delete {
-    padding: .1rem .4rem;
-    border-left: 1px solid lightgrey;
-    border-radius: 0;
-}
-
-#recipients_form {
-    font-size: 1.1rem;
-    display: inline-block;
-    margin-bottom: .3rem;
-    background: var(--edit)
-}
-
-#recipients_form input:focus-visible,
-#recipients_form input:focus {
-    outline: none;
-}
-
-#recipients_form input {
-    vertical-align: middle;
-    border: 0px;
-    font-size: 1.1rem;
-    padding: 0 .3rem;
-    margin: 0;
-    border-radius: .3rem;
-    line-height: 1.6rem;
-}
-
-.recipient {
-    color: black;
-    margin-bottom: .3rem;
-    padding: .2rem .2rem;
-    /* background-color: var(--soft_bg); */
-    padding: 0.2rem 0.3rem;
-    vertical-align: middle;
-    border-radius: .5rem;
-    border: 1px solid var(--button);
-}
-
-.recipient:focus {
-    background-color: var(--soft_bg);
-    border: 1px solid var(--bold);
-}
-
 .saved {
     background-color: rgb(128, 231, 128);
     border-color: green;
@@ -168,17 +75,6 @@ label {
     color: grey;
 }
 
-#clear {
-    margin: 0;
-    padding: .3rem;
-    color: gray;
-    width: max-content;
-    font-size: .8rem;
-    height: fit-content;
-    border-radius: .3rem;
-    margin-left: auto;
-}
-
 #geo_toggle {
     border-radius: 1rem;
     border: 1px dotted black;
@@ -191,11 +87,6 @@ label {
 #geo_toggle img{
     width: auto;
     height: 3rem;
-}
-
-#clear:hover {
-    cursor: pointer;
-    background-color: var(--button);
 }
 
 .data_field {

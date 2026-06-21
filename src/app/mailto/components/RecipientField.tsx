@@ -73,7 +73,7 @@ export default function RecipientField({
   }
 
   return (
-    <div className="recipient_list">
+    <div className="flex flex-wrap bg-edit border border-dotted border-gray-400 p-1 pb-0 rounded-lg text-bg">
       {/* Added emails */}
       {thisList.map((email, index) => {
         return (
@@ -82,16 +82,16 @@ export default function RecipientField({
               onClick={(e: any) => {
                 e.target.focus();
               }}
-              className="recipient"
+              className="group align-middle focus:bg-soft-bg border border-button focus:border-bold mb-1 p-1 rounded-lg text-black"
               tabIndex={10 + index}
             >
               {email}
 
               {/* Move to different field */}
-              <div className="recipient_menu">
+              <div className="absolute hidden group-hover:!flex bg-bg border border-button cursor-pointer p-1 shadow-sm rounded shadow-gray-200 text-sm">
                 {/* To */}
                 <span
-                  className={thisList !== toList ? 'shown' : 'hidden'}
+                  className={'border border-edit cursor-pointer m-0.5 px-1 py-0.5 rounded-lg hover:underline' + (thisList === toList ? '  hidden' : '')}
                   onClick={(e) => {
                     addRecipient(email, toList, setToList);
                     removeRecipient(email, thisList, setThisList);
@@ -102,7 +102,7 @@ export default function RecipientField({
 
                 {/* CC */}
                 <span
-                  className={thisList !== ccList ? 'shown' : 'hidden'}
+                  className={'border border-edit cursor-pointer m-0.5 px-1 py-0.5 rounded-lg hover:underline' + (thisList === ccList ? ' hidden' : '')}
                   onClick={(e) => {
                     addRecipient(email, ccList, setCcList);
                     removeRecipient(email, thisList, setThisList);
@@ -114,7 +114,7 @@ export default function RecipientField({
 
                 {/* BCC */}
                 <span
-                  className={thisList !== bccList ? 'shown' : 'hidden'}
+                  className={'border border-edit cursor-pointer m-0.5 px-1 py-0.5 rounded-lg hover:underline' + (thisList === bccList ? ' hidden' : '')}
                   onClick={(e) => {
                     addRecipient(email, bccList, setBccList);
                     removeRecipient(email, thisList, setThisList);
@@ -126,7 +126,7 @@ export default function RecipientField({
 
                 {/* Delete */}
                 <span
-                  className="delete"
+                  className="border-l border-gray-300 cursor-pointer m-0.5 px-2 py-0.5 hover:underline"
                   onClick={() => {
                     removeRecipient(email, thisList, setThisList);
                   }}
@@ -142,7 +142,7 @@ export default function RecipientField({
 
       {/* Add new email */}
       <form
-        id="recipients_form"
+        className="bg-edit inline-block mb-1"
         autoComplete="off"
         onSubmit={processRecipientInput}
       >
@@ -152,14 +152,14 @@ export default function RecipientField({
           placeholder="add email"
           type="email"
           multiple
-          id="recipients"
+          className="align-middle focus:!bg-soft-bg hover:!bg-soft-bg !border-0 !m-0 !p-1 !outline-0 text-black"
           value={recipient}
           onChange={(e) => setRecipient(e.target.value)}
           onBlur={processRecipientInput}
         />
       </form>
 
-      <p id="clear" onClick={() => setThisList([])}>
+      <p className="hover:bg-button cursor-pointer m-0 ml-auto p-1 text-sm text-gray-400 rounded h-fit w-max" onClick={() => setThisList([])}>
         CLEAR
       </p>
     </div>

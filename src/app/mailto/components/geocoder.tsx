@@ -98,7 +98,7 @@
 //                     }) : ''}
 //                 </div>
 
-//                 <div className={senate ? 'shown' : "hidden"} id="geo_return">
+//                 <div className={!senate ? 'hidden' : ""} id="geo_return">
 
 //                     <div id="header">
 //                         <button onClick={() => addEmail([cd.DEMAIL + ',' + nieghborhood.DEMAIL + ',' + assembly.DEMAIL + ',' + senate.DEMAIL])}>

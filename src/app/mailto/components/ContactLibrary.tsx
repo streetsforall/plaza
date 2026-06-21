@@ -21,10 +21,7 @@ interface datafeatures {
   SERVICE_RE: string;
 }
 
-export default function ContactLibrary({
-  recipients,
-  setRecipients,
-}) {
+export default function ContactLibrary({ recipients, setRecipients }) {
   const [data, setData] = useState<any>([]);
   const [areDeputiesShown, setAreDeputiesShown] = useState(false);
   const [activeCategory, setActiveCategory] = useState('');
@@ -106,20 +103,22 @@ export default function ContactLibrary({
   }
 
   return (
-    <div className="bg-bg m-2 p-4 rounded-2xl">
+    <div className="bg-bg m-2 rounded-2xl p-4">
       <h3>Contact Library</h3>
       <label>
         Use this to select emails of representatives. NOTE: These have not been
         updated post 2024 Nov. election
       </label>
       <br /> <br />
-
       {/* Category filter */}
       <div>
         {categories.map((category) => (
           <button
             key={category.id}
-            className={'!bg-bg !border !border-button mr-2 mb-2 px-3 py-2 rounded-lg text-sm hover:underline' + (activeCategory === category.id ? ' !bg-button' : '')}
+            className={
+              '!bg-bg !border-button mr-2 mb-2 rounded-lg !border px-3 py-2 text-sm hover:underline' +
+              (activeCategory === category.id ? ' !bg-button' : '')
+            }
             onClick={() => {
               setActiveCategory(category.id);
               setAreDeputiesShown(false);
@@ -130,19 +129,22 @@ export default function ContactLibrary({
           </button>
         ))}
       </div>
-
       {/* Contact list */}
       {data.length ? (
-        <div className="bg-edit border border-dotted border-gray-400 max-h-[50vh] mt-2 overflow-scroll rounded text-sm">
-          <div className="sticky flex bg-bg border-b border-dotted border-gray-400 h-8 top-0 w-full">
-            <button className="border border-button m-1 rounded hover:underline" onClick={addAll}>Add All</button>
+        <div className="bg-edit mt-2 max-h-[50vh] overflow-scroll rounded border border-dotted border-gray-400 text-sm">
+          <div className="bg-bg sticky top-0 flex h-8 w-full border-b border-dotted border-gray-400">
+            <button
+              className="border-button m-1 rounded border hover:underline"
+              onClick={addAll}
+            >
+              Add All
+            </button>
 
             <button
-              className={'border border-button m-1 rounded hover:underline' + (
-                activeCategory == 'metro' || activeCategory == 'cd'
-                  ? ' shown'
-                  : ' hidden'
-              )}
+              className={
+                'border-button m-1 rounded border hover:underline' +
+                (activeCategory !== 'metro' ? ' hidden' : '')
+              }
               onClick={() => {
                 setAreDeputiesShown(!areDeputiesShown);
               }}
@@ -151,7 +153,7 @@ export default function ContactLibrary({
             </button>
 
             <button
-              className="sticky !bg-bg hover:!bg-button !border !border-gray-400 left-[770px] top-0 m-1 px-2 py-0.5 rounded hover:underline w-8"
+              className="!bg-bg hover:!bg-button sticky top-0 left-[770px] m-1 w-8 rounded !border !border-gray-400 px-2 py-0.5 hover:underline"
               onClick={() => {
                 setData([]);
                 setActiveCategory('');
@@ -161,7 +163,7 @@ export default function ContactLibrary({
             </button>
           </div>
 
-          <table className="border-collapse w-full">
+          <table className="w-full border-collapse">
             <tbody>
               {data.map((feature, index) => {
                 if (feature.properties.DEMAIL) {
@@ -169,7 +171,7 @@ export default function ContactLibrary({
                     <tr
                       key={index}
                       data-email={feature.properties.DEMAIL}
-                      className="hover:!bg-soft-bg cursor-pointer leading-normal p-1 min-w-full w-full"
+                      className="hover:!bg-soft-bg w-full min-w-full cursor-pointer p-1 leading-normal"
                       onClick={() => {
                         updateRecipients(
                           feature.properties.DEMAIL,
@@ -178,18 +180,12 @@ export default function ContactLibrary({
                       }}
                     >
                       <td
-                        className={
-                          feature.properties.District
-                            ? 'shown'
-                            : 'hidden'
-                        }
+                        className={!feature.properties.District ? 'hidden' : ''}
                       >
                         {feature.properties.District}
                       </td>
                       <td>{feature.properties.NAME}</td>
-                      <td>
-                        {feature.properties.DEMAIL}
-                      </td>
+                      <td>{feature.properties.DEMAIL}</td>
                       <td>{areDeputiesShown && feature.properties.Deputy}</td>
                     </tr>
                   );
