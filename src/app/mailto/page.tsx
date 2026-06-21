@@ -189,198 +189,197 @@ export default function Page() {
 
   return (
     <div>
-      {!validated && (
+      {validated ? (
+        <>
+          {error && (
+            <div className="text-center text-red-500">
+              {error}
+            </div>
+          )}
+
+          <div className="flex m-auto mt-32 md:mt-8 mb-4 text-xs md:text-base max-w-full w-max">
+            <div className="max-w-full w-1/2">
+              <LandingPageSettings
+                hash={hash}
+                legislativeTargets={districtVar}
+                setLegislativeTargets={setDistrictVar}
+                actionable={actionable}
+                setActionable={setActionable}
+                isPhone={isPhone}
+                setIsPhone={setPhone}
+              />
+
+              {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} /> */}
+              <ContactLibrary
+                recipients={recieverList}
+                setRecipients={setRecieverList}
+              />
+            </div>
+
+            <div className="bg-bg flex flex-col m-2 p-4 rounded-2xl max-w-[calc(100%-3rem)] w-1/2">
+              <div className="flex justify-between mb-4">
+                <div className="flex flex-col w-1/2">
+                  <h1>MailTo</h1>
+                  <label>Use this to generate an email</label>
+                </div>
+
+                {/* Save/copy link button */}
+                {hash ? (
+                  <div className="flex flex-col justify-end max-w-max min-w-40 w-1/2">
+                    <div className="mb-2 min-w-full">
+                      <button
+                        className="bg-button cursor-pointer m-1 px-2 py-1 rounded hover:underline w-full"
+                        onClick={(e) =>
+                          copyTextToClipboard(window.location.href, e)
+                        }
+                      >
+                        Copy Editable Link
+                      </button>
+                    </div>
+                    <div className="border border-button mb-2 min-w-full rounded-lg">
+                      <button
+                        className="m-1 px-2 py-1 rounded hover:underline"
+                        onClick={() => updateDatabase()}
+                      >
+                        Save Page
+                      </button>
+
+                      <label className={'m-1 px-2 py-1 rounded !text-black ' + (saved == load ? 'saved' : 'unsaved')}>
+                        {saved == load ? '✅ up to date' : '❗ unsaved changes'}
+                      </label>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col justify-end max-w-max min-w-40 w-1/2">
+                    <button className="m-1 px-2 py-1 rounded hover:underline" onClick={() => updateDatabase()}>
+                      Save Draft
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {mounted ? (
+                <div className="flex flex-col">
+                  <div>
+                    <label className="mt-4">To</label>
+                    <RecipientField
+                      thisList={recieverList}
+                      setThisList={setRecieverList}
+                      toList={recieverList}
+                      setToList={setRecieverList}
+                      ccList={cc}
+                      setCcList={setCC}
+                      setIsCcVisible={setshowCC}
+                      bccList={bcc}
+                      setBccList={setBcc}
+                      setIsBccVisible={setShowBcc}
+                    />
+
+                    <label
+                      className={'inline cursor-pointer mr-2 hover:underline' + 
+                        (showCC === true ? ' block mt-4' : '')
+                      }
+                      onClick={() => setshowCC(!showCC)}
+                    >
+                      Cc
+                    </label>
+                    {showCC === true ? (
+                      <RecipientField
+                        thisList={cc}
+                        setThisList={setCC}
+                        toList={recieverList}
+                        setToList={setRecieverList}
+                        ccList={cc}
+                        setCcList={setCC}
+                        setIsCcVisible={setshowCC}
+                        bccList={bcc}
+                        setBccList={setBcc}
+                        setIsBccVisible={setShowBcc}
+                      />
+                    ) : (
+                      ''
+                    )}
+
+                    <label
+                      className={'inline cursor-pointer mr-2 hover:underline' + 
+                        (showBcc === true ? ' block mt-4' : '')
+                      }
+                      onClick={() => setShowBcc(!showBcc)}
+                    >
+                      Bcc
+                    </label>
+                    {showBcc === true ? (
+                      <RecipientField
+                        thisList={bcc}
+                        setThisList={setBcc}
+                        toList={recieverList}
+                        setToList={setRecieverList}
+                        ccList={cc}
+                        setCcList={setCC}
+                        setIsCcVisible={setshowCC}
+                        bccList={bcc}
+                        setBccList={setBcc}
+                        setIsBccVisible={setShowBcc}
+                      />
+                    ) : (
+                      ''
+                    )}
+                  </div>
+
+                  {/* Subject */}
+                  <label htmlFor="email-subject" className="mt-4">Subject (required)</label>
+                  <input
+                    value={decodeURIComponent(subject)}
+                    id="email-subject"
+                    onChange={(e) => {
+                      setSubject(e.target.value);
+                    }}
+                    required
+                  />
+
+                  {/* Body */}
+                  <label htmlFor="email-body" className="mt-4">Email Body (required)</label>
+                  <textarea
+                    value={decodeURIComponent(body)}
+                    id="email-body"
+                    rows={20}
+                    onChange={(e) => {
+                      setBody(e.target.value);
+                    }}
+                    required
+                  />
+
+                  <div className="bg-soft-bg mt-4 p-2 rounded-lg max-w-full overflow-hidden text-ellipsis whitespace-nowrap wrap-anywhere">{mailtoLink}</div>
+
+                  <button className="!bg-copy hover:!bg-copyhigh !border !border-copyhigh hover:cursor-pointer font-semibold mt-1 mb-2 p-2 rounded-4xl text-lg" onClick={(e) => copyTextToClipboard(mailtoLink, e)}>
+                    Copy Code
+                  </button>
+                </div>
+              ) : (
+                'loading'
+              )}
+            </div>
+            <div>
+              <button className="absolute bottom-4 left-4">
+                <a href="/mailto/drafts">mailto drafts</a>
+              </button>
+            </div>
+          </div>
+        </>
+      ) : (
         <div className="bg-bg m-auto mt-[30vh] p-8">
           Please log in to access the mailto tool
           <form onSubmit={validate}>
             <div>
               <label>Password</label>
-              <input ref={pwdInputRef} id="password" />
+              <input ref={pwdInputRef} />
             </div>
-            <button className="button_m" type="submit">
+            <button type="submit">
               Submit
             </button>
           </form>
         </div>
       )}
-
-      {error && (
-        <div style={{ color: 'red', textAlign: 'center' }}>
-          {error}
-        </div>
-      )}
-
-      <div className={validated ? '' : 'hidden'} id="container">
-        <div id="toolset">
-          <LandingPageSettings
-            hash={hash}
-            legislativeTargets={districtVar}
-            setLegislativeTargets={setDistrictVar}
-            actionable={actionable}
-            setActionable={setActionable}
-            isPhone={isPhone}
-            setIsPhone={setPhone}
-          />
-
-          {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} /> */}
-          <ContactLibrary
-            recipients={recieverList}
-            setRecipients={setRecieverList}
-          />
-        </div>
-
-        <div className="window" id="mailer">
-          <div id="mailer_head">
-            <div>
-              <h1>MailTo</h1>
-              <label>Use this to generate an email</label>
-            </div>
-
-            {/* Save/copy link button */}
-            {hash ? (
-              <div id="editable">
-                <div>
-                  <button
-                    className="m_button"
-                    style={{ width: '100%' }}
-                    onClick={(e) =>
-                      copyTextToClipboard(window.location.href, e)
-                    }
-                    id="hash"
-                  >
-                    Copy Editable Link
-                  </button>
-                </div>
-                <div className="sub_menu">
-                  <button
-                    className="m_button"
-                    id="save"
-                    onClick={() => updateDatabase()}
-                  >
-                    Save Page
-                  </button>
-
-                  <label className={saved == load ? 'saved' : 'unsaved'}>
-                    {saved == load ? '✅ up to date' : '❗ unsaved changes'}
-                  </label>
-                </div>
-              </div>
-            ) : (
-              <div id="editable">
-                <button className="m_button" onClick={() => updateDatabase()}>
-                  Save Draft
-                </button>
-              </div>
-            )}
-          </div>
-
-          {mounted ? (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <div>
-                <label className="main_label">To</label>
-                <RecipientField
-                  thisList={recieverList}
-                  setThisList={setRecieverList}
-                  toList={recieverList}
-                  setToList={setRecieverList}
-                  ccList={cc}
-                  setCcList={setCC}
-                  setIsCcVisible={setshowCC}
-                  bccList={bcc}
-                  setBccList={setBcc}
-                  setIsBccVisible={setShowBcc}
-                />
-
-                <label
-                  className={
-                    showCC === true ? 'label_header full' : 'label_header'
-                  }
-                  onClick={() => setshowCC(!showCC)}
-                >
-                  Cc
-                </label>
-                {showCC === true ? (
-                  <RecipientField
-                    thisList={cc}
-                    setThisList={setCC}
-                    toList={recieverList}
-                    setToList={setRecieverList}
-                    ccList={cc}
-                    setCcList={setCC}
-                    setIsCcVisible={setshowCC}
-                    bccList={bcc}
-                    setBccList={setBcc}
-                    setIsBccVisible={setShowBcc}
-                  />
-                ) : (
-                  ''
-                )}
-
-                <label
-                  className={
-                    showBcc === true ? 'label_header full' : 'label_header'
-                  }
-                  onClick={() => setShowBcc(!showBcc)}
-                >
-                  Bcc
-                </label>
-                {showBcc === true ? (
-                  <RecipientField
-                    thisList={bcc}
-                    setThisList={setBcc}
-                    toList={recieverList}
-                    setToList={setRecieverList}
-                    ccList={cc}
-                    setCcList={setCC}
-                    setIsCcVisible={setshowCC}
-                    bccList={bcc}
-                    setBccList={setBcc}
-                    setIsBccVisible={setShowBcc}
-                  />
-                ) : (
-                  ''
-                )}
-              </div>
-
-              {/* Subject */}
-              <label className="main_label">Subject (required)</label>
-              <input
-                value={decodeURIComponent(subject)}
-                id="subject_field"
-                onChange={(e) => {
-                  setSubject(e.target.value);
-                }}
-                required
-              />
-
-              {/* Body */}
-              <label className="main_label">Email Body (required)</label>
-              <textarea
-                value={decodeURIComponent(body)}
-                id="body_field"
-                rows={20}
-                onChange={(e) => {
-                  setBody(e.target.value);
-                }}
-                required
-              />
-
-              <div id="preview">{mailtoLink}</div>
-
-              <button id="copy" onClick={(e) => copyTextToClipboard(mailtoLink, e)}>
-                Copy Code
-              </button>
-            </div>
-          ) : (
-            'loading'
-          )}
-        </div>
-        <div>
-          <button id="feed">
-            <a href="/mailto/drafts">mailto drafts</a>
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
