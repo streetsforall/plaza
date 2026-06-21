@@ -106,19 +106,20 @@ export default function ContactLibrary({
   }
 
   return (
-    <div className="data_field">
+    <div className="bg-bg m-2 p-4 rounded-2xl">
       <h3>Contact Library</h3>
       <label>
         Use this to select emails of representatives. NOTE: These have not been
         updated post 2024 Nov. election
       </label>
       <br /> <br />
+
       {/* Category filter */}
-      <div id="filter">
+      <div>
         {categories.map((category) => (
           <button
             key={category.id}
-            className={activeCategory === category.id ? 'selected' : ''}
+            className={'!bg-bg !border !border-button mr-2 mb-2 px-3 py-2 rounded-lg text-sm hover:underline' + (activeCategory === category.id ? ' !bg-button' : '')}
             onClick={() => {
               setActiveCategory(category.id);
               setAreDeputiesShown(false);
@@ -129,18 +130,19 @@ export default function ContactLibrary({
           </button>
         ))}
       </div>
+
       {/* Contact list */}
       {data.length ? (
-        <div id="options">
-          <div id="filter_header">
-            <button onClick={addAll}>Add All</button>
+        <div className="bg-edit border border-dotted border-gray-400 max-h-[50vh] mt-2 overflow-scroll rounded text-sm">
+          <div className="sticky flex bg-bg border-b border-dotted border-gray-400 h-8 top-0 w-full">
+            <button className="border border-button m-1 rounded hover:underline" onClick={addAll}>Add All</button>
 
             <button
-              className={
+              className={'border border-button m-1 rounded hover:underline' + (
                 activeCategory == 'metro' || activeCategory == 'cd'
-                  ? 'shown'
-                  : 'hidden'
-              }
+                  ? ' shown'
+                  : ' hidden'
+              )}
               onClick={() => {
                 setAreDeputiesShown(!areDeputiesShown);
               }}
@@ -149,7 +151,7 @@ export default function ContactLibrary({
             </button>
 
             <button
-              className="hider"
+              className="sticky !bg-bg hover:!bg-button !border !border-gray-400 left-[770px] top-0 m-1 px-2 py-0.5 rounded hover:underline w-8"
               onClick={() => {
                 setData([]);
                 setActiveCategory('');
@@ -159,7 +161,7 @@ export default function ContactLibrary({
             </button>
           </div>
 
-          <table>
+          <table className="border-collapse w-full">
             <tbody>
               {data.map((feature, index) => {
                 if (feature.properties.DEMAIL) {
@@ -167,7 +169,7 @@ export default function ContactLibrary({
                     <tr
                       key={index}
                       data-email={feature.properties.DEMAIL}
-                      className="geo_selector"
+                      className="hover:!bg-soft-bg cursor-pointer leading-normal p-1 min-w-full w-full"
                       onClick={() => {
                         updateRecipients(
                           feature.properties.DEMAIL,
@@ -178,14 +180,14 @@ export default function ContactLibrary({
                       <td
                         className={
                           feature.properties.District
-                            ? 'short shown'
-                            : 'short hidden'
+                            ? 'shown'
+                            : 'hidden'
                         }
                       >
                         {feature.properties.District}
                       </td>
                       <td>{feature.properties.NAME}</td>
-                      <td className="data_email">
+                      <td>
                         {feature.properties.DEMAIL}
                       </td>
                       <td>{areDeputiesShown && feature.properties.Deputy}</td>

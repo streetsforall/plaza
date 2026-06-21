@@ -84,8 +84,8 @@
 
 //     return (
 
-//         <div className="data_field" id="geocoder">
-//             {/* <button className="hider" onClick={() => setshowGeo(!showGeo)}>X</button> */}
+//         <div className="bg-bg m-2 p-4 rounded-2xl" id="geocoder">
+//             {/* <button className="sticky !bg-bg hover:!bg-button !border !border-gray-400 left-[770px] top-0 m-1 px-2 py-0.5 rounded hover:underline w-8" onClick={() => setshowGeo(!showGeo)}>X</button> */}
 //             <h3>Geocoder</h3>
 //             <label >Use this to find the emails of electeds responsible for an address</label>
 //             <div id="geo_body">
@@ -108,7 +108,7 @@
 
 //                     <table>
 
-//                         {cd ? <tr onClick={() => addEmail(cd.DEMAIL)} className="geo_selector">
+//                         {cd ? <tr onClick={() => addEmail(cd.DEMAIL)} className="hover:!bg-soft-bg cursor-pointer leading-normal p-1 min-w-full w-full">
 //                             <td className="geo_title">Council District:</td>
 //                             <td>{cd.NAME}</td>
 //                             <td className="geo_mail" >
@@ -116,21 +116,21 @@
 //                             </td>
 //                         </tr> : ''}
 
-//                         {nieghborhood ? <tr onClick={() => addEmail(nieghborhood.DEMAIL)} className="geo_selector">
+//                         {nieghborhood ? <tr onClick={() => addEmail(nieghborhood.DEMAIL)} className="hover:!bg-soft-bg cursor-pointer leading-normal p-1 min-w-full w-full">
 //                             <td className="geo_title">Nieghborhood Council: </td>
 //                             <td >{nieghborhood.NAME}</td>
 //                             <td className="geo_mail" >
 //                                 {nieghborhood.DEMAIL}
 //                             </td>
 //                         </tr> : ''}
-//                         {assembly ? <tr onClick={() => addEmail(assembly.DEMAIL)} className="geo_selector">
+//                         {assembly ? <tr onClick={() => addEmail(assembly.DEMAIL)} className="hover:!bg-soft-bg cursor-pointer leading-normal p-1 min-w-full w-full">
 //                             <td className="geo_title">Assembly: </td>
 //                             <td >{assembly.NAME}</td>
 //                             <td className="geo_mail" >
 //                                 {assembly.DEMAIL}
 //                             </td>
 //                         </tr> : ''}
-//                         {senate ? <tr onClick={() => addEmail(senate.DEMAIL)} className="geo_selector">
+//                         {senate ? <tr onClick={() => addEmail(senate.DEMAIL)} className="hover:!bg-soft-bg cursor-pointer leading-normal p-1 min-w-full w-full">
 //                             <td className="geo_title">Senate: </td>
 //                             <td >{senate.NAME}</td>
 //                             <td className="geo_mail" >

@@ -221,22 +221,9 @@ label {
     height: 3rem;
 }
 
-#clear:hover,
-.hider:hover {
+#clear:hover {
     cursor: pointer;
     background-color: var(--button);
-}
-
-.hider {
-    left: 770px;
-    background-color: var(--bg);
-    border: 1px solid grey;
-    position: -webkit-sticky; /* Safari */
-    position: sticky;
-    width: 30px;
-    top: 0;
-    border-radius: .2rem;
-    padding: .3rem .5rem;
 }
 
 .data_field {
@@ -359,88 +346,8 @@ label {
     font-size: .8rem;
 }
 
-
-#options {
-    border: 1px dotted grey;
-    font-size: .9rem;
-    margin-top: .5rem;
-    border-radius: .25rem;
-    background-color: var(--edit);
-    max-height: 50vh;
-    overflow-y: scroll;
-
-}
-
-#filter_header {
-    height: 2rem;
-    display: flex;
-    width: 100%;
-    top: 0;
-    position: sticky;
-    border-bottom: 1px dotted grey;
-    background-color: var(--bg);
-}
-
-#filter_header  button { 
-    border: 1px solid var(--button);
-    border-radius: .3rem;
-    margin: .2rem;
-}
-
-#filter_header  button:hover { 
-    text-decoration: underline;
-}
-
-#options table {
-    width: 100%;
-    border-collapse: collapse; 
-}
-
-#filter button {
-    border: 1px solid var(--button);
-    background-color: var(--bg);
-    padding: .4rem .8rem;
-    border-radius: .5rem;
-    margin-right: .5rem;
-    margin-bottom: .5rem;
-    font-size: .9rem;
-}
-
-#filter button.selected {
-    background-color: var(--button);
-}
-
-#filter button:hover {
-    cursor: pointer;
-    text-decoration: underline;
-}
-
-.geo_selector {
-    /* border-bottom: 1px grey dotted; */
-    padding: .2rem;
-    cursor: pointer;
-    min-width: 100%;
-    width: 100%;
-    line-height: 1.1rem;
-}
-
-
 tr:nth-child(even) {
     background-color: var(--button);
-}
-
-/* 
-.geo_selector span{
-    flex: 2
-}
-
-.geo_selector span.short{
-    flex: 1
-} */
-
-
-.geo_selector:hover{
-    background-color: var(--soft_bg);
 }
 
 .footer {
