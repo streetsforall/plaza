@@ -41,19 +41,6 @@ button:hover {
     background-color: edit;
 }
 
-.l_button {
-    background-color: var(--copy);
-    border-radius: .5rem;
-    border: 1px solid var(--copyhigh);
-    padding: .25rem .5rem;
-    font-size: 1rem;
-}
-
-.l_button:hover {
-    background-color: var(--copyhigh);
-
-}
-
 textarea,
 input {
     resize: none;
@@ -176,24 +163,9 @@ input:focus-within {
     border-color: red;
 }
 
-.m_button {
-    border-radius: .3rem;
-    padding: .2rem .4rem;
-    margin: .2rem;
-    font-size: 1rem;
-}
-
-.m_button:hover {
-    text-decoration: underline;
-}
-
 label {
     font-size: .8rem;
     color: grey;
-}
-
-.main_label{
-    margin-top: 1rem;
 }
 
 #clear {
@@ -335,15 +307,6 @@ label {
 
 #dropdown button:hover{
     background-color: var(--edit);
-}
-
-.m_button.selected {
-    background-color: var(--soft_bg);
-}
-
-.m_button.selected::before{
-    content: "✔️";
-    font-size: .8rem;
 }
 
 tr:nth-child(even) {

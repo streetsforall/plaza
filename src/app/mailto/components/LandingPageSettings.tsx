@@ -49,20 +49,17 @@ export default function LandingPageSettings({
   }
 
   return (
-    <div className="data_field">
-      <header
-        style={{
-          display: 'flex',
-          width: '100%',
-          justifyContent: 'space-between',
-        }}
-      >
+    <div className="bg-bg m-2 rounded-2xl p-4">
+      <header className="flex w-full justify-between">
         <h3>Landing Page Settings</h3>
 
         {/* Shareable link */}
-        <div style={{ marginTop: 'rem', justifyContent: 'space-between' }}>
+        <div>
           {hash ? (
-            <button className="m_button" onClick={(e) => copyLink(e)}>
+            <button
+              className="m-1 rounded px-2 py-1 hover:underline"
+              onClick={(e) => copyLink(e)}
+            >
               Copy Shareable Link
             </button>
           ) : (
@@ -72,16 +69,14 @@ export default function LandingPageSettings({
       </header>
 
       {/* Content */}
-      <section
-        style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
-      >
+      <section className="flex flex-col gap-2">
         {/* Heading */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <label htmlFor="header_field" className="main_label">
+        <div className="flex flex-col">
+          <label htmlFor="landing-page-heading" className="mt-4">
             Heading (required)
           </label>
           <input
-            id="header_field"
+            id="landing-page-heading"
             value={decodeURIComponent(actionable.header)}
             onChange={(e) => {
               setActionable({
@@ -95,29 +90,20 @@ export default function LandingPageSettings({
 
         {/* Assembly/Senate selector */}
         <div>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>
+          <label className="mb-2 block">
             Use this if you'd like to include an address lookup that will
             dyanmically add state legislators as recipients based on the user's
             geographic location.
           </label>
-          <div
-            style={{
-              alignItems: 'center',
-              display: 'flex',
-              width: '100%',
-            }}
-          >
+          <div className="flex w-full items-center">
             {/* Legislative category */}
-            <div
-              style={{
-                display: 'flex',
-                flexGrow: 1,
-              }}
-            >
+            <div className="flex grow">
               <button
                 className={
-                  'm_button' +
-                  (legislativeTargets.includes('Assembly') ? ' selected' : '')
+                  'm-1 rounded px-2 py-1 hover:underline' +
+                  (legislativeTargets.includes('Assembly')
+                    ? ' !bg-soft-bg before:text-xs before:content-["✔️"]'
+                    : '')
                 }
                 onClick={() => {
                   updateLegislativeTargets('Assembly');
@@ -127,8 +113,10 @@ export default function LandingPageSettings({
               </button>
               <button
                 className={
-                  'm_button' +
-                  (legislativeTargets.includes('Senate') ? ' selected' : '')
+                  'm-1 rounded px-2 py-1 hover:underline' +
+                  (legislativeTargets.includes('Senate')
+                    ? ' !bg-soft-bg before:text-xs before:content-["✔️"]'
+                    : '')
                 }
                 onClick={() => {
                   updateLegislativeTargets('Senate');
@@ -142,7 +130,7 @@ export default function LandingPageSettings({
             {legislativeTargets.length ? (
               <div>
                 <button
-                  className="l_button"
+                  className="!bg-copy hover:!bg-copyhigh !border-copyhigh rounded-lg !border px-2 py-1"
                   onClick={(e) => setIsPhone(!isPhone)}
                 >
                   {isPhone ? '☎️ Phone CTA' : ' Not Phone CTA'}
@@ -155,12 +143,12 @@ export default function LandingPageSettings({
         </div>
 
         {/* Body */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <label htmlFor="body_field" className="main_label">
+        <div className="flex flex-col">
+          <label htmlFor="landing-page-body" className="mt-4">
             Body
           </label>
           <textarea
-            id="body_field"
+            id="landing-page-body"
             value={decodeURIComponent(actionable.body)}
             rows={10}
             onChange={(e) => {
