@@ -84,13 +84,13 @@
 
 //     return (
 
-//         <div className="bg-bg m-2 p-4 rounded-2xl" id="geocoder">
+//         <div className="bg-bg m-auto mt-12 p-4 rounded-2xl text-xl max-w-xl w-[calc(100%-2rem)]">
 //             {/* <button className="sticky !bg-bg hover:!bg-button !border !border-gray-400 left-[770px] top-0 m-1 px-2 py-0.5 rounded hover:underline w-8" onClick={() => setshowGeo(!showGeo)}>X</button> */}
 //             <h3>Geocoder</h3>
 //             <label >Use this to find the emails of electeds responsible for an address</label>
 //             <div id="geo_body">
 //                 <label>Enter Address</label>
-//                 <input onChange={(e) => setPlace(e.target.value)}></input>
+//                 <input className="text-base text-xl w-[calc(100%-1rem)]" onChange={(e) => setPlace(e.target.value)}></input>
 //                 <div id="dropdown">
 //                     {locations ? locations.map(e => {
 //                         return (
@@ -101,7 +101,7 @@
 //                 <div className={!senate ? 'hidden' : ""} id="geo_return">
 
 //                     <div id="header">
-//                         <button onClick={() => addEmail([cd.DEMAIL + ',' + nieghborhood.DEMAIL + ',' + assembly.DEMAIL + ',' + senate.DEMAIL])}>
+//                         <button className="text-sm md:text-base" onClick={() => addEmail([cd.DEMAIL + ',' + nieghborhood.DEMAIL + ',' + assembly.DEMAIL + ',' + senate.DEMAIL])}>
 //                             ADD ALL
 //                         </button>
 //                     </div>

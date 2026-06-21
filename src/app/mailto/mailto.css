@@ -8,24 +8,6 @@
     --copyhigh: rgb(135, 214, 151);
 }
 
-.cta_box {
-    margin-bottom: 2rem;
-    border: 1px dotted black;
-    padding: 1rem;
-    background: var(--edit);
-    position: relative;
-}
-
-.cta_pointer {
-    position: absolute;
-  left: -2.4rem;
-  font-size: 3rem;
-  top: 0;
-  margin-top: .5rem;
-  rotate: -5deg;
-}
-
-
 #feeder p {
     text-decoration: none;
 }
@@ -89,34 +71,6 @@ label {
     height: 3rem;
 }
 
-.data_field {
-    margin: .5rem;
-    background-color: var(--bg);
-    padding: 1rem;
-    /* box-shadow: 0px 0px 10px rgba(135, 122, 96, 0.471); */
-    border-radius: 1rem;
-}
-
-#outbound {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-#outbound_header {
-    margin: 1rem auto;
-    display: flex;
-    flex-direction: column;
-    width: max-content;
-    text-align: center;
-}
-
-#outbound_header img {
-    max-width: 100%;
-    width: 20rem;
-}
-
 @keyframes wobble {
     0% { transform: translateY(0%); } 
     15% { transform: translateY(-2%) rotate(1deg); } 
@@ -145,61 +99,6 @@ label {
     animation-direction: alternate;
 }
 
-#geocoder {
-    font-size: 1.2rem;
-    max-width: 35rem;
-    width: calc(100% - 2rem);
-    margin: auto;
-    margin-top: 3rem;
-}
-
-#oubound_copy {
-    padding: .4rem .8rem;
-    border-radius: 1rem;
-    font-size: 1.2rem;
-    border: rgb(44, 168, 127) solid 1px;
-    background-color:aquamarine;
-}
-
-#oubound_copy:hover {
-    color: white;
-    background-color:rgb(44, 168, 127);
-}
-
-#outbound_link {
-    border-top: 1px grey dotted;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    overflow-wrap: break-word;
-}
-
-#outbound_link_text {
-    background-color: var(--edit);
-    border-radius: .2rem;
-    margin-top: .5rem;
-    padding: .5rem;
-
-}
-
-#geo_body input {
-    width: calc(100% - 1rem);
-    font-size: 1.3rem;
-}
-
-#dropdown button{
-    background-color: var(--bg);
-    border-bottom: 1px solid var(--button);
-    width: 100%;
-    padding: .4rem 0;
-    text-align: left;
-    font-size: 1.1rem;
-
-}
-
-#dropdown button:hover{
-    background-color: var(--edit);
-}
-
 tr:nth-child(even) {
     background-color: var(--button);
 }
@@ -214,25 +113,11 @@ tr:nth-child(even) {
 
 
 @media only screen and (max-width: 800px) {
-
     * {
         font-size: 1rem;
     }
 
-    #outbound_link_text {
-        font-size: .8rem;
-    }
-
     #footer {
         font-size: .7rem;
-    }
-
-
-    #geo_body input{
-      font-size: 1rem;
-    }
-
-    #geo_body button {
-        font-size: .9rem;
     }
   }
