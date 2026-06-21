@@ -51,7 +51,7 @@ export default function LandingPageSettings({
   return (
     <div className="bg-bg m-2 rounded-2xl p-4">
       <header className="flex w-full justify-between">
-        <h3>Landing Page Settings</h3>
+        <h3 className="font-bold mb-4 text-lg">Landing Page Settings</h3>
 
         {/* Shareable link */}
         <div>

@@ -104,7 +104,7 @@ export default function ContactLibrary({ recipients, setRecipients }) {
 
   return (
     <div className="bg-bg m-2 rounded-2xl p-4">
-      <h3>Contact Library</h3>
+      <h3 className="font-bold mb-4 text-lg">Contact Library</h3>
       <label>
         Use this to select emails of representatives. NOTE: These have not been
         updated post 2024 Nov. election

@@ -219,7 +219,7 @@ export default function Page() {
             <div className="bg-bg flex flex-col m-2 p-4 rounded-2xl max-w-[calc(100%-3rem)] w-1/2">
               <div className="flex justify-between mb-4">
                 <div className="flex flex-col w-1/2">
-                  <h1>MailTo</h1>
+                  <h1 className="font-bold mb-4 text-3xl">MailTo</h1>
                   <label>Use this to generate an email</label>
                 </div>
 

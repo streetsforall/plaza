@@ -245,7 +245,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
       </div>
 
       <div className="bg-bg m-auto mt-12 p-4 rounded-2xl text-xl max-w-xl w-[calc(100%-2rem)]">
-        <h2 className="mb-8">{email?.actionable?.header}</h2>
+        <h2 className="font-bold mt-4 mb-8 text-3xl">{email?.actionable?.header}</h2>
 
         {(email?.district_var.length && !outLink) ? (
           <>
