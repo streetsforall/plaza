@@ -1,4 +1,4 @@
-import { Inter, Space_Mono } from 'next/font/google';
+import { Inter, Source_Sans_3, Space_Mono } from 'next/font/google';
 import './index.css';
 
 const inter = Inter({
@@ -7,10 +7,17 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
+const source_sans = Source_Sans_3({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-source-sans',
+  weight: ['400', '700'],
+});
+
 const space_mono = Space_Mono({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-roboto-mono',
+  variable: '--font-space-mono',
   weight: '400',
 });
 
@@ -27,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${space_mono.variable} antialiased`}
+      className={`${inter.variable} ${source_sans.variable} ${space_mono.variable} antialiased`}
     >
       <head>
         <link rel="icon" href="/favicon.png" sizes="any" />

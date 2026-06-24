@@ -3,5 +3,5 @@ export default function LandingPageLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="bg-sfa-tan min-h-screen">{children}</div>;
+  return <div className="out bg-sfa-tan min-h-screen">{children}</div>;
 }

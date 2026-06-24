@@ -1,8 +1,11 @@
 @import 'tailwindcss';
 
 @theme {
+  --color-sfa-blue: #245ad8;
   --color-sfa-green: #25c764;
   --color-sfa-tan: #f3eee2;
+
+  --color-blue: #0032ff;
 
   --color-bg: rgb(241, 241, 240);
   --color-edit: rgb(249, 248, 246);
@@ -16,6 +19,7 @@
 @theme inline {
   --font-sans: var(--font-inter);
   --font-mono: var(--font-space-mono);
+  --font-title: var(--font-source-sans);
 }
 
 @layer base {
@@ -25,6 +29,13 @@
   }
 
   label {
+    @apply block;
+    @apply font-mono;
+    @apply text-sm;
+  }
+
+  .out label {
+    @apply font-sans;
     @apply text-xs;
     @apply text-[grey];
   }
@@ -39,8 +50,32 @@
     @apply cursor-pointer;
   }
 
-  textarea,
   input {
+    @apply border-2 border-black;
+    @apply px-3 py-2;
+  }
+
+  input:focus {
+    @apply border-blue;
+    @apply outline-none;
+  }
+
+  input[type="submit"],
+  button[type="submit"] {
+    @apply bg-black;
+    @apply font-sans font-bold;
+    @apply px-3 py-2;
+    @apply text-white;
+
+  }
+
+  input[type="submit"]:hover,
+  button[type="submit"]:hover {
+    @apply bg-blue;
+  }
+
+  .out textarea,
+  .out input {
     @apply bg-edit;
     @apply border border-dotted border-[grey];
     @apply font-medium;
@@ -51,8 +86,8 @@
     @apply rounded-lg;
   }
 
-  textarea:focus-within,
-  input:focus-within {
+  .out textarea:focus-within,
+  .out input:focus-within {
     @apply border-bold border;
     @apply outline-0;
   }

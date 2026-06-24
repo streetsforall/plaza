@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 // import Geocoder from './components/geocoder'
-import ContactLibrary from "./components/ContactLibrary";
+import ContactLibrary from './components/ContactLibrary';
 import LandingPageSettings from './components/LandingPageSettings';
 import RecipientField from './components/RecipientField';
 import { setEmailTemplate } from './helpers/db';
 import { textEncoding, textEscapes } from './helpers/text_cleanup';
 import { validateString } from './helpers/validator';
+import LoginPage from './components/LoginPage';
 
 interface SavedEmail {
   body?: string;
@@ -170,9 +171,11 @@ export default function Page() {
       phone: isPhone,
     });
 
-    setMailtoLink(`mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${encodeURIComponent(
-      subject,
-    )}&body=${body}`);
+    setMailtoLink(
+      `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${encodeURIComponent(
+        subject,
+      )}&body=${body}`,
+    );
   }, [
     recieverList,
     actionable,
@@ -186,199 +189,201 @@ export default function Page() {
     isPhone,
   ]);
 
-  return (
+  return validated ? (
     <div>
-      {validated ? (
-        <>
-          {error && (
-            <div className="text-center text-red-500">
-              {error}
+      {error && <div className="text-center text-red-500">{error}</div>}
+
+      <div className="m-auto flex w-max max-w-full text-xs md:text-base">
+        <div className="w-1/2 max-w-full">
+          <LandingPageSettings
+            hash={hash}
+            legislativeTargets={districtVar}
+            setLegislativeTargets={setDistrictVar}
+            actionable={actionable}
+            setActionable={setActionable}
+            isPhone={isPhone}
+            setIsPhone={setPhone}
+          />
+
+          {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} /> */}
+          <ContactLibrary
+            recipients={recieverList}
+            setRecipients={setRecieverList}
+          />
+        </div>
+
+        <div className="bg-bg m-2 flex w-1/2 max-w-[calc(100%-3rem)] flex-col rounded-2xl p-4">
+          <div className="mb-4 flex justify-between">
+            <div className="flex w-1/2 flex-col">
+              <h1 className="mb-4 text-3xl font-bold">MailTo</h1>
+              <label>Use this to generate an email</label>
             </div>
-          )}
 
-          <div className="flex m-auto text-xs md:text-base max-w-full w-max">
-            <div className="max-w-full w-1/2">
-              <LandingPageSettings
-                hash={hash}
-                legislativeTargets={districtVar}
-                setLegislativeTargets={setDistrictVar}
-                actionable={actionable}
-                setActionable={setActionable}
-                isPhone={isPhone}
-                setIsPhone={setPhone}
-              />
-
-              {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} /> */}
-              <ContactLibrary
-                recipients={recieverList}
-                setRecipients={setRecieverList}
-              />
-            </div>
-
-            <div className="bg-bg flex flex-col m-2 p-4 rounded-2xl max-w-[calc(100%-3rem)] w-1/2">
-              <div className="flex justify-between mb-4">
-                <div className="flex flex-col w-1/2">
-                  <h1 className="font-bold mb-4 text-3xl">MailTo</h1>
-                  <label>Use this to generate an email</label>
+            {/* Save/copy link button */}
+            {hash ? (
+              <div className="flex w-1/2 max-w-max min-w-40 flex-col justify-end">
+                <div className="mb-2 min-w-full">
+                  <button
+                    className="bg-button m-1 w-full cursor-pointer rounded px-2 py-1 hover:underline"
+                    onClick={(e) =>
+                      copyTextToClipboard(window.location.href, e)
+                    }
+                  >
+                    Copy Editable Link
+                  </button>
                 </div>
+                <div className="border-button mb-2 min-w-full rounded-lg border">
+                  <button
+                    className="m-1 rounded px-2 py-1 hover:underline"
+                    onClick={() => updateDatabase()}
+                  >
+                    Save Page
+                  </button>
 
-                {/* Save/copy link button */}
-                {hash ? (
-                  <div className="flex flex-col justify-end max-w-max min-w-40 w-1/2">
-                    <div className="mb-2 min-w-full">
-                      <button
-                        className="bg-button cursor-pointer m-1 px-2 py-1 rounded hover:underline w-full"
-                        onClick={(e) =>
-                          copyTextToClipboard(window.location.href, e)
-                        }
-                      >
-                        Copy Editable Link
-                      </button>
-                    </div>
-                    <div className="border border-button mb-2 min-w-full rounded-lg">
-                      <button
-                        className="m-1 px-2 py-1 rounded hover:underline"
-                        onClick={() => updateDatabase()}
-                      >
-                        Save Page
-                      </button>
+                  <label
+                    className={
+                      'm-1 rounded px-2 py-1 !text-black' +
+                      (saved == load
+                        ? ' border-[green] bg-[rgb(128,231,128)]'
+                        : ' border-[red] bg-[rgb(243,156,156)]')
+                    }
+                  >
+                    {saved == load ? '✅ up to date' : '❗ unsaved changes'}
+                  </label>
+                </div>
+              </div>
+            ) : (
+              <div className="flex w-1/2 max-w-max min-w-40 flex-col justify-end">
+                <button
+                  className="m-1 rounded px-2 py-1 hover:underline"
+                  onClick={() => updateDatabase()}
+                >
+                  Save Draft
+                </button>
+              </div>
+            )}
+          </div>
 
-                      <label className={'m-1 px-2 py-1 rounded !text-black' + (saved == load ? ' bg-[rgb(128,231,128)] border-[green]' : ' bg-[rgb(243,156,156)] border-[red]')}>
-                        {saved == load ? '✅ up to date' : '❗ unsaved changes'}
-                      </label>
-                    </div>
-                  </div>
+          {mounted ? (
+            <div className="flex flex-col">
+              <div>
+                <label className="mt-4">To</label>
+                <RecipientField
+                  thisList={recieverList}
+                  setThisList={setRecieverList}
+                  toList={recieverList}
+                  setToList={setRecieverList}
+                  ccList={cc}
+                  setCcList={setCC}
+                  setIsCcVisible={setshowCC}
+                  bccList={bcc}
+                  setBccList={setBcc}
+                  setIsBccVisible={setShowBcc}
+                />
+
+                <label
+                  className={
+                    'mr-2 inline cursor-pointer hover:underline' +
+                    (showCC === true ? ' mt-4 block' : '')
+                  }
+                  onClick={() => setshowCC(!showCC)}
+                >
+                  Cc
+                </label>
+                {showCC === true ? (
+                  <RecipientField
+                    thisList={cc}
+                    setThisList={setCC}
+                    toList={recieverList}
+                    setToList={setRecieverList}
+                    ccList={cc}
+                    setCcList={setCC}
+                    setIsCcVisible={setshowCC}
+                    bccList={bcc}
+                    setBccList={setBcc}
+                    setIsBccVisible={setShowBcc}
+                  />
                 ) : (
-                  <div className="flex flex-col justify-end max-w-max min-w-40 w-1/2">
-                    <button className="m-1 px-2 py-1 rounded hover:underline" onClick={() => updateDatabase()}>
-                      Save Draft
-                    </button>
-                  </div>
+                  ''
+                )}
+
+                <label
+                  className={
+                    'mr-2 inline cursor-pointer hover:underline' +
+                    (showBcc === true ? ' mt-4 block' : '')
+                  }
+                  onClick={() => setShowBcc(!showBcc)}
+                >
+                  Bcc
+                </label>
+                {showBcc === true ? (
+                  <RecipientField
+                    thisList={bcc}
+                    setThisList={setBcc}
+                    toList={recieverList}
+                    setToList={setRecieverList}
+                    ccList={cc}
+                    setCcList={setCC}
+                    setIsCcVisible={setshowCC}
+                    bccList={bcc}
+                    setBccList={setBcc}
+                    setIsBccVisible={setShowBcc}
+                  />
+                ) : (
+                  ''
                 )}
               </div>
 
-              {mounted ? (
-                <div className="flex flex-col">
-                  <div>
-                    <label className="mt-4">To</label>
-                    <RecipientField
-                      thisList={recieverList}
-                      setThisList={setRecieverList}
-                      toList={recieverList}
-                      setToList={setRecieverList}
-                      ccList={cc}
-                      setCcList={setCC}
-                      setIsCcVisible={setshowCC}
-                      bccList={bcc}
-                      setBccList={setBcc}
-                      setIsBccVisible={setShowBcc}
-                    />
+              {/* Subject */}
+              <label htmlFor="email-subject" className="mt-4">
+                Subject (required)
+              </label>
+              <input
+                value={decodeURIComponent(subject)}
+                id="email-subject"
+                onChange={(e) => {
+                  setSubject(e.target.value);
+                }}
+                required
+              />
 
-                    <label
-                      className={'inline cursor-pointer mr-2 hover:underline' + 
-                        (showCC === true ? ' block mt-4' : '')
-                      }
-                      onClick={() => setshowCC(!showCC)}
-                    >
-                      Cc
-                    </label>
-                    {showCC === true ? (
-                      <RecipientField
-                        thisList={cc}
-                        setThisList={setCC}
-                        toList={recieverList}
-                        setToList={setRecieverList}
-                        ccList={cc}
-                        setCcList={setCC}
-                        setIsCcVisible={setshowCC}
-                        bccList={bcc}
-                        setBccList={setBcc}
-                        setIsBccVisible={setShowBcc}
-                      />
-                    ) : (
-                      ''
-                    )}
+              {/* Body */}
+              <label htmlFor="email-body" className="mt-4">
+                Email Body (required)
+              </label>
+              <textarea
+                value={decodeURIComponent(body)}
+                id="email-body"
+                rows={20}
+                onChange={(e) => {
+                  setBody(e.target.value);
+                }}
+                required
+              />
 
-                    <label
-                      className={'inline cursor-pointer mr-2 hover:underline' + 
-                        (showBcc === true ? ' block mt-4' : '')
-                      }
-                      onClick={() => setShowBcc(!showBcc)}
-                    >
-                      Bcc
-                    </label>
-                    {showBcc === true ? (
-                      <RecipientField
-                        thisList={bcc}
-                        setThisList={setBcc}
-                        toList={recieverList}
-                        setToList={setRecieverList}
-                        ccList={cc}
-                        setCcList={setCC}
-                        setIsCcVisible={setshowCC}
-                        bccList={bcc}
-                        setBccList={setBcc}
-                        setIsBccVisible={setShowBcc}
-                      />
-                    ) : (
-                      ''
-                    )}
-                  </div>
+              <div className="bg-soft-bg mt-4 max-w-full overflow-hidden rounded-lg p-2 wrap-anywhere text-ellipsis whitespace-nowrap">
+                {mailtoLink}
+              </div>
 
-                  {/* Subject */}
-                  <label htmlFor="email-subject" className="mt-4">Subject (required)</label>
-                  <input
-                    value={decodeURIComponent(subject)}
-                    id="email-subject"
-                    onChange={(e) => {
-                      setSubject(e.target.value);
-                    }}
-                    required
-                  />
-
-                  {/* Body */}
-                  <label htmlFor="email-body" className="mt-4">Email Body (required)</label>
-                  <textarea
-                    value={decodeURIComponent(body)}
-                    id="email-body"
-                    rows={20}
-                    onChange={(e) => {
-                      setBody(e.target.value);
-                    }}
-                    required
-                  />
-
-                  <div className="bg-soft-bg mt-4 p-2 rounded-lg max-w-full overflow-hidden text-ellipsis whitespace-nowrap wrap-anywhere">{mailtoLink}</div>
-
-                  <button className="!bg-copy hover:!bg-copyhigh !border !border-copyhigh hover:cursor-pointer font-semibold mt-1 mb-2 p-2 rounded-4xl text-lg" onClick={(e) => copyTextToClipboard(mailtoLink, e)}>
-                    Copy Code
-                  </button>
-                </div>
-              ) : (
-                'loading'
-              )}
-            </div>
-            <div>
-              <button className="absolute bottom-4 left-4">
-                <a href="/mailto/drafts">mailto drafts</a>
+              <button
+                className="!bg-copy hover:!bg-copyhigh !border-copyhigh mt-1 mb-2 rounded-4xl !border p-2 text-lg font-semibold hover:cursor-pointer"
+                onClick={(e) => copyTextToClipboard(mailtoLink, e)}
+              >
+                Copy Code
               </button>
             </div>
-          </div>
-        </>
-      ) : (
-        <div className="bg-bg m-auto p-8">
-          Please log in to access the mailto tool
-          <form onSubmit={validate}>
-            <div>
-              <label>Password</label>
-              <input ref={pwdInputRef} />
-            </div>
-            <button type="submit">
-              Submit
-            </button>
-          </form>
+          ) : (
+            'loading'
+          )}
         </div>
-      )}
+        <div>
+          <button className="absolute bottom-4 left-4">
+            <a href="/mailto/drafts">mailto drafts</a>
+          </button>
+        </div>
+      </div>
     </div>
+  ) : (
+    <LoginPage pwdInputRef={pwdInputRef} validateAction={validate} />
   );
 }

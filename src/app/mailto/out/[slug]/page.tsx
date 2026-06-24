@@ -225,7 +225,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
   };
 
   return isFound ? (
-    <div className="flex flex-col justify-between h-screen">
+    <div className="flex flex-col justify-between min-h-screen">
       <Head>
         <title>{email?.actionable?.header}</title>
         <meta

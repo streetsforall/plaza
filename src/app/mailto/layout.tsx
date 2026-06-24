@@ -3,5 +3,5 @@ export default function MailtoLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="bg-sfa-green min-h-screen">{children}</div>;
+  return <div className="bg-sfa-green">{children}</div>;
 }
