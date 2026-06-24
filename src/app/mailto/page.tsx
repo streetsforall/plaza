@@ -8,7 +8,6 @@ import RecipientField from './components/RecipientField';
 import { setEmailTemplate } from './helpers/db';
 import { textEncoding, textEscapes } from './helpers/text_cleanup';
 import { validateString } from './helpers/validator';
-import './mailto.css';
 
 interface SavedEmail {
   body?: string;
@@ -244,7 +243,7 @@ export default function Page() {
                         Save Page
                       </button>
 
-                      <label className={'m-1 px-2 py-1 rounded !text-black ' + (saved == load ? 'saved' : 'unsaved')}>
+                      <label className={'m-1 px-2 py-1 rounded !text-black' + (saved == load ? ' bg-[rgb(128,231,128)] border-[green]' : ' bg-[rgb(243,156,156)] border-[red]')}>
                         {saved == load ? '✅ up to date' : '❗ unsaved changes'}
                       </label>
                     </div>

@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { Prisma } from 'generated/prisma/client';
 import { getAllEmailTemplates } from '../helpers/db';
-import '../mailto.css';
 
 function Drafts() {
   const [drafts, setDrafts] = useState<Prisma.EmailTemplateModel[]>();
@@ -19,7 +18,7 @@ function Drafts() {
   }, []);
 
   return (
-    <div id="feeder">
+    <div>
       {drafts &&
         drafts.map((draft) => {
           return (

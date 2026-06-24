@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import "../../mailto/mailto.css";
 import "./update.css";
 import Head from "next/head";
 import { geo } from "../../mailto/helpers/geo";

@@ -8,7 +8,6 @@ import { textEncoding } from "../../helpers/text_cleanup";
 import { addMailchimp } from "../../helpers/mailchimp";
 import Footer from "../../components/footer";
 import metadata from "../../data/memeber_meta.json";
-import "../../mailto.css";
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
   // Handle async promise
