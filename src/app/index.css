@@ -1,11 +1,8 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-sans:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  --font-mono:
-    source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  --color-sfa-green: #25c764;
+  --color-sfa-tan: #f3eee2;
 
   --color-bg: rgb(241, 241, 240);
   --color-edit: rgb(249, 248, 246);
@@ -16,12 +13,12 @@
   --color-copyhigh: rgb(135, 214, 151);
 }
 
-@layer base {
-  body {
-    @apply bg-[rgb(230,224,217)];
-    @apply m-4;
-  }
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-space-mono);
+}
 
+@layer base {
   a {
     @apply text-blue-700;
     @apply underline hover:no-underline;

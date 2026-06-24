@@ -196,7 +196,7 @@ export default function Page() {
             </div>
           )}
 
-          <div className="flex m-auto mt-32 md:mt-8 mb-4 text-xs md:text-base max-w-full w-max">
+          <div className="flex m-auto text-xs md:text-base max-w-full w-max">
             <div className="max-w-full w-1/2">
               <LandingPageSettings
                 hash={hash}
@@ -366,7 +366,7 @@ export default function Page() {
           </div>
         </>
       ) : (
-        <div className="bg-bg m-auto mt-[30vh] p-8">
+        <div className="bg-bg m-auto p-8">
           Please log in to access the mailto tool
           <form onSubmit={validate}>
             <div>
