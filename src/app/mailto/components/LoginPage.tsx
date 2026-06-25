@@ -30,7 +30,7 @@ export default function LoginPage({
           className="flex w-sm max-w-screen flex-col gap-6 border-2 border-black bg-white p-8"
           onSubmit={(event) => validateAction(event)}
         >
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col">
             <label htmlFor="password">Password</label>
             <input type="password" id="password" ref={pwdInputRef} />
           </div>

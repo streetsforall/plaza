@@ -31,31 +31,49 @@
   label {
     @apply block;
     @apply font-mono;
+    @apply mb-1;
     @apply text-sm;
   }
 
   .out label {
     @apply font-sans;
+    @apply mb-0;
     @apply text-xs;
     @apply text-[grey];
   }
 
   button {
-    @apply bg-button;
-    @apply border-0;
+    @apply border-2 border-black;
+    @apply cursor-pointer;
+    @apply px-3 py-2;
+    @apply text-sm;
   }
 
   button:hover {
+    @apply bg-black;
+    @apply text-white;
+  }
+
+  .out button {
+    @apply bg-button;
+    @apply border-0;
+    @apply text-base;
+    @apply text-black;
+  }
+
+  .out button:hover {
     @apply bg-edit;
     @apply cursor-pointer;
   }
 
-  input {
+  input,
+  textarea {
     @apply border-2 border-black;
     @apply px-3 py-2;
   }
 
-  input:focus {
+  input:focus,
+  textarea:focus {
     @apply border-blue;
     @apply outline-none;
   }
@@ -65,8 +83,8 @@
     @apply bg-black;
     @apply font-sans font-bold;
     @apply px-3 py-2;
+    @apply text-base;
     @apply text-white;
-
   }
 
   input[type="submit"]:hover,
@@ -84,6 +102,7 @@
     @apply p-2;
     @apply resize-none;
     @apply rounded-lg;
+    @apply text-base;
   }
 
   .out textarea:focus-within,
@@ -98,6 +117,24 @@
 }
 
 @layer components {
+  .togglegroup-root {
+    @apply inline-flex gap-1;
+    @apply rounded-md;
+    @apply border-2 border-black;
+    @apply bg-[#f0f0f0];
+    @apply p-1;
+  }
+
+  .togglegroup-item {
+    @apply cursor-pointer;
+    @apply rounded;
+    @apply border-2 border-transparent hover:border-black;
+    @apply bg-transparent data-[state=on]:bg-black;
+    @apply px-2 py-1;
+    @apply font-mono;
+    @apply text-sm text-black data-[state=on]:text-white;
+  }
+
   #welcome {
     border: 4px double black;
     border-style: double;
