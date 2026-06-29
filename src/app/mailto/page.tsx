@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { Icon } from '@iconify/react';
 // import Geocoder from './components/geocoder'
 import ContactLibrary from './components/ContactLibrary';
 import LandingPageSettings from './components/LandingPageSettings';
@@ -103,7 +104,7 @@ export default function Page() {
    * @param event - Trigger event to update UI
    */
   async function copyTextToClipboard(content, event) {
-    event.target.innerText = 'Copied Link!';
+    event.target.innerText = 'Copied!';
 
     navigator.clipboard.writeText(content);
   }
@@ -193,7 +194,51 @@ export default function Page() {
     <div>
       {error && <div className="text-center text-red-500">{error}</div>}
 
-      <div className="m-auto flex w-max max-w-full text-xs md:text-base">
+      <div className="mb-4 flex justify-between">
+        {/* Save/copy link button */}
+        {hash ? (
+          <div className="flex w-1/2 max-w-max min-w-40 flex-col justify-end">
+            <div className="mb-2 min-w-full">
+              <button
+                className="bg-button m-1 w-full cursor-pointer rounded px-2 py-1 hover:underline"
+                onClick={(e) => copyTextToClipboard(window.location.href, e)}
+              >
+                Copy Editable Link
+              </button>
+            </div>
+            <div className="border-button mb-2 min-w-full rounded-lg border">
+              <button
+                className="m-1 rounded px-2 py-1 hover:underline"
+                onClick={() => updateDatabase()}
+              >
+                Save Page
+              </button>
+
+              <label
+                className={
+                  'm-1 rounded px-2 py-1 !text-black' +
+                  (saved == load
+                    ? ' border-[green] bg-[rgb(128,231,128)]'
+                    : ' border-[red] bg-[rgb(243,156,156)]')
+                }
+              >
+                {saved == load ? '✅ up to date' : '❗ unsaved changes'}
+              </label>
+            </div>
+          </div>
+        ) : (
+          <div className="flex w-1/2 max-w-max min-w-40 flex-col justify-end">
+            <button
+              className="m-1 rounded px-2 py-1 hover:underline"
+              onClick={() => updateDatabase()}
+            >
+              Save Draft
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div className="container m-auto flex gap-4">
         <div className="w-1/2 max-w-full">
           <LandingPageSettings
             hash={hash}
@@ -212,62 +257,14 @@ export default function Page() {
           />
         </div>
 
-        <div className="bg-bg m-2 flex w-1/2 max-w-[calc(100%-3rem)] flex-col rounded-2xl p-4">
-          <div className="mb-4 flex justify-between">
-            <div className="flex w-1/2 flex-col">
-              <h1 className="mb-4 text-3xl font-bold">MailTo</h1>
-              <label>Use this to generate an email</label>
-            </div>
-
-            {/* Save/copy link button */}
-            {hash ? (
-              <div className="flex w-1/2 max-w-max min-w-40 flex-col justify-end">
-                <div className="mb-2 min-w-full">
-                  <button
-                    className="bg-button m-1 w-full cursor-pointer rounded px-2 py-1 hover:underline"
-                    onClick={(e) =>
-                      copyTextToClipboard(window.location.href, e)
-                    }
-                  >
-                    Copy Editable Link
-                  </button>
-                </div>
-                <div className="border-button mb-2 min-w-full rounded-lg border">
-                  <button
-                    className="m-1 rounded px-2 py-1 hover:underline"
-                    onClick={() => updateDatabase()}
-                  >
-                    Save Page
-                  </button>
-
-                  <label
-                    className={
-                      'm-1 rounded px-2 py-1 !text-black' +
-                      (saved == load
-                        ? ' border-[green] bg-[rgb(128,231,128)]'
-                        : ' border-[red] bg-[rgb(243,156,156)]')
-                    }
-                  >
-                    {saved == load ? '✅ up to date' : '❗ unsaved changes'}
-                  </label>
-                </div>
-              </div>
-            ) : (
-              <div className="flex w-1/2 max-w-max min-w-40 flex-col justify-end">
-                <button
-                  className="m-1 rounded px-2 py-1 hover:underline"
-                  onClick={() => updateDatabase()}
-                >
-                  Save Draft
-                </button>
-              </div>
-            )}
-          </div>
+        <div className="flex w-1/2 flex-col gap-6 border-2 border-black bg-white p-8">
+          <h2 className="font-title text-2xl font-bold">Mailto</h2>
 
           {mounted ? (
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-6">
+              {/* To */}
               <div>
-                <label className="mt-4">To</label>
+                <label>To</label>
                 <RecipientField
                   thisList={recieverList}
                   setThisList={setRecieverList}
@@ -280,97 +277,139 @@ export default function Page() {
                   setBccList={setBcc}
                   setIsBccVisible={setShowBcc}
                 />
+              </div>
 
-                <label
-                  className={
-                    'mr-2 inline cursor-pointer hover:underline' +
-                    (showCC === true ? ' mt-4 block' : '')
-                  }
-                  onClick={() => setshowCC(!showCC)}
-                >
-                  Cc
-                </label>
-                {showCC === true ? (
-                  <RecipientField
-                    thisList={cc}
-                    setThisList={setCC}
-                    toList={recieverList}
-                    setToList={setRecieverList}
-                    ccList={cc}
-                    setCcList={setCC}
-                    setIsCcVisible={setshowCC}
-                    bccList={bcc}
-                    setBccList={setBcc}
-                    setIsBccVisible={setShowBcc}
-                  />
-                ) : (
-                  ''
-                )}
+              <div
+                className={
+                  'flex gap-x-4 gap-y-6' +
+                  (showCC || showBcc ? ' flex-col' : '')
+                }
+              >
+                {/* CC */}
+                <div>
+                  <label
+                    className={
+                      'cursor-pointer hover:underline' +
+                      (showCC === true ? ' block' : ' inline')
+                    }
+                    onClick={() => setshowCC(!showCC)}
+                  >
+                    CC
+                  </label>
+                  {showCC === true ? (
+                    <RecipientField
+                      thisList={cc}
+                      setThisList={setCC}
+                      toList={recieverList}
+                      setToList={setRecieverList}
+                      ccList={cc}
+                      setCcList={setCC}
+                      setIsCcVisible={setshowCC}
+                      bccList={bcc}
+                      setBccList={setBcc}
+                      setIsBccVisible={setShowBcc}
+                    />
+                  ) : (
+                    ''
+                  )}
+                </div>
 
-                <label
-                  className={
-                    'mr-2 inline cursor-pointer hover:underline' +
-                    (showBcc === true ? ' mt-4 block' : '')
-                  }
-                  onClick={() => setShowBcc(!showBcc)}
-                >
-                  Bcc
-                </label>
-                {showBcc === true ? (
-                  <RecipientField
-                    thisList={bcc}
-                    setThisList={setBcc}
-                    toList={recieverList}
-                    setToList={setRecieverList}
-                    ccList={cc}
-                    setCcList={setCC}
-                    setIsCcVisible={setshowCC}
-                    bccList={bcc}
-                    setBccList={setBcc}
-                    setIsBccVisible={setShowBcc}
-                  />
-                ) : (
-                  ''
-                )}
+                {/* BCC */}
+                <div className={showBcc ? 'block' : 'inline'}>
+                  <label
+                    className={
+                      'cursor-pointer hover:underline' +
+                      (showBcc === true ? ' block' : ' inline')
+                    }
+                    onClick={() => setShowBcc(!showBcc)}
+                  >
+                    BCC
+                  </label>
+                  {showBcc === true ? (
+                    <RecipientField
+                      thisList={bcc}
+                      setThisList={setBcc}
+                      toList={recieverList}
+                      setToList={setRecieverList}
+                      ccList={cc}
+                      setCcList={setCC}
+                      setIsCcVisible={setshowCC}
+                      bccList={bcc}
+                      setBccList={setBcc}
+                      setIsBccVisible={setShowBcc}
+                    />
+                  ) : (
+                    ''
+                  )}
+                </div>
               </div>
 
               {/* Subject */}
-              <label htmlFor="email-subject" className="mt-4">
-                Subject (required)
-              </label>
-              <input
-                value={decodeURIComponent(subject)}
-                id="email-subject"
-                onChange={(e) => {
-                  setSubject(e.target.value);
-                }}
-                required
-              />
-
-              {/* Body */}
-              <label htmlFor="email-body" className="mt-4">
-                Email Body (required)
-              </label>
-              <textarea
-                value={decodeURIComponent(body)}
-                id="email-body"
-                rows={20}
-                onChange={(e) => {
-                  setBody(e.target.value);
-                }}
-                required
-              />
-
-              <div className="bg-soft-bg mt-4 max-w-full overflow-hidden rounded-lg p-2 wrap-anywhere text-ellipsis whitespace-nowrap">
-                {mailtoLink}
+              <div>
+                <label htmlFor="email-subject">
+                  Subject
+                  <span
+                    aria-label="Required"
+                    title="Required"
+                    className="text-red-500"
+                  >
+                    *
+                  </span>
+                </label>
+                <input
+                  value={decodeURIComponent(subject)}
+                  id="email-subject"
+                  className="w-full"
+                  onChange={(e) => {
+                    setSubject(e.target.value);
+                  }}
+                  required
+                />
               </div>
 
-              <button
-                className="!bg-copy hover:!bg-copyhigh !border-copyhigh mt-1 mb-2 rounded-4xl !border p-2 text-lg font-semibold hover:cursor-pointer"
-                onClick={(e) => copyTextToClipboard(mailtoLink, e)}
-              >
-                Copy Code
-              </button>
+              {/* Body */}
+              <div>
+                <label
+                  htmlFor="email-body"
+                  className="flex items-center gap-1.5"
+                >
+                  Email Body
+                  <span
+                    aria-label="Required"
+                    title="Required"
+                    className="text-red-500"
+                  >
+                    *
+                  </span>
+                </label>
+                <textarea
+                  value={decodeURIComponent(body)}
+                  id="email-body"
+                  className="min-h-96 w-full"
+                  onChange={(e) => {
+                    setBody(e.target.value);
+                  }}
+                  required
+                />
+              </div>
+
+              {/* Mailto link */}
+              <div>
+                <label className="font-sans text-sm">Mailto link</label>
+                <div className="flex bg-gray-100 p-1">
+                  <span className="grow overflow-hidden rounded-sm px-2 py-2 font-mono text-sm text-ellipsis whitespace-nowrap">
+                    {mailtoLink}
+                  </span>
+
+                  <button
+                    aria-label="Copy mailto link to clipboard"
+                    className="border-none px-2.5 py-2 hover:bg-black"
+                    onClick={(e) => copyTextToClipboard(mailtoLink, e)}
+                  >
+                    <Icon icon="material-symbols:content-copy-outline" />
+                  </button>
+                </div>
+              </div>
             </div>
           ) : (
             'loading'
