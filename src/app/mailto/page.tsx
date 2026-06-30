@@ -191,72 +191,42 @@ export default function Page() {
   ]);
 
   return validated ? (
-    <div>
+    <div className="container m-auto min-h-screen">
       {error && <div className="text-center text-red-500">{error}</div>}
 
-      <div className="mb-4 flex justify-between">
-        {/* Save/copy link button */}
-        {hash ? (
-          <div className="flex w-1/2 max-w-max min-w-40 flex-col justify-end">
-            <div className="mb-2 min-w-full">
-              <button
-                className="bg-button m-1 w-full cursor-pointer rounded px-2 py-1 hover:underline"
-                onClick={(e) => copyTextToClipboard(window.location.href, e)}
-              >
-                Copy Editable Link
-              </button>
-            </div>
-            <div className="border-button mb-2 min-w-full rounded-lg border">
-              <button
-                className="m-1 rounded px-2 py-1 hover:underline"
-                onClick={() => updateDatabase()}
-              >
-                Save Page
-              </button>
+      {/* Save/copy link button */}
+      <header className="flex justify-between py-8">
+        <span className="block self-center bg-black px-3 text-2xl font-bold text-white uppercase">
+          SFA Mailto Tool
+        </span>
 
-              <label
-                className={
-                  'm-1 rounded px-2 py-1 !text-black' +
-                  (saved == load
-                    ? ' border-[green] bg-[rgb(128,231,128)]'
-                    : ' border-[red] bg-[rgb(243,156,156)]')
-                }
-              >
-                {saved == load ? '✅ up to date' : '❗ unsaved changes'}
-              </label>
-            </div>
-          </div>
-        ) : (
-          <div className="flex w-1/2 max-w-max min-w-40 flex-col justify-end">
-            <button
-              className="m-1 rounded px-2 py-1 hover:underline"
-              onClick={() => updateDatabase()}
-            >
-              Save Draft
-            </button>
-          </div>
-        )}
-      </div>
+        <div className="flex items-center gap-4">
+          <span className="flex w-full items-center justify-center gap-1.5 text-sm">
+            {hash && saved == load ? (
+              <>
+                <Icon icon="material-symbols:check" />
+                All changes saved
+              </>
+            ) : (
+              <>
+                <Icon icon="material-symbols:exclamation" />
+                Unsaved changes
+              </>
+            )}
+          </span>
 
-      <div className="container m-auto flex gap-4">
-        <div className="w-1/2 max-w-full">
-          <LandingPageSettings
-            hash={hash}
-            legislativeTargets={districtVar}
-            setLegislativeTargets={setDistrictVar}
-            actionable={actionable}
-            setActionable={setActionable}
-            isPhone={isPhone}
-            setIsPhone={setPhone}
-          />
-
-          {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} /> */}
-          <ContactLibrary
-            recipients={recieverList}
-            setRecipients={setRecieverList}
-          />
+          <button
+            className="submit flex items-center justify-center gap-1.5"
+            onClick={() => updateDatabase()}
+          >
+            <Icon icon="material-symbols:save-outline" />
+            Save
+          </button>
         </div>
+      </header>
 
+      <div className="flex items-start gap-4">
+        {/* Left column */}
         <div className="flex w-1/2 flex-col gap-6 border-2 border-black bg-white p-8">
           <h2 className="font-title text-2xl font-bold">Mailto</h2>
 
@@ -415,12 +385,35 @@ export default function Page() {
             'loading'
           )}
         </div>
-        <div>
-          <button className="absolute bottom-4 left-4">
-            <a href="/mailto/drafts">mailto drafts</a>
-          </button>
+
+        {/* Right column */}
+        <div className="w-1/2 max-w-full">
+          <LandingPageSettings
+            hash={hash}
+            legislativeTargets={districtVar}
+            setLegislativeTargets={setDistrictVar}
+            actionable={actionable}
+            setActionable={setActionable}
+            isPhone={isPhone}
+            setIsPhone={setPhone}
+          />
+
+          {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} /> */}
+          <ContactLibrary
+            recipients={recieverList}
+            setRecipients={setRecieverList}
+          />
         </div>
       </div>
+
+      {/* Open button */}
+      <a
+        href="/mailto/drafts"
+        className="submit fixed bottom-4 left-4 flex items-center justify-center gap-1.5 no-underline"
+      >
+        <Icon icon="material-symbols:folder-open-outline" />
+        Open
+      </a>
     </div>
   ) : (
     <LoginPage pwdInputRef={pwdInputRef} validateAction={validate} />

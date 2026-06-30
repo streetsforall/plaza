@@ -42,14 +42,16 @@
     @apply text-[grey];
   }
 
-  button {
+  button,
+  .button {
     @apply border-2 border-black;
     @apply cursor-pointer;
     @apply px-3 py-2;
     @apply text-sm;
   }
 
-  button:hover {
+  button:hover,
+  .button:hover {
     @apply bg-black;
     @apply text-white;
   }
@@ -78,8 +80,9 @@
     @apply outline-none;
   }
 
-  input[type="submit"],
-  button[type="submit"] {
+  input[type='submit'],
+  button[type='submit'],
+  .submit {
     @apply bg-black;
     @apply font-sans font-bold;
     @apply px-3 py-2;
@@ -87,9 +90,11 @@
     @apply text-white;
   }
 
-  input[type="submit"]:hover,
-  button[type="submit"]:hover {
+  input[type='submit']:hover,
+  button[type='submit']:hover,
+  .submit:hover {
     @apply bg-blue;
+    @apply border-blue;
   }
 
   .out textarea,
