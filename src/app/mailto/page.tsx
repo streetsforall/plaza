@@ -234,7 +234,14 @@ export default function Page() {
             <div className="flex flex-col gap-6">
               {/* To */}
               <div>
+                <div className="flex items-end justify-between">
                 <label>To</label>
+                <ContactLibrary
+                  recipients={recieverList}
+                  setRecipients={setRecieverList}
+                />
+                </div>
+
                 <RecipientField
                   thisList={recieverList}
                   setThisList={setRecieverList}
@@ -399,10 +406,6 @@ export default function Page() {
           />
 
           {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} /> */}
-          <ContactLibrary
-            recipients={recieverList}
-            setRecipients={setRecieverList}
-          />
         </div>
       </div>
 

@@ -115,10 +115,6 @@
     @apply border-bold border;
     @apply outline-0;
   }
-
-  tr:nth-child(even) {
-    @apply bg-button;
-  }
 }
 
 @layer components {

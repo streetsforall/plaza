@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Checkbox, Dialog, Tabs } from 'radix-ui';
+import { Icon } from '@iconify/react';
 import { geoLoader } from '../helpers/geo';
 import neighborhoods from '../data/LA_Neighborhood_Councils.json';
 import metro from '../data/metro.json';
@@ -22,9 +24,7 @@ interface datafeatures {
 }
 
 export default function ContactLibrary({ recipients, setRecipients }) {
-  const [data, setData] = useState<any>([]);
   const [areDeputiesShown, setAreDeputiesShown] = useState(false);
-  const [activeCategory, setActiveCategory] = useState('');
 
   const categories = [
     {
@@ -62,7 +62,11 @@ export default function ContactLibrary({ recipients, setRecipients }) {
   // TODO: Rewrite this whole componenet to injest from our API
   // const geodata = geoLoader(e, false);
 
-  function addAll() {
+  /**
+   * Add all the provided recipients
+   * @param data - GeoJSON data object
+   */
+  function addAll(data) {
     const updatedRecipients = data.flatMap((feature) => {
       if (areDeputiesShown && feature.properties.Deputy) {
         // Include deputy email if applicable
@@ -82,14 +86,14 @@ export default function ContactLibrary({ recipients, setRecipients }) {
    * @param deputyEmail - Deputy email if applicable
    */
   function updateRecipients(contactEmail, deputyEmail) {
-    let selectedEmails = [contactEmail];
+    const selectedEmails = [contactEmail];
 
     // Include deputy email if applicable
     if (areDeputiesShown && deputyEmail) {
       selectedEmails.push(deputyEmail);
     }
 
-    var updatedRecipients = recipients;
+    const updatedRecipients = Array.from(recipients);
 
     selectedEmails.forEach((email) => {
       if (!updatedRecipients.includes(email)) {
@@ -103,98 +107,124 @@ export default function ContactLibrary({ recipients, setRecipients }) {
   }
 
   return (
-    <div className="bg-bg m-2 rounded-2xl p-4">
-      <h3 className="font-bold mb-4 text-lg">Contact Library</h3>
-      <label>
-        Use this to select emails of representatives. NOTE: These have not been
-        updated post 2024 Nov. election
-      </label>
-      <br /> <br />
-      {/* Category filter */}
-      <div>
-        {categories.map((category) => (
-          <button
-            key={category.id}
-            className={
-              '!bg-bg !border-button mr-2 mb-2 rounded-lg !border px-3 py-2 text-sm hover:underline' +
-              (activeCategory === category.id ? ' !bg-button' : '')
-            }
-            onClick={() => {
-              setActiveCategory(category.id);
-              setAreDeputiesShown(false);
-              setData(category.data);
-            }}
+    <Dialog.Root>
+      <Dialog.Trigger className="flex items-center justify-center gap-1.5 border-none hover:bg-transparent hover:text-black hover:underline">
+        <Icon icon="material-symbols:work-outline" /> Contact library
+      </Dialog.Trigger>
+
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 bg-white opacity-50" />
+        {/* flex flex-col overflow-auto - all the way down to make "sticky" header work*/}
+        <Dialog.Content className="fixed top-1/2 left-1/2 flex max-h-[85vh] w-3xl max-w-screen -translate-x-1/2 -translate-y-1/2 flex-col overflow-auto border-2 bg-white">
+          <Dialog.Close
+            className="absolute top-2.5 right-2.5 inline-flex size-[25px] items-center justify-center border-none p-0 text-2xl"
+            aria-label="Close"
           >
-            {category.label}
-          </button>
-        ))}
-      </div>
-      {/* Contact list */}
-      {data.length ? (
-        <div className="bg-edit mt-2 max-h-[50vh] overflow-scroll rounded border border-dotted border-gray-400 text-sm">
-          <div className="bg-bg sticky top-0 flex h-8 w-full border-b border-dotted border-gray-400">
-            <button
-              className="border-button m-1 rounded border hover:underline"
-              onClick={addAll}
-            >
-              Add All
-            </button>
+            <Icon icon="material-symbols:close" />
+          </Dialog.Close>
 
-            <button
-              className={
-                'border-button m-1 rounded border hover:underline' +
-                (activeCategory !== 'metro' ? ' hidden' : '')
-              }
-              onClick={() => {
-                setAreDeputiesShown(!areDeputiesShown);
-              }}
-            >
-              {!areDeputiesShown ? 'Include Deputies' : 'Exclude Deputies'}
-            </button>
+          <header className="flex flex-col gap-4 p-8">
+            <Dialog.Title className="text-xl font-bold">
+              Contact Library
+            </Dialog.Title>
 
-            <button
-              className="!bg-bg hover:!bg-button sticky top-0 left-[770px] m-1 w-8 rounded !border !border-gray-400 px-2 py-0.5 hover:underline"
-              onClick={() => {
-                setData([]);
-                setActiveCategory('');
-              }}
-            >
-              X
-            </button>
-          </div>
+            <Dialog.Description className="text-gray-400 italic">
+              NOTE: These have not been updated post-November 2024 election.
+            </Dialog.Description>
+          </header>
 
-          <table className="w-full border-collapse">
-            <tbody>
-              {data.map((feature, index) => {
-                if (feature.properties.DEMAIL) {
-                  return (
-                    <tr
-                      key={index}
-                      data-email={feature.properties.DEMAIL}
-                      className="hover:!bg-soft-bg w-full min-w-full cursor-pointer p-1 leading-normal"
-                      onClick={() => {
-                        updateRecipients(
-                          feature.properties.DEMAIL,
-                          feature.properties.Deputy,
-                        );
-                      }}
-                    >
-                      <td
-                        className={!feature.properties.District ? 'hidden' : ''}
+          {/* Tabs */}
+          <Tabs.Root
+            defaultValue={categories[0].id}
+            className="flex flex-col overflow-auto"
+          >
+            <Tabs.List aria-label="Legislative body" className="z-10">
+              {categories.map((category) => (
+                <Tabs.Trigger
+                  key={category.id}
+                  value={category.id}
+                  className="border-2 border-black bg-white not-last:border-r-0 first:border-l-0 hover:bg-black data-[state=active]:cursor-auto data-[state=active]:border-b-white hover:data-[state=active]:bg-white hover:data-[state=active]:text-black"
+                >
+                  {category.label}
+                </Tabs.Trigger>
+              ))}
+            </Tabs.List>
+
+            {/* Content */}
+            {categories.map((category) => (
+              <Tabs.Content
+                key={category.id}
+                value={category.id}
+                className="-mt-0.5 flex flex-col overflow-auto border-t-2 border-black bg-white text-sm"
+              >
+                {/* Toolbar */}
+                <div className="flex justify-between border-b-2 p-4">
+                  <button className="" onClick={() => addAll(category.data)}>
+                    Add All
+                  </button>
+
+                  {/* Show deputies */}
+                  {category.id === 'metro' && (
+                    <div className="flex items-center gap-2.5">
+                      <Checkbox.Root
+                        id="deputies"
+                        checked={areDeputiesShown}
+                        onCheckedChange={() => {
+                          setAreDeputiesShown(!areDeputiesShown);
+                        }}
+                        className="flex size-6 items-center justify-center border-2 border-black p-0"
                       >
-                        {feature.properties.District}
-                      </td>
-                      <td>{feature.properties.NAME}</td>
-                      <td>{feature.properties.DEMAIL}</td>
-                      <td>{areDeputiesShown && feature.properties.Deputy}</td>
-                    </tr>
-                  );
-                }
-              })}
-            </tbody>
-          </table>
-        </div>
-      ) : null}
-    </div>
+                        <Checkbox.Indicator>
+                          <Icon icon="material-symbols:check" />
+                        </Checkbox.Indicator>
+                      </Checkbox.Root>
+                      <label htmlFor="deputies">Show deputies</label>
+                    </div>
+                  )}
+                </div>
+
+                {/* List */}
+                <table className="flex flex-col overflow-auto">
+                  <tbody>
+                    {category.data.map((feature, index) => {
+                      if (feature.properties.DEMAIL) {
+                        return (
+                          <tr
+                            key={index}
+                            data-email={feature.properties.DEMAIL}
+                            className="cursor-pointer leading-normal not-last:border-b-2 hover:bg-black hover:text-white"
+                            onClick={() => {
+                              updateRecipients(
+                                feature.properties.DEMAIL,
+                                feature.properties.Deputy,
+                              );
+                            }}
+                          >
+                            {feature.properties.District && (
+                              <td className="px-4 py-2 whitespace-nowrap">
+                                {feature.properties.District}
+                              </td>
+                            )}
+                            <td className="px-4 py-2 whitespace-nowrap">
+                              {feature.properties.NAME}
+                            </td>
+                            <td className="w-[99%] px-4 py-2">
+                              {feature.properties.DEMAIL}
+                            </td>
+                            <td className="px-4 py-2">
+                              {areDeputiesShown && feature.properties.Deputy}
+                            </td>
+                          </tr>
+                        );
+                      }
+                    })}
+                  </tbody>
+                </table>
+              </Tabs.Content>
+            ))}
+          </Tabs.Root>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
