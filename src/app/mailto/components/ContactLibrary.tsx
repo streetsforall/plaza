@@ -115,7 +115,7 @@ export default function ContactLibrary({ recipients, setRecipients }) {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-white opacity-50" />
         {/* flex flex-col overflow-auto - all the way down to make "sticky" header work*/}
-        <Dialog.Content className="fixed top-1/2 left-1/2 flex max-h-[85vh] w-3xl max-w-screen -translate-x-1/2 -translate-y-1/2 flex-col overflow-auto border-2 bg-white">
+        <Dialog.Content className="fixed top-1/2 left-1/2 z-10 flex max-h-[85vh] w-3xl max-w-screen -translate-x-1/2 -translate-y-1/2 flex-col overflow-auto border-2 bg-white">
           <Dialog.Close
             className="absolute top-2.5 right-2.5 inline-flex size-[25px] items-center justify-center border-none p-0 text-2xl"
             aria-label="Close"
