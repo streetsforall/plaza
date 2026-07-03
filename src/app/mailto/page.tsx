@@ -171,7 +171,7 @@ export default function Page() {
   //       var current_focus = document.activeElement
   //       console.log(current_focus)
   //       if (current_focus.classList.contains('recipient')) {
-  //          var content = current_focus.firstChild.textContent
+  //          var content = current_focus.firstChild.textContent    git push --set-upstream origin fix-saved-state
   //          console.log(content)
   //          var form = current_focus.parentElement.id
   //          if (form == 'to') {remove(content, recieverList, setRecieverList)} else
@@ -183,7 +183,6 @@ export default function Page() {
 
   return validated ? (
     <div className="container m-auto min-h-screen">
-      {error && <div className="text-center text-red-500">{error}</div>}
       {/* Save/copy link button */}
       <header className="flex justify-between py-8">
         <span className="block self-center bg-black px-3 text-2xl font-bold text-white uppercase">
@@ -214,6 +213,12 @@ export default function Page() {
           </button>
         </div>
       </header>
+
+      {error && (
+        <div className="my-4 rounded-sm bg-red-800 p-2 px-8 text-center text-white">
+          {error}
+        </div>
+      )}
 
       <div className="flex items-start gap-4">
         {/* Left column */}
