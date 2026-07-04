@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import "../../mailto/mailto.css";
 import "./update.css";
 import Head from "next/head";
 import { geo } from "../../mailto/helpers/geo";
@@ -85,15 +84,15 @@ export default function Page({ params }: { params: { slug: string } }) {
           type="text/css"
         ></link>
       </Head>
-      <div id="outbound">
-        <div id="outbound_header">
+      <div className="flex flex-col justify-between h-screen">
+        <div className="flex flox-col mx-auto my-4 text-center w-max">
           <a href="https://www.streetsforall.org/">
-            <img src="/images/SFA_logo_wide.png" />
+            <img src="/images/SFA_logo_wide.png" className="max-w-full w-80" />
           </a>
           Email Update Tool
         </div>
 
-        <div className="data_field" id="geocoder">
+        <div className="bg-bg m-auto mt-12 p-4 rounded-2xl text-xl max-w-xl w-[calc(100%-2rem)]">
           <h2>Update your Streets for All contact information</h2>
           <label className="intro">
             We ask for your address to make sure you only get calls to action
@@ -104,8 +103,9 @@ export default function Page({ params }: { params: { slug: string } }) {
 
           {/* AUTO ADDRESS */}
           {/* 
-          <div id="geo_body">
+          <div>
             <input
+              className="text-base md:text-xl w-[calc(100%-1rem)]"
               placeholder="enter address here"
               onChange={(e) => setPlace(e.target.value + ", California")}
             ></input>
@@ -113,7 +113,7 @@ export default function Page({ params }: { params: { slug: string } }) {
               {locations
                 ? locations.map((e, i) => {
                     return (
-                      <button key={i} onClick={() => retrieveDistricts(e)}>
+                      <button className="!bg-bg hover:!bg-edit !border-b !border-button px-0 py-2 text-left text-base md:text-lg w-full" key={i} onClick={() => retrieveDistricts(e)}>
                         {e.properties.full_address}
                       </button>
                     );

@@ -73,7 +73,7 @@ export default function RecipientField({
   }
 
   return (
-    <div className="recipient_list">
+    <div className="flex flex-wrap gap-2 border-2 border-black focus-within:border-blue p-2">
       {/* Added emails */}
       {thisList.map((email, index) => {
         return (
@@ -82,86 +82,99 @@ export default function RecipientField({
               onClick={(e: any) => {
                 e.target.focus();
               }}
-              className="recipient"
+              className="group focus:bg-soft-bg relative flex items-center rounded-sm border-2 border-dotted border-black px-1 text-black"
               tabIndex={10 + index}
             >
               {email}
 
               {/* Move to different field */}
-              <div className="recipient_menu">
+              <div className="absolute top-6 hidden cursor-pointer rounded-sm bg-black font-mono text-sm text-white group-hover:flex">
                 {/* To */}
-                <span
-                  className={thisList !== toList ? 'shown' : 'hidden'}
+                <button
+                  aria-label="Move to 'To' field"
+                  className={
+                    'cursor-pointer rounded-sm border-none px-2 py-1 hover:bg-gray-700' +
+                    (thisList === toList ? ' hidden' : '')
+                  }
                   onClick={(e) => {
                     addRecipient(email, toList, setToList);
                     removeRecipient(email, thisList, setThisList);
                   }}
                 >
                   To
-                </span>
+                </button>
 
                 {/* CC */}
-                <span
-                  className={thisList !== ccList ? 'shown' : 'hidden'}
+                <button
+                  aria-label="Move to 'CC' field"
+                  className={
+                    'cursor-pointer rounded-sm border-none px-2 py-1 hover:bg-gray-700' +
+                    (thisList === ccList ? ' hidden' : '')
+                  }
                   onClick={(e) => {
                     addRecipient(email, ccList, setCcList);
                     removeRecipient(email, thisList, setThisList);
                     setIsCcVisible(true);
                   }}
                 >
-                  Cc
-                </span>
+                  CC
+                </button>
 
                 {/* BCC */}
-                <span
-                  className={thisList !== bccList ? 'shown' : 'hidden'}
+                <button
+                  aria-label="Move to 'BCC' field"
+                  className={
+                    'cursor-pointer rounded-sm border-none px-2 py-1 hover:bg-gray-700' +
+                    (thisList === bccList ? ' hidden' : '')
+                  }
                   onClick={(e) => {
                     addRecipient(email, bccList, setBccList);
                     removeRecipient(email, thisList, setThisList);
                     setIsBccVisible(true);
                   }}
                 >
-                  Bcc
-                </span>
+                  BCC
+                </button>
 
                 {/* Delete */}
-                <span
-                  className="delete"
+                <button
+                  aria-label="Remove recipient"
+                  className="cursor-pointer rounded-sm rounded-l-none border-l border-none border-white px-2 py-1 hover:bg-gray-700"
                   onClick={() => {
                     removeRecipient(email, thisList, setThisList);
                   }}
                 >
                   Delete
-                </span>
+                </button>
               </div>
             </span>
-            ,
           </React.Fragment>
         );
       })}
 
       {/* Add new email */}
-      <form
-        id="recipients_form"
-        autoComplete="off"
-        onSubmit={processRecipientInput}
-      >
+      <form autoComplete="off" onSubmit={processRecipientInput}>
         <input
           tabIndex={thisList.length + 11}
           required
           placeholder="add email"
           type="email"
           multiple
-          id="recipients"
+          className="rounded-sm border-0 px-1 py-0.5 align-middle hover:bg-gray-200 focus:bg-gray-200"
           value={recipient}
           onChange={(e) => setRecipient(e.target.value)}
           onBlur={processRecipientInput}
         />
       </form>
 
-      <p id="clear" onClick={() => setThisList([])}>
-        CLEAR
-      </p>
+      {/* Clear */}
+      <button
+        aria-label="Remove all recipients from field"
+        className="ml-auto rounded-sm border-none px-2 py-1 font-mono text-sm text-gray-400 uppercase hover:bg-gray-200"
+        onClick={() => setThisList([])}
+      >
+        Clear
+      </button>
     </div>
   );
 }

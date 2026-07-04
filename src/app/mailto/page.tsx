@@ -1,14 +1,13 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-// import Geocoder from './components/geocoder'
-import ContactLibrary from "./components/ContactLibrary";
+import { useState, useRef } from 'react';
+import { Icon } from '@iconify/react';
+import ContactLibrary from './components/ContactLibrary';
 import LandingPageSettings from './components/LandingPageSettings';
+import LoginPage from './components/LoginPage';
 import RecipientField from './components/RecipientField';
 import { setEmailTemplate } from './helpers/db';
-import { textEncoding, textEscapes } from './helpers/text_cleanup';
 import { validateString } from './helpers/validator';
-import './mailto.css';
 
 interface SavedEmail {
   body?: string;
@@ -17,8 +16,8 @@ interface SavedEmail {
   cc?: string[];
   actionable?: { body: string; header: string };
   shareable?: boolean;
-  district_var?: any[];
-  to?: any[];
+  district_var?: string[];
+  to?: string[];
   phone?: boolean;
 }
 
@@ -26,33 +25,40 @@ export default function Page() {
   // Email template
   const [body, setBody] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
-  const [recieverList, setRecieverList] = useState<any[]>([]);
+  const [recieverList, setRecieverList] = useState<string[]>([]);
   const [isShareable, setIsShareable] = useState<boolean>(false);
-  const [districtVar, setDistrictVar] = useState<any[]>([]);
+  const [districtVar, setDistrictVar] = useState<string[]>([]);
   const [actionable, setActionable] = useState<{
     body: string;
     header: string;
   }>({ body: '', header: '' });
   const [cc, setCC] = useState<string[]>([]);
   const [bcc, setBcc] = useState<string[]>(['contact@streetsforall.org']);
-  const [load, setLoad] = useState<any>({});
-  const [saved, setSaved] = useState<any>({});
+  const [savedState, setSavedState] = useState<string>('');
   const [isPhone, setPhone] = useState<boolean>(true); // Default to displaying phone CTA
-  const [match, setMatch] = useState<SavedEmail | null>(null); // This is the key fix!
 
   // UI state
   const [validated, setValidated] = useState<boolean>(false);
-  const [mounted, setMounted] = useState<boolean>(false);
-  const [mailtoLink, setMailtoLink] = useState<string>('');
   const [hash, setHash] = useState<string>();
-  const [copy, setCopy] = useState<string>('');
-  const [showGeo, setshowGeo] = useState<boolean>(false);
   const [showCC, setshowCC] = useState<boolean>(false);
   const [showBcc, setShowBcc] = useState<boolean>(false);
-  const [feed, setFeed] = useState<boolean>(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string>('');
 
   const pwdInputRef = useRef<HTMLInputElement>(null);
+
+  // Calculated values
+  const draftState =
+    JSON.stringify(districtVar) +
+    JSON.stringify(actionable) +
+    recieverList +
+    cc +
+    bcc +
+    subject +
+    body +
+    isPhone;
+  const mailtoLink = `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${encodeURIComponent(
+    subject,
+  )}&body=${body}`;
 
   /**
    * Validate password and load saved email template
@@ -61,11 +67,41 @@ export default function Page() {
     event.preventDefault();
 
     const supplied = pwdInputRef.current?.value;
-
     const auth = await validateString(supplied, window.location.hash);
 
-    setMatch(auth['emails'] as SavedEmail | null); // Type assertion here
-    setValidated(auth['valid']);
+    const saved = auth['emails'] as SavedEmail | null;
+    const valid = auth['valid'];
+
+    // Password is correct
+    if (valid) {
+      // Hash is legitimate
+      if (window.location.hash && saved) {
+        setBody(saved.body ? decodeURIComponent(saved.body) : '');
+        setSubject(saved.subject ? decodeURIComponent(saved.subject) : '');
+        setBcc(saved.bcc || []);
+        setCC(saved.cc || []);
+        setActionable(saved.actionable || { body: '', header: '' });
+        setIsShareable(saved.shareable || false);
+        setDistrictVar(saved.district_var || []);
+        setRecieverList(saved.to || []);
+        setPhone(saved.phone || false);
+
+        setSavedState(
+          JSON.stringify(saved.district_var) +
+            JSON.stringify(saved.actionable) +
+            saved.to +
+            saved.cc +
+            saved.bcc +
+            decodeURIComponent(saved.subject || '') +
+            decodeURIComponent(saved.body || '') +
+            saved.phone,
+        );
+
+        setHash(window.location.hash);
+      }
+
+      setValidated(true);
+    }
   }
 
   /**
@@ -82,19 +118,37 @@ export default function Page() {
       return;
     }
 
+    let url;
+
+    // If no hash, create one and add to URL
     if (!hash) {
-      // If no hash, create one and add to URL
-      var url = '#' + (Math.random() + 1).toString(36).substring(5);
+      url = '#' + (Math.random() + 1).toString(36).substring(5);
 
       setHash(url);
       window.location.hash = url;
     } else {
-      // Save to database
-      setEmailTemplate(load);
-
-      // Add local saved state to compare against
-      setSaved(load);
+      url = hash;
     }
+
+    // Save to database
+    const times = Date.now();
+
+    setEmailTemplate({
+      shareable: isShareable,
+      district_var: districtVar,
+      url,
+      actionable: actionable,
+      to: recieverList,
+      cc: cc,
+      bcc: bcc,
+      subject: encodeURIComponent(subject),
+      body: encodeURIComponent(body),
+      time: new Date(times),
+      phone: isPhone,
+    });
+
+    // Add local saved state to compare against
+    setSavedState(draftState);
   }
 
   /**
@@ -103,7 +157,7 @@ export default function Page() {
    * @param event - Trigger event to update UI
    */
   async function copyTextToClipboard(content, event) {
-    event.target.innerText = 'Copied Link!';
+    event.target.innerText = 'Copied!';
 
     navigator.clipboard.writeText(content);
   }
@@ -117,7 +171,7 @@ export default function Page() {
   //       var current_focus = document.activeElement
   //       console.log(current_focus)
   //       if (current_focus.classList.contains('recipient')) {
-  //          var content = current_focus.firstChild.textContent
+  //          var content = current_focus.firstChild.textContent    git push --set-upstream origin fix-saved-state
   //          console.log(content)
   //          var form = current_focus.parentElement.id
   //          if (form == 'to') {remove(content, recieverList, setRecieverList)} else
@@ -127,175 +181,90 @@ export default function Page() {
   //    }
   //  });
 
-  /**
-   * Load data from saved template
-   */
-  useEffect(() => {
-    if (validated) {
-      if (hash && match) {
-        // Now TypeScript knows about these properties
-        setBody(match.body ? decodeURIComponent(match.body) : '');
-        setSubject(match.subject ? decodeURIComponent(match.subject) : '');
-        setBcc(match.bcc || []);
-        setCC(match.cc || []);
-        setActionable(match.actionable || { body: '', header: '' });
-        setIsShareable(match.shareable || false);
-        setDistrictVar(match.district_var || []);
-        setRecieverList(match.to || []);
-        setPhone(match.phone || false);
-      }
-      setMounted(true);
-    }
+  return validated ? (
+    <div className="container m-auto min-h-screen">
+      {/* Save/copy link button */}
+      <header className="flex justify-between py-8">
+        <span className="block self-center bg-black px-3 text-2xl font-bold text-white uppercase">
+          SFA Mailto Tool
+        </span>
 
-    setSaved(load);
-    setHash(window.location.hash);
-  }, [validated]);
+        <div className="flex items-center gap-4">
+          <span className="flex w-full items-center justify-center gap-1.5 text-sm">
+            {hash && savedState == draftState ? (
+              <>
+                <Icon icon="material-symbols:check" />
+                All changes saved
+              </>
+            ) : (
+              <>
+                <Icon icon="material-symbols:exclamation" />
+                Unsaved changes
+              </>
+            )}
+          </span>
 
-  /**
-   * Update data whenever a change is made
-   */
-  useEffect(() => {
-    const times = Date.now();
-
-    setLoad({
-      shareable: isShareable,
-      district_var: districtVar,
-      url: hash,
-      actionable: actionable,
-      to: recieverList,
-      cc: cc,
-      bcc: bcc,
-      subject: encodeURIComponent(subject),
-      body: encodeURIComponent(body),
-      time: new Date(times),
-      phone: isPhone,
-    });
-
-    setMailtoLink(`mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${encodeURIComponent(
-      subject,
-    )}&body=${body}`);
-  }, [
-    recieverList,
-    actionable,
-    cc,
-    bcc,
-    body,
-    hash,
-    subject,
-    isShareable,
-    districtVar,
-    isPhone,
-  ]);
-
-  return (
-    <div id="page">
-      <div className={validated ? 'hidden' : ''} id="log-in">
-        Please log in to access the mailto tool
-        <form onSubmit={validate}>
-          <div>
-            <label>Password</label>
-            <input ref={pwdInputRef} id="password" />
-          </div>
-          <button className="button_m" type="submit">
-            Submit
+          <button
+            className="submit flex items-center justify-center gap-1.5"
+            onClick={() => updateDatabase()}
+          >
+            <Icon icon="material-symbols:save-outline" />
+            Save
           </button>
-        </form>
-      </div>
+        </div>
+      </header>
 
       {error && (
-        <div style={{ color: 'red', textAlign: 'center' }}>
+        <div className="my-4 rounded-sm bg-red-800 p-2 px-8 text-center text-white">
           {error}
         </div>
       )}
 
-      <div className={validated ? '' : 'hidden'} id="container">
-        <div id="toolset">
-          <LandingPageSettings
-            hash={hash}
-            legislativeTargets={districtVar}
-            setLegislativeTargets={setDistrictVar}
-            actionable={actionable}
-            setActionable={setActionable}
-            isPhone={isPhone}
-            setIsPhone={setPhone}
-          />
+      <div className="flex items-start gap-4">
+        {/* Left column */}
+        <div className="flex w-1/2 flex-col gap-6 border-2 border-black bg-white p-8">
+          <h2 className="font-title text-2xl font-bold">Mailto</h2>
 
-          {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} /> */}
-          <ContactLibrary
-            recipients={recieverList}
-            setRecipients={setRecieverList}
-          />
-        </div>
-
-        <div className="window" id="mailer">
-          <div id="mailer_head">
+          <div className="flex flex-col gap-6">
+            {/* To */}
             <div>
-              <h1>MailTo</h1>
-              <label>Use this to generate an email</label>
+              <div className="flex items-end justify-between">
+                <label>To</label>
+                <ContactLibrary
+                  recipients={recieverList}
+                  setRecipients={setRecieverList}
+                />
+              </div>
+
+              <RecipientField
+                thisList={recieverList}
+                setThisList={setRecieverList}
+                toList={recieverList}
+                setToList={setRecieverList}
+                ccList={cc}
+                setCcList={setCC}
+                setIsCcVisible={setshowCC}
+                bccList={bcc}
+                setBccList={setBcc}
+                setIsBccVisible={setShowBcc}
+              />
             </div>
 
-            {/* Save/copy link button */}
-            {hash ? (
-              <div id="editable">
-                <div>
-                  <button
-                    className="m_button"
-                    style={{ width: '100%' }}
-                    onClick={(e) =>
-                      copyTextToClipboard(window.location.href, e)
-                    }
-                    id="hash"
-                  >
-                    Copy Editable Link
-                  </button>
-                </div>
-                <div className="sub_menu">
-                  <button
-                    className="m_button"
-                    id="save"
-                    onClick={() => updateDatabase()}
-                  >
-                    Save Page
-                  </button>
-
-                  <label className={saved == load ? 'saved' : 'unsaved'}>
-                    {saved == load ? '✅ up to date' : '❗ unsaved changes'}
-                  </label>
-                </div>
-              </div>
-            ) : (
-              <div id="editable">
-                <button className="m_button" onClick={() => updateDatabase()}>
-                  Save Draft
-                </button>
-              </div>
-            )}
-          </div>
-
-          {mounted ? (
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div
+              className={
+                'flex gap-x-4 gap-y-6' + (showCC || showBcc ? ' flex-col' : '')
+              }
+            >
+              {/* CC */}
               <div>
-                <label className="main_label">To</label>
-                <RecipientField
-                  thisList={recieverList}
-                  setThisList={setRecieverList}
-                  toList={recieverList}
-                  setToList={setRecieverList}
-                  ccList={cc}
-                  setCcList={setCC}
-                  setIsCcVisible={setshowCC}
-                  bccList={bcc}
-                  setBccList={setBcc}
-                  setIsBccVisible={setShowBcc}
-                />
-
                 <label
                   className={
-                    showCC === true ? 'label_header full' : 'label_header'
+                    'cursor-pointer hover:underline' +
+                    (showCC === true ? ' block' : ' inline')
                   }
                   onClick={() => setshowCC(!showCC)}
                 >
-                  Cc
+                  CC
                 </label>
                 {showCC === true ? (
                   <RecipientField
@@ -313,14 +282,18 @@ export default function Page() {
                 ) : (
                   ''
                 )}
+              </div>
 
+              {/* BCC */}
+              <div className={showBcc ? 'block' : 'inline'}>
                 <label
                   className={
-                    showBcc === true ? 'label_header full' : 'label_header'
+                    'cursor-pointer hover:underline' +
+                    (showBcc === true ? ' block' : ' inline')
                   }
                   onClick={() => setShowBcc(!showBcc)}
                 >
-                  Bcc
+                  BCC
                 </label>
                 {showBcc === true ? (
                   <RecipientField
@@ -339,46 +312,99 @@ export default function Page() {
                   ''
                 )}
               </div>
+            </div>
 
-              {/* Subject */}
-              <label className="main_label">Subject (required)</label>
+            {/* Subject */}
+            <div>
+              <label htmlFor="email-subject">
+                Subject
+                <span
+                  aria-label="Required"
+                  title="Required"
+                  className="text-red-500"
+                >
+                  *
+                </span>
+              </label>
               <input
                 value={decodeURIComponent(subject)}
-                id="subject_field"
+                id="email-subject"
+                className="w-full"
                 onChange={(e) => {
                   setSubject(e.target.value);
                 }}
                 required
               />
+            </div>
 
-              {/* Body */}
-              <label className="main_label">Email Body (required)</label>
+            {/* Body */}
+            <div>
+              <label htmlFor="email-body" className="flex items-center gap-1.5">
+                Email Body
+                <span
+                  aria-label="Required"
+                  title="Required"
+                  className="text-red-500"
+                >
+                  *
+                </span>
+              </label>
               <textarea
                 value={decodeURIComponent(body)}
-                id="body_field"
-                rows={20}
+                id="email-body"
+                className="min-h-96 w-full"
                 onChange={(e) => {
                   setBody(e.target.value);
                 }}
                 required
               />
-
-              <div id="preview">{mailtoLink}</div>
-
-              <button id="copy" onClick={(e) => copyTextToClipboard(mailtoLink, e)}>
-                Copy Code
-              </button>
             </div>
-          ) : (
-            'loading'
-          )}
+
+            {/* Mailto link */}
+            <div>
+              <label className="font-sans text-sm">Mailto link</label>
+              <div className="flex bg-gray-100 p-1">
+                <span className="grow overflow-hidden rounded-sm px-2 py-2 font-mono text-sm text-ellipsis whitespace-nowrap">
+                  {mailtoLink}
+                </span>
+
+                <button
+                  aria-label="Copy mailto link to clipboard"
+                  className="border-none px-2.5 py-2 hover:bg-black"
+                  onClick={(e) => copyTextToClipboard(mailtoLink, e)}
+                >
+                  <Icon icon="material-symbols:content-copy-outline" />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <button id="feed">
-            <a href="/mailto/drafts">mailto drafts</a>
-          </button>
+
+        {/* Right column */}
+        <div className="w-1/2 max-w-full">
+          <LandingPageSettings
+            hash={hash}
+            legislativeTargets={districtVar}
+            setLegislativeTargets={setDistrictVar}
+            actionable={actionable}
+            setActionable={setActionable}
+            isPhone={isPhone}
+            setIsPhone={setPhone}
+          />
+
+          {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} /> */}
         </div>
       </div>
+      {/* Open button */}
+      <a
+        href="/mailto/drafts"
+        className="submit fixed bottom-4 left-4 flex items-center justify-center gap-1.5 no-underline"
+      >
+        <Icon icon="material-symbols:folder-open-outline" />
+        Open
+      </a>
     </div>
+  ) : (
+    <LoginPage pwdInputRef={pwdInputRef} validateAction={validate} />
   );
 }

@@ -8,7 +8,6 @@ import { textEncoding } from "../../helpers/text_cleanup";
 import { addMailchimp } from "../../helpers/mailchimp";
 import Footer from "../../components/footer";
 import metadata from "../../data/memeber_meta.json";
-import "../../mailto.css";
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
   // Handle async promise
@@ -226,7 +225,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
   };
 
   return isFound ? (
-    <div id="outbound">
+    <div className="flex flex-col justify-between min-h-screen">
       <Head>
         <title>{email?.actionable?.header}</title>
         <meta
@@ -237,15 +236,15 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         <link rel="icon" href="/images/SFA_logo.png" />
       </Head>
 
-      <div id="outbound_header">
+      <div className="flex flex-col mx-auto my-4 text-center w-max">
         <a href="https://www.streetsforall.org/">
-          <img src="/images/SFA_logo_wide.png" />
+          <img src="/images/SFA_logo_wide.png" className="max-w-full w-80" />
         </a>
         <label>Mailto ID: {hash}</label>
       </div>
 
-      <div className="data_field" id="geocoder">
-        <h2 style={{ marginBottom: "2rem" }}>{email?.actionable?.header}</h2>
+      <div className="bg-white m-auto mt-12 p-4 rounded-2xl text-xl max-w-xl w-[calc(100%-2rem)]">
+        <h2 className="font-bold mt-4 mb-8 text-3xl">{email?.actionable?.header}</h2>
 
         {(email?.district_var.length && !outLink) ? (
           <>
@@ -254,16 +253,18 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
               representative to contact:
             </p>
 
-            <div id="geo_body">
+            <div>
               <input
+                className="text-base md:text-xl w-[calc(100%-1rem)]"
                 placeholder="enter address here"
                 onChange={(e) => setPlace(e.target.value + ", California")}
-              ></input>
-              <div id="dropdown">
+              />
+              <div>
                 {locations
                   ? locations.map((e, i) => {
                       return (
                         <button
+                          className="!bg-bg hover:!bg-edit !border-b !border-button px-0 py-2 text-left text-base md:text-lg w-full"
                           data-umami-event="cta_select_address"
                           key={i}
                           onClick={() => retrieveDistricts(e)}
@@ -288,11 +289,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             {/* Legislator info */}
             {districtInfo && (
               <div
-                style={{
-                  marginBottom: "2rem",
-                  border: "1px dotted black",
-                  padding: "1rem",
-                }}
+               className="border border-dotted border-black mb-8 p-4"
               >
                 <span>
                   {`You are represented by ${districtInfo?.properties.post.role} ${
@@ -304,28 +301,20 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
             {/* Body */}
             {email?.actionable?.body && (
-              <p
-                style={{
-                  paddingBottom: "2rem",
-                  color: "#575757",
-                  whiteSpace: "pre-wrap",
-                }}
-              >
+              <p className="pb-8 text-[#575757] whitespace-pre-wrap">
                 {renderTextWithLinks(email.actionable.body)}
               </p>
             )}
 
             {/* Phone CTA - requires geographic legislator lookup */}
             {districtInfo && email?.phone && (
-              <div className="cta_box">
-                <div
-                  className="cta_pointer"
-                >
+              <div className="relative bg-edit border border-dotted border-black mb-8 p-4">
+                <div className="absolute top-0 -left-10 mt-3 -rotate-6 text-5xl">
                   👉
                 </div>
                 <b>Call your representative: </b>
                 <a
-                  style={{ whiteSpace: "nowrap" }}
+                  className="whitespace-nowrap"
                   data-umami-event="cta_click_phone"
                   href={"tel:" + phoneNum}
                 >
@@ -335,29 +324,27 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             )}
 
             {/* Email CTA */}
-            <div className="cta_box">
-              <div
-                className="cta_pointer"
-              >
+            <div className="relative bg-edit border border-dotted border-black mb-8 p-4">
+              <div className="absolute top-0 -left-10 mt-3 -rotate-6 text-5xl">
                 👉
               </div>
               <a href={generated}>
-                <button data-umami-event="cta_click_email" id="oubound_copy">
-                  <b style={{ whiteSpace: "nowrap" }}>Email your representative </b>  <> </>
-                  <span style={{ whiteSpace: "nowrap" }}>(Customize the bottom)</span>
+                <button data-umami-event="cta_click_email" className="!bg-[aquamarine] hover:!bg-[rgb(44,168,127)] !border !border-[rgb(44,168,127)] px-3 py-2 rounded-2xl text-xl text-black hover:text-white">
+                  <b className="whitespace-nowrap">Email your representative </b>
+                  <span className="whitespace-nowrap">(Customize the bottom)</span>
                 </button>
               </a>
             </div>
 
             {/* Mailto link */}
-            <div id="outbound_link">
+            <div className="border-t border-dotted border-gray-400 mt-4 pt-4 wrap-break-word">
               <label>
                 {" "}
                 <div onClick={() => setGenerateToggle(!generateToggle)}>
                   {generateToggle ? "▼" : "▶"} Mailto Link
                 </div>
                 {generateToggle ? (
-                  <div id="outbound_link_text">{generated}</div>
+                  <div className="bg-edit mt-2 p-2 rounded text-xs">{generated}</div>
                 ) : (
                   ""
                 )}
@@ -380,14 +367,14 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
       <Footer />
     </div>
   ) : (
-    <div id="outbound">
-      <div id="outbound_header">
+    <div className="flex flex-col justify-between h-screen">
+      <div className="flex flox-col mx-auto my-4 text-center w-max">
         <a href="https://www.streetsforall.org/">
-          <img src="/images/SFA_logo_wide.png" />
+          <img src="/images/SFA_logo_wide.png" className="max-w-full w-80" />
         </a>
       </div>
 
-      <div className="data_field" id="geocoder" style={{ textAlign: "center" }}>
+      <div className="bg-bg m-auto mt-12 p-4 rounded-2xl text-center text-xl max-w-xl w-[calc(100%-2rem)]">
         <h2>Not Found</h2>
 
         <p>Sorry, but the page you're looking for doesn't exist.</p>
