@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Prisma } from 'generated/prisma/client';
+import { useState, useEffect } from 'react';
 import { getAllEmailTemplates } from '../helpers/db';
 
 function Drafts() {
-  const [drafts, setDrafts] = useState<Prisma.EmailTemplateModel[]>();
+  const [drafts, setDrafts] = useState<any>();
 
   useEffect(() => {
     async function loadEmailTemplates() {
