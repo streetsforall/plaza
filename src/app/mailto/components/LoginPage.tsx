@@ -17,8 +17,8 @@ export default function LoginPage({
           src="/SFA_logo_wide.png"
           alt="Streets For All logo"
           height={0}
-          width={0}
-          className="mb-12 h-auto w-[240px] bg-black"
+          width={240}
+          className="mb-12 h-auto bg-black"
         />
 
         <h1 className="font-title mb-8 text-2xl font-bold">
