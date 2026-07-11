@@ -181,7 +181,7 @@ export default function Page() {
   //    }
   //  });
 
-  return validated ? (
+  return (
     <div className="container m-auto min-h-screen">
       {/* Save/copy link button */}
       <header className="flex justify-between py-8">
@@ -404,7 +404,5 @@ export default function Page() {
         Open
       </a>
     </div>
-  ) : (
-    <LoginPage pwdInputRef={pwdInputRef} validateAction={validate} />
   );
 }
