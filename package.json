@@ -35,6 +35,7 @@
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "prisma": "^6.19.3",
+    "prisma-json-types-generator": "^3.6.2",
     "tailwindcss": "^4.3.1",
     "typescript": "^5"
   }

@@ -1,25 +1,11 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import ContactLibrary from './components/ContactLibrary';
 import LandingPageSettings from './components/LandingPageSettings';
-import LoginPage from './components/LoginPage';
 import RecipientField from './components/RecipientField';
-import { setEmailTemplate } from './helpers/db';
-import { validateString } from './helpers/validator';
-
-interface SavedEmail {
-  body?: string;
-  subject?: string;
-  bcc?: string[];
-  cc?: string[];
-  actionable?: { body: string; header: string };
-  shareable?: boolean;
-  district_var?: string[];
-  to?: string[];
-  phone?: boolean;
-}
+import { getEmailTemplate, setEmailTemplate } from './helpers/db';
 
 export default function Page() {
   // Email template
@@ -38,13 +24,10 @@ export default function Page() {
   const [isPhone, setPhone] = useState<boolean>(true); // Default to displaying phone CTA
 
   // UI state
-  const [validated, setValidated] = useState<boolean>(false);
   const [hash, setHash] = useState<string>();
   const [showCC, setshowCC] = useState<boolean>(false);
   const [showBcc, setShowBcc] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-
-  const pwdInputRef = useRef<HTMLInputElement>(null);
 
   // Calculated values
   const draftState =
@@ -63,46 +46,41 @@ export default function Page() {
   /**
    * Validate password and load saved email template
    */
-  async function validate(event) {
-    event.preventDefault();
-
-    const supplied = pwdInputRef.current?.value;
-    const auth = await validateString(supplied, window.location.hash);
-
-    const saved = auth['emails'] as SavedEmail | null;
-    const valid = auth['valid'];
-
-    // Password is correct
-    if (valid) {
+  useEffect(() => {
+    async function loadEmailTemplate() {
       // Hash is legitimate
-      if (window.location.hash && saved) {
-        setBody(saved.body ? decodeURIComponent(saved.body) : '');
-        setSubject(saved.subject ? decodeURIComponent(saved.subject) : '');
-        setBcc(saved.bcc || []);
-        setCC(saved.cc || []);
-        setActionable(saved.actionable || { body: '', header: '' });
-        setIsShareable(saved.shareable || false);
-        setDistrictVar(saved.district_var || []);
-        setRecieverList(saved.to || []);
-        setPhone(saved.phone || false);
+      if (window.location.hash) {
+        const saved = await getEmailTemplate(window.location.hash);
 
-        setSavedState(
-          JSON.stringify(saved.district_var) +
-            JSON.stringify(saved.actionable) +
-            saved.to +
-            saved.cc +
-            saved.bcc +
-            decodeURIComponent(saved.subject || '') +
-            decodeURIComponent(saved.body || '') +
-            saved.phone,
-        );
+        if (saved) {
+          setBody(saved.body ? decodeURIComponent(saved.body) : '');
+          setSubject(saved.subject ? decodeURIComponent(saved.subject) : '');
+          setBcc(saved.bcc || []);
+          setCC(saved.cc || []);
+          setActionable(saved.actionable || { body: '', header: '' });
+          setIsShareable(saved.shareable || false);
+          setDistrictVar(saved.district_var || []);
+          setRecieverList(saved.to || []);
+          setPhone(saved.phone || false);
 
-        setHash(window.location.hash);
+          setSavedState(
+            JSON.stringify(saved.district_var) +
+              JSON.stringify(saved.actionable) +
+              saved.to +
+              saved.cc +
+              saved.bcc +
+              decodeURIComponent(saved.subject || '') +
+              decodeURIComponent(saved.body || '') +
+              saved.phone,
+          );
+
+          setHash(window.location.hash);
+        }
       }
-
-      setValidated(true);
     }
-  }
+
+    loadEmailTemplate();
+  }, []);
 
   /**
    * Generate new URL hash or save to database
