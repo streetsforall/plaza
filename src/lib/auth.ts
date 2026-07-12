@@ -14,7 +14,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       authorize: async (credentials) => {
-        if (credentials.password === process.env.LOGIN) {
+        if (credentials.password === process.env.AUTH_PASSWORD) {
           return { id: '' };
         }
         return null;
