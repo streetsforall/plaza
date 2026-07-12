@@ -1,13 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { Icon } from '@iconify/react';
-import ContactLibrary from './components/ContactLibrary';
-import LandingPageSettings from './components/LandingPageSettings';
-import RecipientField from './components/RecipientField';
-import { getEmailTemplate, setEmailTemplate } from './helpers/db';
+import ContactLibrary from '../components/ContactLibrary';
+import LandingPageSettings from '../components/LandingPageSettings';
+import RecipientField from '../components/RecipientField';
+import { getEmailTemplate, setEmailTemplate } from '../helpers/db';
 
-export default function Page() {
+export default function Page({
+  params,
+}: {
+  params: Promise<{ hash: string }>;
+}) {
+  // Get hash from URL path
+  const { hash } = use(params);
+  const [currentHash, setCurrentHash] = useState(hash);
+
   // Email template
   const [body, setBody] = useState<string>('');
   const [subject, setSubject] = useState<string>('');
@@ -24,7 +32,6 @@ export default function Page() {
   const [isPhone, setPhone] = useState<boolean>(true); // Default to displaying phone CTA
 
   // UI state
-  const [hash, setHash] = useState<string>();
   const [showCC, setshowCC] = useState<boolean>(false);
   const [showBcc, setShowBcc] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -44,43 +51,39 @@ export default function Page() {
   )}&body=${body}`;
 
   /**
-   * Validate password and load saved email template
+   * Load saved email template
    */
   useEffect(() => {
     async function loadEmailTemplate() {
-      // Hash is legitimate
-      if (window.location.hash) {
-        const saved = await getEmailTemplate(window.location.hash);
+      // Add # symbol back to match DB
+      const saved = await getEmailTemplate(`#${hash}`);
 
-        if (saved) {
-          setBody(saved.body ? decodeURIComponent(saved.body) : '');
-          setSubject(saved.subject ? decodeURIComponent(saved.subject) : '');
-          setBcc(saved.bcc || []);
-          setCC(saved.cc || []);
-          setActionable(saved.actionable || { body: '', header: '' });
-          setIsShareable(saved.shareable || false);
-          setDistrictVar(saved.district_var || []);
-          setRecieverList(saved.to || []);
-          setPhone(saved.phone || false);
+      if (saved) {
+        setBody(saved.body ? decodeURIComponent(saved.body) : '');
+        setSubject(saved.subject ? decodeURIComponent(saved.subject) : '');
+        setBcc(saved.bcc || []);
+        setCC(saved.cc || []);
+        setActionable(saved.actionable || { body: '', header: '' });
+        setIsShareable(saved.shareable || false);
+        setDistrictVar(saved.district_var || []);
+        setRecieverList(saved.to || []);
+        setPhone(saved.phone || false);
 
-          setSavedState(
-            JSON.stringify(saved.district_var) +
-              JSON.stringify(saved.actionable) +
-              saved.to +
-              saved.cc +
-              saved.bcc +
-              decodeURIComponent(saved.subject || '') +
-              decodeURIComponent(saved.body || '') +
-              saved.phone,
-          );
-
-          setHash(window.location.hash);
-        }
+        setSavedState(
+          JSON.stringify(saved.district_var) +
+            JSON.stringify(saved.actionable) +
+            saved.to +
+            saved.cc +
+            saved.bcc +
+            decodeURIComponent(saved.subject || '') +
+            decodeURIComponent(saved.body || '') +
+            saved.phone,
+        );
       }
     }
 
-    loadEmailTemplate();
-  }, []);
+    if (hash) loadEmailTemplate();
+  }, [hash]);
 
   /**
    * Generate new URL hash or save to database
@@ -96,16 +99,13 @@ export default function Page() {
       return;
     }
 
-    let url;
-
     // If no hash, create one and add to URL
-    if (!hash) {
-      url = '#' + (Math.random() + 1).toString(36).substring(5);
+    let newHash;
+    if (!currentHash) {
+      newHash = (Math.random() + 1).toString(36).substring(5);
 
-      setHash(url);
-      window.location.hash = url;
-    } else {
-      url = hash;
+      setCurrentHash(newHash);
+      window.history.pushState(null, '', `/mailto/${newHash}`);
     }
 
     // Save to database
@@ -114,7 +114,8 @@ export default function Page() {
     setEmailTemplate({
       shareable: isShareable,
       district_var: districtVar,
-      url,
+      // Add # symbol when saving
+      url: `#${currentHash || newHash}`,
       actionable: actionable,
       to: recieverList,
       cc: cc,
@@ -169,7 +170,7 @@ export default function Page() {
 
         <div className="flex items-center gap-4">
           <span className="flex w-full items-center justify-center gap-1.5 text-sm">
-            {hash && savedState == draftState ? (
+            {currentHash && savedState == draftState ? (
               <>
                 <Icon icon="material-symbols:check" />
                 All changes saved
