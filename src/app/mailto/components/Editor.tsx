@@ -60,15 +60,16 @@ export default function Editor({
   const [error, setError] = useState<string>('');
 
   // Calculated values
-  const [ savedState, setSavedState] = useState<string>(
+  const [savedState, setSavedState] = useState<string>(
     JSON.stringify(initDistrictVar) +
-    JSON.stringify(initActionable) +
-    initReceiverList +
-    initCc +
-    initBcc +
-    initSubject +
-    initBody +
-    initIsPhone);
+      JSON.stringify(initActionable) +
+      initReceiverList +
+      initCc +
+      initBcc +
+      initSubject +
+      initBody +
+      initIsPhone,
+  );
   const draftState =
     JSON.stringify(districtVar) +
     JSON.stringify(actionable) +
@@ -80,7 +81,7 @@ export default function Editor({
     isPhone;
   const mailtoLink = `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${encodeURIComponent(
     subject,
-  )}&body=${body}`;
+  )}&body=${encodeURIComponent(body)}`;
 
   /**
    * Generate new URL hash or save to database
