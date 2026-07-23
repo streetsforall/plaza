@@ -1,408 +1,45 @@
-'use client';
+import { notFound } from 'next/navigation';
+import { getEmailTemplate } from '../helpers/db';
+import Editor from '../components/Editor';
 
-import { useState, useEffect, use } from 'react';
-import { Icon } from '@iconify/react';
-import ContactLibrary from '../components/ContactLibrary';
-import LandingPageSettings from '../components/LandingPageSettings';
-import RecipientField from '../components/RecipientField';
-import { getEmailTemplate, setEmailTemplate } from '../helpers/db';
-
-export default function Page({
+export default async function Page({
   params,
 }: {
   params: Promise<{ hash: string }>;
 }) {
   // Get hash from URL path
-  const { hash } = use(params);
-  const [currentHash, setCurrentHash] = useState(hash);
+  const { hash } = await params;
 
-  const [isNotFound, setIsNotFound] = useState<boolean>(false);
+  if (hash) {
+    // If hash, load saved email template
+    // Add # symbol back to match DB
+    const saved = await getEmailTemplate(`#${hash}`);
 
-  // Email template
-  const [body, setBody] = useState<string>('');
-  const [subject, setSubject] = useState<string>('');
-  const [recieverList, setRecieverList] = useState<string[]>([]);
-  const [isShareable, setIsShareable] = useState<boolean>(false);
-  const [districtVar, setDistrictVar] = useState<string[]>([]);
-  const [actionable, setActionable] = useState<{
-    body: string;
-    header: string;
-  }>({ body: '', header: '' });
-  const [cc, setCC] = useState<string[]>([]);
-  const [bcc, setBcc] = useState<string[]>(['contact@streetsforall.org']);
-  const [savedState, setSavedState] = useState<string>('');
-  const [isPhone, setPhone] = useState<boolean>(true); // Default to displaying phone CTA
-
-  // UI state
-  const [showCC, setshowCC] = useState<boolean>(false);
-  const [showBcc, setShowBcc] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
-
-  // Calculated values
-  const draftState =
-    JSON.stringify(districtVar) +
-    JSON.stringify(actionable) +
-    recieverList +
-    cc +
-    bcc +
-    subject +
-    body +
-    isPhone;
-  const mailtoLink = `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${encodeURIComponent(
-    subject,
-  )}&body=${body}`;
-
-  /**
-   * Load saved email template
-   */
-  useEffect(() => {
-    async function loadEmailTemplate() {
-      // Add # symbol back to match DB
-      const saved = await getEmailTemplate(`#${hash}`);
-
-      if (saved) {
-        setBody(saved.body ? decodeURIComponent(saved.body) : '');
-        setSubject(saved.subject ? decodeURIComponent(saved.subject) : '');
-        setBcc(saved.bcc || []);
-        setCC(saved.cc || []);
-        setActionable(saved.actionable || { body: '', header: '' });
-        setIsShareable(saved.shareable || false);
-        setDistrictVar(saved.district_var || []);
-        setRecieverList(saved.to || []);
-        setPhone(saved.phone || false);
-
-        setSavedState(
-          JSON.stringify(saved.district_var) +
-            JSON.stringify(saved.actionable) +
-            saved.to +
-            saved.cc +
-            saved.bcc +
-            decodeURIComponent(saved.subject || '') +
-            decodeURIComponent(saved.body || '') +
-            saved.phone,
-        );
-      } else {
-        setIsNotFound(true);
-      }
-    }
-
-    if (hash) loadEmailTemplate();
-  }, [hash]);
-
-  /**
-   * Generate new URL hash or save to database
-   */
-  async function updateDatabase() {
-    // TODO: Clean up potential json escapes
-
-    setError('');
-
-    if (!subject || !body || !actionable.header) {
-      setError('Please fill in the required fields.');
-
-      return;
-    }
-
-    // If no hash, create one and add to URL
-    let newHash;
-    if (!currentHash) {
-      newHash = (Math.random() + 1).toString(36).substring(5);
-
-      setCurrentHash(newHash);
-      window.history.pushState(null, '', `/mailto/${newHash}`);
-    }
-
-    // Save to database
-    const times = Date.now();
-
-    setEmailTemplate({
-      shareable: isShareable,
-      district_var: districtVar,
-      // Add # symbol when saving
-      url: `#${currentHash || newHash}`,
-      actionable: actionable,
-      to: recieverList,
-      cc: cc,
-      bcc: bcc,
-      subject: encodeURIComponent(subject),
-      body: encodeURIComponent(body),
-      time: new Date(times),
-      phone: isPhone,
-    });
-
-    // Add local saved state to compare against
-    setSavedState(draftState);
-  }
-
-  /**
-   * Copy content to clipboard
-   * @param content - Content to copy
-   * @param event - Trigger event to update UI
-   */
-  async function copyTextToClipboard(content, event) {
-    event.target.innerText = 'Copied!';
-
-    navigator.clipboard.writeText(content);
-  }
-
-  // script to delete on keypress but kinda nasty ew
-  // window.addEventListener('keydown', (e) => {
-  //    if (e.repeat) return;
-  //    console.log('fire')
-  //    // Check for allowed keys on keydown
-  //    if (e.key === "Backspace" || e.key === "Delete") {
-  //       var current_focus = document.activeElement
-  //       console.log(current_focus)
-  //       if (current_focus.classList.contains('recipient')) {
-  //          var content = current_focus.firstChild.textContent    git push --set-upstream origin fix-saved-state
-  //          console.log(content)
-  //          var form = current_focus.parentElement.id
-  //          if (form == 'to') {remove(content, recieverList, setRecieverList)} else
-  //          if (form == 'cc') {remove(content, cc, setCC)} else
-  //          if (form == 'bcc') {remove(content, bcc, setBcc)}
-  //       }
-  //    }
-  //  });
-
-  return (
-    <div className="container m-auto min-h-screen">
-      {isNotFound ? (
-        <div className="flex min-h-screen items-center">
-          <div className="mx-auto w-max border-2 border-black bg-white p-8">
-            <h1 className="text-2xl font-bold">Not Found</h1>
-
-            <p>
-              Sorry, but the page you&apos;re looking for doesn&apos;t exist.
-            </p>
-          </div>
+    if (saved) {
+      return (
+        <div className="container m-auto min-h-screen">
+          <Editor
+            initHash={hash}
+            initReceiverList={saved.to}
+            initCc={saved.cc}
+            initBcc={saved.bcc}
+            initSubject={decodeURIComponent(saved.subject)}
+            initBody={decodeURIComponent(saved.body)}
+            initDistrictVar={saved.district_var}
+            initIsPhone={saved.phone}
+            initActionable={saved.actionable}
+          />
         </div>
-      ) : (
-        <>
-          <header className="flex justify-between py-8">
-            <span className="block self-center bg-black px-3 text-2xl font-bold text-white uppercase">
-              SFA Mailto Tool
-            </span>
-
-            <div className="flex items-center gap-4">
-              <span className="flex w-full items-center justify-center gap-1.5 text-sm">
-                {currentHash && savedState == draftState ? (
-                  <>
-                    <Icon icon="material-symbols:check" />
-                    All changes saved
-                  </>
-                ) : (
-                  <>
-                    <Icon icon="material-symbols:exclamation" />
-                    Unsaved changes
-                  </>
-                )}
-              </span>
-
-              <button
-                className="submit flex items-center justify-center gap-1.5"
-                onClick={() => updateDatabase()}
-              >
-                <Icon icon="material-symbols:save-outline" />
-                Save
-              </button>
-            </div>
-          </header>
-
-          {error && (
-            <div className="my-4 rounded-sm bg-red-800 p-2 px-8 text-center text-white">
-              {error}
-            </div>
-          )}
-
-          <div className="flex items-start gap-4">
-            {/* Left column */}
-            <div className="flex w-1/2 flex-col gap-6 border-2 border-black bg-white p-8">
-              <h2 className="font-title text-2xl font-bold">Mailto</h2>
-
-              <div className="flex flex-col gap-6">
-                {/* To */}
-                <div>
-                  <div className="flex items-end justify-between">
-                    <label>To</label>
-                    <ContactLibrary
-                      recipients={recieverList}
-                      setRecipients={setRecieverList}
-                    />
-                  </div>
-
-                  <RecipientField
-                    thisList={recieverList}
-                    setThisList={setRecieverList}
-                    toList={recieverList}
-                    setToList={setRecieverList}
-                    ccList={cc}
-                    setCcList={setCC}
-                    setIsCcVisible={setshowCC}
-                    bccList={bcc}
-                    setBccList={setBcc}
-                    setIsBccVisible={setShowBcc}
-                  />
-                </div>
-
-                <div
-                  className={
-                    'flex gap-x-4 gap-y-6' +
-                    (showCC || showBcc ? ' flex-col' : '')
-                  }
-                >
-                  {/* CC */}
-                  <div>
-                    <label
-                      className={
-                        'cursor-pointer hover:underline' +
-                        (showCC === true ? ' block' : ' inline')
-                      }
-                      onClick={() => setshowCC(!showCC)}
-                    >
-                      CC
-                    </label>
-                    {showCC === true ? (
-                      <RecipientField
-                        thisList={cc}
-                        setThisList={setCC}
-                        toList={recieverList}
-                        setToList={setRecieverList}
-                        ccList={cc}
-                        setCcList={setCC}
-                        setIsCcVisible={setshowCC}
-                        bccList={bcc}
-                        setBccList={setBcc}
-                        setIsBccVisible={setShowBcc}
-                      />
-                    ) : (
-                      ''
-                    )}
-                  </div>
-
-                  {/* BCC */}
-                  <div className={showBcc ? 'block' : 'inline'}>
-                    <label
-                      className={
-                        'cursor-pointer hover:underline' +
-                        (showBcc === true ? ' block' : ' inline')
-                      }
-                      onClick={() => setShowBcc(!showBcc)}
-                    >
-                      BCC
-                    </label>
-                    {showBcc === true ? (
-                      <RecipientField
-                        thisList={bcc}
-                        setThisList={setBcc}
-                        toList={recieverList}
-                        setToList={setRecieverList}
-                        ccList={cc}
-                        setCcList={setCC}
-                        setIsCcVisible={setshowCC}
-                        bccList={bcc}
-                        setBccList={setBcc}
-                        setIsBccVisible={setShowBcc}
-                      />
-                    ) : (
-                      ''
-                    )}
-                  </div>
-                </div>
-
-                {/* Subject */}
-                <div>
-                  <label htmlFor="email-subject">
-                    Subject
-                    <span
-                      aria-label="Required"
-                      title="Required"
-                      className="text-red-500"
-                    >
-                      *
-                    </span>
-                  </label>
-                  <input
-                    value={decodeURIComponent(subject)}
-                    id="email-subject"
-                    className="w-full"
-                    onChange={(e) => {
-                      setSubject(e.target.value);
-                    }}
-                    required
-                  />
-                </div>
-
-                {/* Body */}
-                <div>
-                  <label
-                    htmlFor="email-body"
-                    className="flex items-center gap-1.5"
-                  >
-                    Email Body
-                    <span
-                      aria-label="Required"
-                      title="Required"
-                      className="text-red-500"
-                    >
-                      *
-                    </span>
-                  </label>
-                  <textarea
-                    value={decodeURIComponent(body)}
-                    id="email-body"
-                    className="min-h-96 w-full"
-                    onChange={(e) => {
-                      setBody(e.target.value);
-                    }}
-                    required
-                  />
-                </div>
-
-                {/* Mailto link */}
-                <div>
-                  <label className="font-sans text-sm">Mailto link</label>
-                  <div className="flex bg-gray-100 p-1">
-                    <span className="grow overflow-hidden rounded-sm px-2 py-2 font-mono text-sm text-ellipsis whitespace-nowrap">
-                      {mailtoLink}
-                    </span>
-
-                    <button
-                      aria-label="Copy mailto link to clipboard"
-                      className="border-none px-2.5 py-2 hover:bg-black"
-                      onClick={(e) => copyTextToClipboard(mailtoLink, e)}
-                    >
-                      <Icon icon="material-symbols:content-copy-outline" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right column */}
-            <div className="w-1/2 max-w-full">
-              <LandingPageSettings
-                hash={hash}
-                legislativeTargets={districtVar}
-                setLegislativeTargets={setDistrictVar}
-                actionable={actionable}
-                setActionable={setActionable}
-                isPhone={isPhone}
-                setIsPhone={setPhone}
-              />
-
-              {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} /> */}
-            </div>
-          </div>
-          {/* Open button */}
-          <a
-            href="/mailto/drafts"
-            className="submit fixed bottom-4 left-4 flex items-center justify-center gap-1.5 no-underline"
-          >
-            <Icon icon="material-symbols:folder-open-outline" />
-            Open
-          </a>
-        </>
-      )}
-    </div>
-  );
+      );
+    } else {
+      notFound();
+    }
+  } else {
+    // If no hash, blank editor
+    return (
+      <div className="container m-auto min-h-screen">
+        <Editor />
+      </div>
+    );
+  }
 }
