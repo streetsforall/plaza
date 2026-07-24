@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import { getEmailTemplate } from '../helpers/db';
-import Editor from '../components/Editor';
+import { getEmailTemplate } from '../../helpers/db';
+import Editor from '../../components/Editor';
 
 export default async function Page({
   params,

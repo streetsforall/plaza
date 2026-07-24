@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getAllEmailTemplates } from '../helpers/db';
+import { getAllEmailTemplates } from '../../helpers/db';
 
 export default async function Page() {
   const emailTemplates = await getAllEmailTemplates();
@@ -43,31 +43,19 @@ export default async function Page() {
                     aria-label="Load"
                   >
                     <td className="relative w-1/2 max-w-0 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap group-not-last:border-b-2">
-                      <Link
-                        href={`/mailto/${hash}`}
-                        className="absolute inset-0"
-                      />
+                      <Link href={hash} className="absolute inset-0" />
                       {decodeURIComponent(template.subject || '-')}
                     </td>
                     <td className="relative w-1/2 max-w-0 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap group-not-last:border-b-2">
-                      <Link
-                        href={`/mailto/${hash}`}
-                        className="absolute inset-0"
-                      />
+                      <Link href={hash} className="absolute inset-0" />
                       {decodeURIComponent(template.actionable?.header || '-')}
                     </td>
                     <td className="relative px-4 py-2 font-mono text-sm group-not-last:border-b-2">
-                      <Link
-                        href={`/mailto/${hash}`}
-                        className="absolute inset-0"
-                      />
+                      <Link href={hash} className="absolute inset-0" />
                       {hash}
                     </td>
                     <td className="relative px-4 py-2 group-not-last:border-b-2">
-                      <Link
-                        href={`/mailto/${hash}`}
-                        className="absolute inset-0"
-                      />
+                      <Link href={hash} className="absolute inset-0" />
                       {template.time
                         ? new Date(template.time).toISOString().slice(0, 10)
                         : ''}{' '}
