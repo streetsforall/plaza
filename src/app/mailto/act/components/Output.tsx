@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { combinedGeo, geo } from '../../helpers/geo';
 import { addMailchimp } from '../../helpers/mailchimp';
-import metadata from '../../data/memeber_meta.json';
+import legislatorMetadata from '../../data/legislator_meta.json';
 
 interface OutputProps {
   actorEmail?: string;
@@ -34,7 +34,7 @@ export default function Output({
 
   // Address lookup
   const [addressSearch, setAddressSearch] = useState<string>();
-  const [addressResults, setAddressResults] = useState<any>();
+  const [addressResults, setAddressResults] = useState<any[]>();
 
   // Update list of addresses when field changes
   useEffect(() => {
@@ -52,11 +52,11 @@ export default function Output({
     }
   }, [addressSearch]);
 
-  const [selectedAddress, setSelectedAddress] = useState<any[]>();
+  // Geotargeted information
+  const [selectedAddress, setSelectedAddress] = useState<any>();
   const [district, setDistrict] = useState<any>();
   const [to, setTo] = useState<string[]>(initTo || []);
   const [phone, setPhone] = useState('');
-  const [generateToggle, setGenerateToggle] = useState<any>(false);
 
   const mailtoLink = `mailto:${to}?&cc=${cc}&bcc=${bcc}&subject=${subject}&body=${emailBody}`;
 
@@ -104,9 +104,13 @@ export default function Output({
             address.properties.coordinates.latitude,
           ];
 
-          const geo_data: any = await combinedGeo(districtType, coords, true);
+          const districtData: any = await combinedGeo(
+            districtType,
+            coords,
+            true,
+          );
 
-          setDistrict(geo_data);
+          setDistrict(districtData);
 
           // Add district legislator to recipient list
           setStatus(
@@ -114,18 +118,18 @@ export default function Output({
           );
 
           setTo((prevTo) => [
-            geo_data.properties.person.contactDetails[0].value,
+            districtData.properties.person.contactDetails[0].value,
             ...prevTo,
           ]);
 
           // Retrieve legislator phone number
           // TODO: Retrieve from API
-          const legislatorInfo = metadata[districtType];
+          const legislatorInfo = legislatorMetadata[districtType];
 
           const matchingFeature = Object.values(legislatorInfo).find(
             (district) =>
               String(district!['District Number'].toLowerCase()) ===
-              String(geo_data.id.toLowerCase()),
+              String(districtData.id.toLowerCase()),
           );
 
           setPhone(matchingFeature!['Phone Number']);
@@ -291,19 +295,12 @@ export default function Output({
 
           {/* Mailto link */}
           <div className="mt-4 border-t border-dotted border-gray-400 pt-4 wrap-break-word">
-            <label>
-              {' '}
-              <div onClick={() => setGenerateToggle(!generateToggle)}>
-                {generateToggle ? '▼' : '▶'} Mailto Link
+            <details className="text-xs text-[grey]">
+              <summary className="cursor-pointer">Mailto Link</summary>
+              <div className="bg-edit mt-2 rounded p-2 text-xs">
+                {mailtoLink}
               </div>
-              {generateToggle ? (
-                <div className="bg-edit mt-2 rounded p-2 text-xs">
-                  {mailtoLink}
-                </div>
-              ) : (
-                ''
-              )}
-            </label>
+            </details>
           </div>
         </div>
       )}
