@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getEmailTemplate } from '../../helpers/db';
 import Footer from '../../components/footer';
@@ -34,7 +35,13 @@ export default async function Page({
 
         <div className="mx-auto my-4 flex w-max flex-col text-center">
           <a href="https://www.streetsforall.org/">
-            <img src="/images/SFA_logo_wide.png" className="w-80 max-w-full" />
+            <Image
+              src="/images/SFA_logo_wide.png"
+              alt="Streets For All logo"
+              height={0}
+              width={320}
+              className="h-auto max-w-full"
+            />
           </a>
           <label>Mailto ID: {hash}</label>
         </div>

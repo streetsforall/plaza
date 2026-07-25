@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Footer from '../components/footer';
 
 export default function NotFound() {
@@ -5,7 +6,13 @@ export default function NotFound() {
     <div className="flex h-screen flex-col justify-between">
       <div className="flox-col mx-auto my-4 flex w-max text-center">
         <a href="https://www.streetsforall.org/">
-          <img src="/images/SFA_logo_wide.png" className="w-80 max-w-full" />
+          <Image
+            src="/images/SFA_logo_wide.png"
+            alt="Streets For All logo"
+            height={0}
+            width={320}
+            className="h-auto max-w-full"
+          />
         </a>
       </div>
 

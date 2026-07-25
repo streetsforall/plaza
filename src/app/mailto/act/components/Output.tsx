@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { combinedGeo, geo } from '../../helpers/geo';
 import { addMailchimp } from '../../helpers/mailchimp';
 import metadata from '../../data/memeber_meta.json';
@@ -309,7 +310,13 @@ export default function Output({
 
       {isLoading ? (
         <div className="loader">
-          <img src="/images/bus.png" />
+          <Image
+            src="/images/bus.png"
+            alt="Animated bus"
+            height={0}
+            width={160}
+            className="h-auto"
+          />
           Calculating Your Representative
           <label>(this may take a moment)</label>
         </div>
