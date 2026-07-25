@@ -8,11 +8,11 @@ import { textEncoding } from "../../helpers/text_cleanup";
 import { addMailchimp } from "../../helpers/mailchimp";
 import Footer from "../../components/footer";
 import metadata from "../../data/memeber_meta.json";
-import { useParams, useSearchParams } from "next/navigation";
+import { redirect, useParams, useSearchParams } from "next/navigation";
 
 export default function Page() {
   const params = useParams<{ hash: string[] }>();
-  const hash = params.hash[0];
+  const hash = params.hash ? params.hash[0] : '';
 
   const searchParams = useSearchParams();
   const actorEmail = searchParams.get('email');
@@ -37,6 +37,13 @@ export default function Page() {
   const [outLink, setOutLink] = useState(false);
 
   useEffect(() => {
+    // Handle old URL format
+    // /mailto/out/*|EMAIL|*#{hash} -> /mailto/out/{hash}?email=*|EMAIL|*
+    const oldHash = window.location.hash;
+    if (oldHash) {
+      redirect(`/mailto/out/${oldHash.substring(1)}?email=${hash}`, 'replace');
+    }
+
     // need to load in data and email
     const loadEmailTemplate = async () => {
       // Add # symbol back to match DB

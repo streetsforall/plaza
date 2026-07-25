@@ -7,7 +7,7 @@ const App = () => {
       </p>
 
       <div>
-        <a href="/mailto">Call to Action Builder</a>
+        <a href="/mailto/edit">Call to Action Builder</a>
       </div>
 
       <pre></pre>
