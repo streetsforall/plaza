@@ -1,4 +1,6 @@
-const App = () => {
+import Link from 'next/link';
+
+export default function Page() {
   return (
     <div className="bg-sfa-tan min-h-screen p-4 font-mono text-xs">
       <p className="mb-4">
@@ -7,12 +9,10 @@ const App = () => {
       </p>
 
       <div>
-        <a href="/mailto">Call to Action Builder</a>
+        <Link href="/mailto/edit">Call to Action Builder</Link>
       </div>
 
       <pre></pre>
     </div>
   );
-};
-
-export default App;
+}

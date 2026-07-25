@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import { getEmailTemplate } from "../../helpers/db";
 import { geo, districtFinder, geoLoader, combinedGeo } from "../../helpers/geo";
@@ -8,20 +8,22 @@ import { textEncoding } from "../../helpers/text_cleanup";
 import { addMailchimp } from "../../helpers/mailchimp";
 import Footer from "../../components/footer";
 import metadata from "../../data/memeber_meta.json";
+import { redirect, useParams, useSearchParams } from "next/navigation";
 
-export default function Page({ params }: { params: Promise<{ slug: string }> }) {
-  // Handle async promise
-  const parameters = use(params);
-  const { slug } = parameters;
+export default function Page() {
+  const params = useParams<{ hash: string[] }>();
+  const hash = params.hash ? params.hash[0] : '';
+
+  const searchParams = useSearchParams();
+  const actorEmail = searchParams.get('email');
 
   // DATA
-  const [email, setEmail] = useState<any>();
+  const [cta, setCta] = useState<any>();
   const [to, setTo] = useState<any>([]);
   const [locations, setLocations] = useState<any>();
   const [place, setPlace] = useState<any>();
   const [selectedAddress, setSelectedAddress] = useState<any[]>();
   const [generated, setGenerated] = useState("");
-  const [hash, setHash] = useState("");
   const [phoneNum, setPhoneNum] = useState("");
   const [waiting, setWaiting] = useState(false);
   const [isFound, setIsFound] = useState(true);
@@ -35,9 +37,18 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
   const [outLink, setOutLink] = useState(false);
 
   useEffect(() => {
+    console.log('hash', hash)
+    // Handle old URL format
+    // *|EMAIL|*#{hash} -> {hash}?email=*|EMAIL|*
+    const oldHash = window.location.hash;
+    if (oldHash) {
+      redirect(`/mailto/act/${oldHash.substring(1)}?email=${hash}`, 'replace');
+    }
+
     // need to load in data and email
-    const loadEmail = async () => {
-      const email_content = await getEmailTemplate(window.location.hash);
+    const loadEmailTemplate = async () => {
+      // Add # symbol back to match DB
+      const email_content = await getEmailTemplate(`#${hash}`);
       return email_content;
     };
 
@@ -46,13 +57,11 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
       return re.test(email);
     }
 
-    setHash(window.location.hash);
-
-    loadEmail()
+    loadEmailTemplate()
       .then((result) => {
         if (!result) setIsFound(false);
 
-        setEmail(result);
+        setCta(result);
         setTo(result?.to);
         console.log(result);
       })
@@ -95,10 +104,10 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
       ADD_COUNTR: address?.properties?.context?.country?.country_code || "",
     };
 
-    if (slug) {
+    if (actorEmail) {
       try {
         addMailchimp(
-          decodeURIComponent(decodeURIComponent(slug)), // email from url
+          decodeURIComponent(decodeURIComponent(actorEmail)), // email from url
           merge_fields
         );
       } catch (error) {
@@ -109,7 +118,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     if (address.properties.context.region.name == "California") {
       setLocations([]);
 
-      email["district_var"].map(async (boundary) => {
+      cta["district_var"].map(async (boundary) => {
         const loadGeo = async () => {
           try {
             // pigeon  coot oystercatcher <
@@ -166,13 +175,13 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
   };
 
   useEffect(() => {
-    // console.log('raw', email?.subject)
-    // console.log('econded', encodeURIComponent(email?.subject))
-    var output = `mailto:${to}?&cc=${email?.cc}&bcc=${email?.bcc}&subject=${email?.subject}&body=${email?.body}`;
+    // console.log('raw', cta?.subject)
+    // console.log('econded', encodeURIComponent(cta?.subject))
+    var output = `mailto:${to}?&cc=${cta?.cc}&bcc=${cta?.bcc}&subject=${cta?.subject}&body=${cta?.body}`;
 
     setGenerated(output);
 
-    console.log("email updated");
+    console.log("CTA updated");
   }, [to]);
 
   const renderTextWithLinks = (text) => {
@@ -227,10 +236,10 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
   return isFound ? (
     <div className="flex flex-col justify-between min-h-screen">
       <Head>
-        <title>{email?.actionable?.header}</title>
+        <title>{cta?.actionable?.header}</title>
         <meta
           property="og:title"
-          content={email?.actionable?.header}
+          content={cta?.actionable?.header}
           key="title"
         />
         <link rel="icon" href="/images/SFA_logo.png" />
@@ -244,9 +253,9 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
       </div>
 
       <div className="bg-white m-auto mt-12 p-4 rounded-2xl text-xl max-w-xl w-[calc(100%-2rem)]">
-        <h2 className="font-bold mt-4 mb-8 text-3xl">{email?.actionable?.header}</h2>
+        <h2 className="font-bold mt-4 mb-8 text-3xl">{cta?.actionable?.header}</h2>
 
-        {(email?.district_var.length && !outLink) ? (
+        {(cta?.district_var.length && !outLink) ? (
           <>
             <p>
               Enter your home address below so we can find the right
@@ -300,14 +309,14 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             )}
 
             {/* Body */}
-            {email?.actionable?.body && (
+            {cta?.actionable?.body && (
               <p className="pb-8 text-[#575757] whitespace-pre-wrap">
-                {renderTextWithLinks(email.actionable.body)}
+                {renderTextWithLinks(cta.actionable.body)}
               </p>
             )}
 
             {/* Phone CTA - requires geographic legislator lookup */}
-            {districtInfo && email?.phone && (
+            {districtInfo && cta?.phone && (
               <div className="relative bg-edit border border-dotted border-black mb-8 p-4">
                 <div className="absolute top-0 -left-10 mt-3 -rotate-6 text-5xl">
                   👉

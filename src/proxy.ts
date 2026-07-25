@@ -1,6 +1,6 @@
 export { auth as proxy } from '@/lib/auth';
 
-// Protected routes (anything under /mailto except those under /mailto/out)
+// Protected routes (anything under /mailto except those under /mailto/out or /mailto/act)
 export const config = {
-  matcher: ['/mailto((?!\/?out).*)'],
+  matcher: ['/mailto((?!\/?out)(?!\/?act).*)'],
 };

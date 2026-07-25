@@ -16,7 +16,7 @@ export default function LandingPageSettings({
    */
   async function copyLink(event) {
     // Generate URL and copy to clipboard
-    const url = `${location.href.replace(hash, '')}out/*|EMAIL|*#${hash}`;
+    const url = `${location.href.replace('edit', 'act')}?email=*|EMAIL|*`;
     navigator.clipboard.writeText(url);
 
     // Update UI

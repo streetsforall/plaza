@@ -353,7 +353,7 @@ export default function Editor({
       </div>
       {/* Open button */}
       <Link
-        href="/mailto/drafts"
+        href="/mailto/edit/drafts"
         className="submit fixed bottom-4 left-4 flex items-center justify-center gap-1.5 no-underline"
       >
         <Icon icon="material-symbols:folder-open-outline" />

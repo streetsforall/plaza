@@ -1,4 +1,3 @@
-import Script from 'next/script';
 import { Inter, Source_Sans_3, Space_Mono } from 'next/font/google';
 import './index.css';
 
@@ -27,7 +26,7 @@ export const metadata = {
   description: '',
 };
 
-export default function RootLayout({
+export default function EditorLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -39,13 +38,10 @@ export default function RootLayout({
     >
       <head>
         <link rel="icon" href="/favicon.png" sizes="any" />
-        <Script
-          defer
-          src="https://cloud.umami.is/script.js"
-          data-website-id="79af4e69-5da3-464f-a844-ecfa00f5b7c3"
-        />
       </head>
-      <body>{children}</body>
+      <body className="bg-sfa-tan">
+        {children}
+      </body>
     </html>
   );
 }

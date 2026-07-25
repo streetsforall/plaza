@@ -1,45 +1,22 @@
-import { notFound } from 'next/navigation';
-import { getEmailTemplate } from '../helpers/db';
-import Editor from '../components/Editor';
+import { redirect } from 'next/navigation';
 
 export default async function Page({
   params,
 }: {
   params: Promise<{ hash: string }>;
 }) {
-  // Get hash from URL path
   const { hash } = await params;
 
+  // Handle old URL format
   if (hash) {
-    // If hash, load saved email template
-    // Add # symbol back to match DB
-    const saved = await getEmailTemplate(`#${hash}`);
-
-    if (saved) {
-      return (
-        <div className="container m-auto min-h-screen">
-          <Editor
-            initHash={hash}
-            initReceiverList={saved.to}
-            initCc={saved.cc}
-            initBcc={saved.bcc}
-            initSubject={decodeURIComponent(saved.subject)}
-            initBody={decodeURIComponent(saved.body)}
-            initDistrictVar={saved.district_var}
-            initIsPhone={saved.phone}
-            initActionable={saved.actionable}
-          />
-        </div>
-      );
+    if (hash[0] === 'out') {
+      // /mailto/out/{hash} -> /mailto/act/{hash}
+      redirect(`/mailto/act/${hash[1]}`, 'replace');
     } else {
-      notFound();
+      // /mailto/{hash} -> /mailto/edit/{hash}
+      redirect(`/mailto/edit/${hash}`, 'replace');
     }
   } else {
-    // If no hash, blank editor
-    return (
-      <div className="container m-auto min-h-screen">
-        <Editor />
-      </div>
-    );
+    redirect('/mailto/edit', 'replace');
   }
 }
