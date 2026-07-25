@@ -8,9 +8,14 @@ export default async function Page({
   const { hash } = await params;
 
   // Handle old URL format
-  // /mailto/{hash} -> /mailto/edit/{hash}
   if (hash) {
-    redirect(`/mailto/edit/${hash}`, 'replace');
+    if (hash[0] === 'out') {
+      // /mailto/out/{hash} -> /mailto/act/{hash}
+      redirect(`/mailto/act/${hash[1]}`, 'replace');
+    } else {
+      // /mailto/{hash} -> /mailto/edit/{hash}
+      redirect(`/mailto/edit/${hash}`, 'replace');
+    }
   } else {
     redirect('/mailto/edit', 'replace');
   }

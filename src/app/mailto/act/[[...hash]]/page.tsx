@@ -37,11 +37,12 @@ export default function Page() {
   const [outLink, setOutLink] = useState(false);
 
   useEffect(() => {
+    console.log('hash', hash)
     // Handle old URL format
-    // /mailto/out/*|EMAIL|*#{hash} -> /mailto/out/{hash}?email=*|EMAIL|*
+    // *|EMAIL|*#{hash} -> {hash}?email=*|EMAIL|*
     const oldHash = window.location.hash;
     if (oldHash) {
-      redirect(`/mailto/out/${oldHash.substring(1)}?email=${hash}`, 'replace');
+      redirect(`/mailto/act/${oldHash.substring(1)}?email=${hash}`, 'replace');
     }
 
     // need to load in data and email
