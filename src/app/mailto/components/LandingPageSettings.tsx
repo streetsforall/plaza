@@ -123,7 +123,8 @@ export default function LandingPageSettings({
         <textarea
           id="landing-page-body"
           value={decodeURIComponent(actionable.body)}
-          rows={10}
+          rows={12}
+          className="min-h-80"
           onChange={(e) => {
             setActionable({
               header: actionable.header,

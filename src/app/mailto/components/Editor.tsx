@@ -308,7 +308,8 @@ export default function Editor({
               <textarea
                 value={decodeURIComponent(body)}
                 id="email-body"
-                className="min-h-96 w-full"
+                rows={12}
+                className="min-h-80 w-full"
                 onChange={(e) => {
                   setBody(e.target.value);
                 }}
