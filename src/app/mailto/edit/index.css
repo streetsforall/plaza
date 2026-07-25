@@ -1,0 +1,106 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-sfa-blue: #245ad8;
+  --color-sfa-green: #25c764;
+  --color-sfa-tan: #f3eee2;
+
+  --color-blue: #0032ff;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-space-mono);
+  --font-title: var(--font-source-sans);
+}
+
+@layer base {
+  a {
+    @apply text-blue-700;
+    @apply underline hover:no-underline;
+  }
+
+  label {
+    @apply block;
+    @apply font-mono;
+    @apply mb-1;
+    @apply text-sm;
+  }
+
+  button,
+  .button {
+    @apply border-2 border-black;
+    @apply cursor-pointer;
+    @apply px-3 py-2;
+    @apply text-sm;
+  }
+
+  button:hover,
+  .button:hover {
+    @apply bg-black;
+    @apply text-white;
+  }
+
+  input,
+  textarea {
+    @apply border-2 border-black;
+    @apply px-3 py-2;
+  }
+
+  input:focus,
+  textarea:focus {
+    @apply border-blue;
+    @apply outline-none;
+  }
+
+  input[type='submit'],
+  button[type='submit'],
+  .submit {
+    @apply bg-black;
+    @apply font-sans font-bold;
+    @apply px-3 py-2;
+    @apply text-base;
+    @apply text-white;
+  }
+
+  input[type='submit']:hover,
+  button[type='submit']:hover,
+  .submit:hover {
+    @apply bg-blue;
+    @apply border-blue;
+  }
+}
+
+@layer components {
+  .togglegroup-root {
+    @apply inline-flex gap-1;
+    @apply rounded-md;
+    @apply border-2 border-black;
+    @apply bg-[#f0f0f0];
+    @apply p-1;
+  }
+
+  .togglegroup-item {
+    @apply cursor-pointer;
+    @apply rounded;
+    @apply border-2 border-transparent hover:border-black;
+    @apply bg-transparent data-[state=on]:bg-black;
+    @apply px-2 py-1;
+    @apply font-mono;
+    @apply text-sm text-black data-[state=on]:text-white;
+  }
+
+  .circle-loader {
+    animation: l1 1s infinite;
+    aspect-ratio: 1;
+    border: 4px solid;
+    border-color: #000 #0000;
+    border-radius: 50%;
+    width: 50px;
+  }
+  @keyframes l1 {
+    to {
+      transform: rotate(0.5turn);
+    }
+  }
+}

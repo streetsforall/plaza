@@ -17,29 +17,23 @@ export default async function Page({
 
     if (saved) {
       return (
-        <div className="container m-auto min-h-screen">
-          <Editor
-            initHash={hash}
-            initReceiverList={saved.to}
-            initCc={saved.cc}
-            initBcc={saved.bcc}
-            initSubject={decodeURIComponent(saved.subject)}
-            initBody={decodeURIComponent(saved.body)}
-            initDistrictVar={saved.district_var}
-            initIsPhone={saved.phone}
-            initActionable={saved.actionable}
-          />
-        </div>
+        <Editor
+          initHash={hash}
+          initReceiverList={saved.to}
+          initCc={saved.cc}
+          initBcc={saved.bcc}
+          initSubject={decodeURIComponent(saved.subject)}
+          initBody={decodeURIComponent(saved.body)}
+          initDistrictVar={saved.district_var}
+          initIsPhone={saved.phone}
+          initActionable={saved.actionable}
+        />
       );
     } else {
       notFound();
     }
   } else {
     // If no hash, blank editor
-    return (
-      <div className="container m-auto min-h-screen">
-        <Editor />
-      </div>
-    );
+    return <Editor />;
   }
 }
