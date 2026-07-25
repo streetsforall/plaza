@@ -214,7 +214,7 @@ export default function Output({
                 ? addressResults.map((address, index) => {
                     return (
                       <button
-                        className="!bg-bg hover:!bg-edit !border-button w-full !border-b px-0 py-2 text-left text-base md:text-lg"
+                        className="bg-bg hover:bg-edit border-button w-full border-b px-0 py-2 text-left text-base md:text-lg"
                         data-umami-event="cta_select_address"
                         key={index}
                         onClick={() => retrieveDistricts(address)}
@@ -279,7 +279,7 @@ export default function Output({
             <a href={mailtoLink}>
               <button
                 data-umami-event="cta_click_email"
-                className="rounded-2xl !border !border-[rgb(44,168,127)] !bg-[aquamarine] px-3 py-2 text-xl text-black hover:!bg-[rgb(44,168,127)] hover:text-white"
+                className="rounded-2xl border border-[rgb(44,168,127)] bg-[aquamarine] px-3 py-2 text-xl text-black hover:bg-[rgb(44,168,127)] hover:text-white"
               >
                 <b className="whitespace-nowrap">Email your representative </b>
                 <span className="whitespace-nowrap">
