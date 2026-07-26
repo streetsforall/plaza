@@ -1,6 +1,7 @@
 import Script from 'next/script';
 import { Inter, Source_Sans_3, Space_Mono } from 'next/font/google';
 import './index.css';
+import Redirect from './components/Redirect';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -42,7 +43,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         />
       </head>
       <body className="bg-sfa-tan">
-        <div className="container m-auto min-h-screen">{children}</div>
+        <div className="container m-auto min-h-screen">
+          {/* Handle old URL format (requires client component to access URL hash) */}
+          <Redirect />
+
+          {children}
+        </div>
       </body>
     </html>
   );

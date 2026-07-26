@@ -40,7 +40,7 @@ export default function EditorLayout({
         <link rel="icon" href="/favicon.png" sizes="any" />
       </head>
       <body className="bg-sfa-green">
-        <div className="container m-auto min-h-screen">{children}</div>
+        <div className="container m-auto">{children}</div>
       </body>
     </html>
   );
