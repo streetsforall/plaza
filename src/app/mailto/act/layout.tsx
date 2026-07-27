@@ -1,7 +1,9 @@
+import Image from 'next/image';
 import Script from 'next/script';
 import { Inter, Source_Sans_3, Space_Mono } from 'next/font/google';
-import './index.css';
+import Footer from '../components/footer';
 import Redirect from './components/Redirect';
+import './index.css';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -43,11 +45,35 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         />
       </head>
       <body className="bg-sfa-tan">
-        <div className="container m-auto min-h-screen">
+        <div className="m-auto flex min-h-screen max-w-2xl flex-col">
           {/* Handle old URL format (requires client component to access URL hash) */}
           <Redirect />
 
-          {children}
+          <header className="mx-auto flex flex-col items-center gap-2 py-16">
+            <a href="https://www.streetsforall.org">
+              <Image
+                src="/images/SFA_logo_wide.png"
+                alt="Streets For All logo"
+                height={0}
+                width={320}
+                className="h-auto max-w-full"
+              />
+            </a>
+          </header>
+
+          <div className="grow">
+            <div className="rounded-2xl bg-white p-10">{children}</div>
+          </div>
+
+          <footer className="max-w-full p-12 text-center text-xs text-stone-500 flex flex-col gap-2">
+            <p>This tool is a work in progress!</p>
+            <p>
+              Suggestions or issues? Email{' '}
+              <a href="mailto:josh@streetsforall.org">josh@streetsforall.org</a>
+              .
+            </p>
+            <p>Built with care by the Streets for All Data/Dev Team</p>
+          </footer>
         </div>
       </body>
     </html>

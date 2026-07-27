@@ -27,45 +27,6 @@
     @apply text-blue-700;
     @apply underline hover:no-underline;
   }
-
-  label {
-    @apply block;
-    @apply font-sans;
-    @apply mb-0;
-    @apply text-xs;
-    @apply text-[grey];
-  }
-
-  textarea,
-  input {
-    @apply bg-edit;
-    @apply border border-dotted border-[grey];
-    @apply font-medium;
-    @apply font-sans;
-    @apply mb-2;
-    @apply p-2;
-    @apply resize-none;
-    @apply rounded-lg;
-    @apply text-base;
-  }
-
-  textarea:focus-within,
-  input:focus-within {
-    @apply border-bold border;
-    @apply outline-0;
-  }
-
-  button {
-    @apply bg-button;
-    @apply border-0;
-    @apply text-base;
-    @apply text-black;
-  }
-
-  button:hover {
-    @apply bg-edit;
-    @apply cursor-pointer;
-  }
 }
 
 @layer components {

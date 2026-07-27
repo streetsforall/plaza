@@ -198,36 +198,41 @@ export default function Output({
 
   return (
     <>
+      {/* If geolocation is enabled and district has not yet been identified */}
       {districtLookup?.length && !district ? (
         <>
-          <p>
-            Enter your home address below so we can find the right
-            representative to contact:
-          </p>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="address-query">
+              Enter your address so we can find the right representative to
+              contact:
+            </label>
 
-          <div>
-            <input
-              className="w-[calc(100%-1rem)] text-base md:text-xl"
-              placeholder="enter address here"
-              onChange={(e) =>
-                setAddressSearch(e.target.value + ', California')
-              }
-            />
-            <div>
-              {addressResults
-                ? addressResults.map((address, index) => {
+            <div className="flex flex-col gap-2">
+              <input
+                id="address-query"
+                className="w-full rounded border-2 border-stone-300 px-4 py-3 leading-none text-stone-600"
+                placeholder="Enter address here"
+                onChange={(e) =>
+                  setAddressSearch(e.target.value + ', California')
+                }
+              />
+              {addressResults?.length ? (
+                <ul className="w-full overflow-hidden rounded border-2 border-stone-300">
+                  {addressResults.map((address, index) => {
                     return (
-                      <button
-                        className="bg-bg hover:bg-edit border-button w-full border-b px-0 py-2 text-left text-base md:text-lg"
-                        data-umami-event="cta_select_address"
-                        key={index}
-                        onClick={() => retrieveDistricts(address)}
-                      >
-                        {address.properties.full_address}
-                      </button>
+                      <li key={index}>
+                        <button
+                          className="w-full cursor-pointer border-b border-dotted border-stone-400 p-4 text-left leading-none text-stone-600 hover:bg-stone-100"
+                          data-umami-event="cta_select_address"
+                          onClick={() => retrieveDistricts(address)}
+                        >
+                          {address.properties.full_address}
+                        </button>
+                      </li>
                     );
-                  })
-                : ''}
+                  })}
+                </ul>
+              ) : null}
             </div>
           </div>
 
@@ -239,65 +244,68 @@ export default function Output({
           </label>
         </>
       ) : (
-        <div>
+        /* If geolocation is disabled or district has been identified */
+        <div className="flex flex-col gap-8">
           {/* Legislator info */}
           {district && (
-            <div className="mb-8 border border-dotted border-black p-4">
-              <span>
-                {`You are represented by ${district?.properties.post.role} ${
-                  district?.properties.person.name
-                } in district ${district?.id.toUpperCase()}`}{' '}
-              </span>
+            <div className="border border-dotted border-black p-4">
+              <p>
+                You are represented by{' '}
+                <span className="font-bold">
+                  {district?.properties.post.role}{' '}
+                  {district?.properties.person.name}
+                </span>{' '}
+                in district{' '}
+                <span className="font-bold">{district?.id.toUpperCase()}</span>.
+              </p>
             </div>
           )}
 
           {/* Body */}
           {body && (
-            <p className="pb-8 whitespace-pre-wrap text-[#575757]">
+            <div className="whitespace-pre-wrap">
               {renderTextWithLinks(body)}
-            </p>
+            </div>
           )}
 
-          {/* Phone CTA - requires geographic legislator lookup */}
-          {district && isPhone && (
-            <div className="bg-edit relative mb-8 border border-dotted border-black p-4">
-              <div className="absolute top-0 -left-10 mt-3 -rotate-6 text-5xl">
-                👉
-              </div>
-              <b>Call your representative: </b>
+          {/* CTA buttons */}
+          <div className="flex flex-col gap-4">
+            {/* Phone CTA - requires geographic legislator lookup */}
+            {district && isPhone && (
               <a
-                className="whitespace-nowrap"
                 data-umami-event="cta_click_phone"
                 href={'tel:' + phone}
+                className="border-sfa-green text-sfa-green relative flex gap-1 rounded-lg border-2 px-5 py-3 text-xl no-underline transition-transform hover:-translate-y-0.75"
               >
-                {phone}
+                <div className="absolute top-1 -left-10 -rotate-6 text-5xl">
+                  👉
+                </div>
+                <span className="font-bold">Call your representative:</span>
+                <span className="whitespace-nowrap underline">{phone}</span>
               </a>
-            </div>
-          )}
+            )}
 
-          {/* Email CTA */}
-          <div className="bg-edit relative mb-8 border border-dotted border-black p-4">
-            <div className="absolute top-0 -left-10 mt-3 -rotate-6 text-5xl">
-              👉
-            </div>
-            <a href={mailtoLink}>
-              <button
-                data-umami-event="cta_click_email"
-                className="rounded-2xl border border-[rgb(44,168,127)] bg-[aquamarine] px-3 py-2 text-xl text-black hover:bg-[rgb(44,168,127)] hover:text-white"
-              >
-                <b className="whitespace-nowrap">Email your representative </b>
-                <span className="whitespace-nowrap">
-                  (Customize the bottom)
-                </span>
-              </button>
+            {/* Email CTA */}
+            <a
+              data-umami-event="cta_click_email"
+              href={mailtoLink}
+              className="border-sfa-green bg-sfa-green relative flex gap-1 rounded-lg border-2 px-5 py-3 text-xl text-white no-underline transition-transform hover:-translate-y-0.75"
+            >
+              <div className="absolute top-1 -left-10 -rotate-6 text-5xl">
+                👉
+              </div>
+              <span className="font-bold whitespace-nowrap">
+                Email your representative{' '}
+              </span>
+              <span className="whitespace-nowrap">(Customize the bottom)</span>
             </a>
           </div>
 
           {/* Mailto link */}
-          <div className="mt-4 border-t border-dotted border-gray-400 pt-4 wrap-break-word">
-            <details className="text-xs text-[grey]">
+          <div className="border-t border-dotted border-stone-500 pt-4 wrap-break-word">
+            <details className="text-xs text-stone-500">
               <summary className="cursor-pointer">Mailto Link</summary>
-              <div className="bg-edit mt-2 rounded p-2 text-xs">
+              <div className="mt-4 rounded bg-stone-100 p-2 font-mono text-xs">
                 {mailtoLink}
               </div>
             </details>
