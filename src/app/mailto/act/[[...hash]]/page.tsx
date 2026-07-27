@@ -1,7 +1,32 @@
-import Head from 'next/head';
+import { cache } from 'react';
+import { type Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getEmailTemplate } from '../../helpers/db';
 import Output from '../components/Output';
+
+// Utilize cache to avoid duplicate requests for both metadata and page
+const getCachedEmailTemplate = cache(getEmailTemplate);
+
+// Set head metadata
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ hash: string }>;
+}): Promise<Metadata> {
+  // Get hash from URL path
+  const { hash } = await params;
+
+  // Load saved email template
+  // Add # symbol back to match DB
+  const cta = await getCachedEmailTemplate(`#${hash}`);
+
+  return {
+    title: cta?.actionable?.header,
+    openGraph: {
+      title: cta?.actionable?.header,
+    },
+  };
+}
 
 export default async function Page({
   params,
@@ -16,22 +41,14 @@ export default async function Page({
 
   // Load saved email template
   // Add # symbol back to match DB
-  const cta = await getEmailTemplate(`#${hash}`);
+  const cta = await getCachedEmailTemplate(`#${hash}`);
 
   if (cta) {
     return (
       <div className="flex flex-col">
-        <Head>
-          <title>{cta?.actionable?.header}</title>
-          <meta
-            property="og:title"
-            content={cta?.actionable?.header}
-            key="title"
-          />
-          <link rel="icon" href="/images/SFA_logo.png" />
-        </Head>
-
-        <h2 className="font-title text-4xl font-bold mb-8">{cta?.actionable?.header}</h2>
+        <h2 className="font-title mb-8 text-4xl font-bold">
+          {cta?.actionable?.header}
+        </h2>
 
         <Output
           actorEmail={actorEmail}

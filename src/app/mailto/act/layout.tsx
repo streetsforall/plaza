@@ -37,7 +37,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       className={`${inter.variable} ${source_sans.variable} ${space_mono.variable} antialiased`}
     >
       <head>
-        <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="icon" href="/images/SFA_logo.png" />
         <Script
           defer
           src="https://cloud.umami.is/script.js"
@@ -65,7 +65,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <div className="rounded-2xl bg-white p-10">{children}</div>
           </div>
 
-          <footer className="max-w-full p-12 text-center text-xs text-stone-500 flex flex-col gap-2">
+          <footer className="flex max-w-full flex-col gap-2 p-12 text-center text-xs text-stone-500">
             <p>This tool is a work in progress!</p>
             <p>
               Suggestions or issues? Email{' '}
