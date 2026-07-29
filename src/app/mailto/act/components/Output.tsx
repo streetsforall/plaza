@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
-import { combinedGeo, geo } from '../../helpers/geo';
+import { combinedGeo } from '../../helpers/geo';
 import { addMailchimp } from '../../helpers/mailchimp';
+import AddressSearch from './AddressSearch';
 import legislatorMetadata from '../../data/legislator_meta.json';
 
 interface OutputProps {
@@ -31,35 +32,6 @@ export default function Output({
 }: OutputProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<string>('Waiting for address');
-
-  // Address lookup
-  const [addressQuery, setAddressQuery] = useState<string>('');
-  const [debouncedQuery, setDebouncedQuery] = useState<string>('');
-  const [addressResults, setAddressResults] = useState<any[]>();
-
-  // Wait for pause
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setDebouncedQuery(addressQuery);
-    }, 500);
-    return () => clearTimeout(timeoutId);
-  }, [addressQuery]);
-
-  // Search for address
-  useEffect(() => {
-    async function getCoords() {
-      const body = {
-        string: debouncedQuery,
-      };
-
-      const jsonData = await geo(body);
-      setAddressResults(jsonData);
-    }
-
-    if (debouncedQuery) {
-      getCoords();
-    }
-  }, [debouncedQuery]);
 
   // Geotargeted information
   const [district, setDistrict] = useState<any>();
@@ -94,9 +66,6 @@ export default function Output({
 
     // Ensure actor is in California
     if (address.properties.context.region.name == 'California') {
-      // Clear results list
-      setAddressResults([]);
-
       // Look up for each district type (assembly and/or senate)
       districtLookup?.map(async (districtType) => {
         try {
@@ -227,38 +196,7 @@ export default function Output({
     /* Address lookup */
     return (
       <>
-        <div className="mb-4 flex flex-col gap-1">
-          <label htmlFor="address-query">
-            Enter your address so we can find the right representative to
-            contact:
-          </label>
-
-          <div className="flex flex-col gap-2">
-            <input
-              id="address-query"
-              className="w-full rounded border-2 border-stone-300 px-4 py-3 leading-none text-stone-600"
-              placeholder="Enter address here"
-              onChange={(e) => setAddressQuery(e.target.value + ', California')}
-            />
-            {addressResults?.length ? (
-              <ul className="w-full overflow-hidden rounded border-2 border-stone-300">
-                {addressResults.map((address, index) => {
-                  return (
-                    <li key={index}>
-                      <button
-                        className="w-full cursor-pointer border-b border-dotted border-stone-400 px-4 py-3 text-left text-stone-600 hover:bg-stone-100"
-                        data-umami-event="cta_select_address"
-                        onClick={() => retrieveDistricts(address)}
-                      >
-                        {address.properties.full_address}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : null}
-          </div>
-        </div>
+        <AddressSearch onSelectAddress={retrieveDistricts} />
 
         <span className="block font-mono text-xs text-stone-600">{status}</span>
       </>
