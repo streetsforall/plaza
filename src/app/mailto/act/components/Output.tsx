@@ -30,7 +30,7 @@ export default function Output({
   emailBody,
 }: OutputProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState<string>('Waiting for street address');
+  const [status, setStatus] = useState<string>('Waiting for address');
 
   // Address lookup
   const [addressSearch, setAddressSearch] = useState<string>();
@@ -53,7 +53,6 @@ export default function Output({
   }, [addressSearch]);
 
   // Geotargeted information
-  const [selectedAddress, setSelectedAddress] = useState<any>();
   const [district, setDistrict] = useState<any>();
   const [to, setTo] = useState<string[]>(initTo || []);
   const [phone, setPhone] = useState('');
@@ -63,8 +62,6 @@ export default function Output({
   // Retrieve data based on address
   async function retrieveDistricts(address) {
     setIsLoading(true);
-
-    setSelectedAddress(address);
 
     // Update contact
     if (actorEmail) {
@@ -96,7 +93,7 @@ export default function Output({
         try {
           // Identify district based on address
           setStatus(
-            'Loading ' + districtType + ' Districts (might take a few seconds)',
+            `Loading ${districtType} District for ${address.properties.full_address}`,
           );
 
           const coords = [
@@ -196,138 +193,136 @@ export default function Output({
     });
   }
 
-  return (
-    <>
-      {/* If geolocation is enabled and district has not yet been identified */}
-      {districtLookup?.length && !district ? (
-        <>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="address-query">
-              Enter your address so we can find the right representative to
-              contact:
-            </label>
+  if (isLoading) {
+    /* Loading animation */
+    return (
+      <div className="text-blue pt-8 text-center">
+        <Image
+          src="/images/bus.png"
+          alt="Animated bus"
+          height={0}
+          width={160}
+          className="loader mb-4 h-auto"
+        />
+        <span className="mb-1 block text-2xl italic">
+          Finding your representative...
+        </span>
+        <span className="mb-12 block text-sm">(This may take a moment.)</span>
 
-            <div className="flex flex-col gap-2">
-              <input
-                id="address-query"
-                className="w-full rounded border-2 border-stone-300 px-4 py-3 leading-none text-stone-600"
-                placeholder="Enter address here"
-                onChange={(e) =>
-                  setAddressSearch(e.target.value + ', California')
-                }
-              />
-              {addressResults?.length ? (
-                <ul className="w-full overflow-hidden rounded border-2 border-stone-300">
-                  {addressResults.map((address, index) => {
-                    return (
-                      <li key={index}>
-                        <button
-                          className="w-full cursor-pointer border-b border-dotted border-stone-400 p-4 text-left leading-none text-stone-600 hover:bg-stone-100"
-                          data-umami-event="cta_select_address"
-                          onClick={() => retrieveDistricts(address)}
-                        >
-                          {address.properties.full_address}
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : null}
-            </div>
-          </div>
-
-          <label>{status}</label>
-          <label>
-            {selectedAddress
-              ? 'Address: ' + selectedAddress['properties'].full_address
-              : ''}
+        <span className="block text-left font-mono text-xs text-stone-600">
+          {status}
+        </span>
+      </div>
+    );
+  } else if (districtLookup?.length && !district) {
+    /* Address lookup */
+    return (
+      <>
+        <div className="mb-4 flex flex-col gap-1">
+          <label htmlFor="address-query">
+            Enter your address so we can find the right representative to
+            contact:
           </label>
-        </>
-      ) : (
-        /* If geolocation is disabled or district has been identified */
-        <div className="flex flex-col gap-8">
-          {/* Legislator info */}
-          {district && (
-            <div className="border border-dotted border-black p-4">
-              <p>
-                You are represented by{' '}
-                <span className="font-bold">
-                  {district?.properties.post.role}{' '}
-                  {district?.properties.person.name}
-                </span>{' '}
-                in district{' '}
-                <span className="font-bold">{district?.id.toUpperCase()}</span>.
-              </p>
-            </div>
-          )}
 
-          {/* Body */}
-          {body && (
-            <div className="whitespace-pre-wrap">
-              {renderTextWithLinks(body)}
-            </div>
-          )}
+          <div className="flex flex-col gap-2">
+            <input
+              id="address-query"
+              className="w-full rounded border-2 border-stone-300 px-4 py-3 leading-none text-stone-600"
+              placeholder="Enter address here"
+              onChange={(e) =>
+                setAddressSearch(e.target.value + ', California')
+              }
+            />
+            {addressResults?.length ? (
+              <ul className="w-full overflow-hidden rounded border-2 border-stone-300">
+                {addressResults.map((address, index) => {
+                  return (
+                    <li key={index}>
+                      <button
+                        className="w-full cursor-pointer border-b border-dotted border-stone-400 px-4 py-3 text-left text-stone-600 hover:bg-stone-100"
+                        data-umami-event="cta_select_address"
+                        onClick={() => retrieveDistricts(address)}
+                      >
+                        {address.properties.full_address}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : null}
+          </div>
+        </div>
 
-          {/* CTA buttons */}
-          <div className="flex flex-col gap-4">
-            {/* Phone CTA - requires geographic legislator lookup */}
-            {district && isPhone && (
-              <a
-                data-umami-event="cta_click_phone"
-                href={'tel:' + phone}
-                className="border-sfa-green text-sfa-green relative flex gap-1 rounded-lg border-2 px-5 py-3 text-xl no-underline transition-transform hover:-translate-y-0.75"
-              >
-                <div className="absolute top-1 -left-10 -rotate-6 text-5xl">
-                  👉
-                </div>
-                <span className="font-bold">Call your representative:</span>
-                <span className="whitespace-nowrap underline">{phone}</span>
-              </a>
-            )}
+        <span className="block font-mono text-xs text-stone-600">{status}</span>
+      </>
+    );
+  } else {
+    return (
+      /* If geolocation is disabled or district has been identified */
+      <div className="flex flex-col gap-8">
+        {/* Legislator info */}
+        {district && (
+          <div className="border border-dotted border-black p-4 text-stone-500">
+            <p>
+              You are represented by{' '}
+              <span className="font-bold">
+                {district?.properties.post.role}{' '}
+                {district?.properties.person.name}
+              </span>{' '}
+              in district{' '}
+              <span className="font-bold">{district?.id.toUpperCase()}</span>.
+            </p>
+          </div>
+        )}
 
-            {/* Email CTA */}
-            <a
-              data-umami-event="cta_click_email"
-              href={mailtoLink}
-              className="border-sfa-green bg-sfa-green relative flex gap-1 rounded-lg border-2 px-5 py-3 text-xl text-white no-underline transition-transform hover:-translate-y-0.75"
-            >
+        {/* Body */}
+        {body && (
+          <div className="whitespace-pre-wrap">{renderTextWithLinks(body)}</div>
+        )}
+
+        {/* CTA buttons */}
+        <div className="flex flex-col gap-4">
+          {/* Phone CTA - requires geographic legislator lookup */}
+          {district && isPhone && phone && (
+            <span className="relative flex justify-center gap-1 border border-dotted px-5 py-3 text-xl">
               <div className="absolute top-1 -left-10 -rotate-6 text-5xl">
                 👉
               </div>
-              <span className="font-bold whitespace-nowrap">
-                Email your representative{' '}
-              </span>
-              <span className="whitespace-nowrap">(Customize the bottom)</span>
-            </a>
-          </div>
+              <span className="font-bold">Call your representative:</span>
+              <a
+                className="whitespace-nowrap"
+                data-umami-event="cta_click_phone"
+                href={'tel:' + phone}
+              >
+                {phone}
+              </a>
+            </span>
+          )}
 
-          {/* Mailto link */}
-          <div className="border-t border-dotted border-stone-500 pt-4 wrap-break-word">
-            <details className="text-xs text-stone-500">
-              <summary className="cursor-pointer">Mailto Link</summary>
-              <div className="mt-4 rounded bg-stone-100 p-2 font-mono text-xs">
-                {mailtoLink}
-              </div>
-            </details>
-          </div>
+          {/* Email CTA */}
+          <a
+            data-umami-event="cta_click_email"
+            href={mailtoLink}
+            className="bg-sfa-green relative flex justify-center gap-1 self-center rounded-lg px-5 py-3 text-lg text-white no-underline transition-transform hover:-translate-y-0.75"
+          >
+            <div className="absolute top-1 -left-10 -rotate-6 text-5xl">👉</div>
+            <span className="font-bold whitespace-nowrap">
+              Email your representative{' '}
+            </span>
+            <span className="whitespace-nowrap">(Customize the bottom)</span>
+          </a>
         </div>
-      )}
 
-      {isLoading ? (
-        <div className="loader">
-          <Image
-            src="/images/bus.png"
-            alt="Animated bus"
-            height={0}
-            width={160}
-            className="h-auto"
-          />
-          Calculating Your Representative
-          <label>(this may take a moment)</label>
+        {/* Mailto link */}
+        <div className="border-t border-dotted border-stone-500 pt-4 wrap-break-word">
+          <details className="text-xs text-stone-500">
+            <summary className="cursor-pointer">Mailto Link</summary>
+            <div className="mt-4 rounded bg-stone-100 p-2 font-mono text-xs">
+              {mailtoLink}
+            </div>
+          </details>
         </div>
-      ) : (
-        ''
-      )}
-    </>
-  );
+      </div>
+    );
+  }
 }

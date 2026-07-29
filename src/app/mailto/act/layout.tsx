@@ -57,6 +57,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 height={0}
                 width={320}
                 className="h-auto max-w-full"
+                loading="eager"
               />
             </a>
           </header>

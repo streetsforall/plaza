@@ -55,14 +55,6 @@
   }
 
   .loader {
-    margin: auto;
-    text-align: center;
-    width: max-content;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .loader img {
     max-width: 10rem;
     margin: auto;
     -webkit-animation-name: wobble;
