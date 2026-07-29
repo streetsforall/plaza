@@ -5,6 +5,7 @@ export default function AddressSearch({ onSelectAddress }) {
   const [addressQuery, setAddressQuery] = useState<string>('');
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
   const [addressResults, setAddressResults] = useState<any[]>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Wait for pause
   useEffect(() => {
@@ -17,12 +18,15 @@ export default function AddressSearch({ onSelectAddress }) {
   // Search for address
   useEffect(() => {
     async function getCoords() {
+      setIsLoading(true);
+
       const body = {
         string: debouncedQuery,
       };
 
       const jsonData = await geo(body);
       setAddressResults(jsonData);
+      setIsLoading(false);
     }
 
     if (debouncedQuery) {
@@ -43,9 +47,14 @@ export default function AddressSearch({ onSelectAddress }) {
           placeholder="Enter address here"
           onChange={(e) => setAddressQuery(e.target.value + ', California')}
         />
-        {addressResults?.length ? (
+        {addressResults?.length || isLoading ? (
           <ul className="w-full overflow-hidden rounded border-2 border-stone-300">
-            {addressResults.map((address, index) => {
+            {isLoading && (
+              <li className="w-full border-b border-dotted border-stone-400 px-4 py-3 text-left text-stone-600">
+                Loading...
+              </li>
+            )}
+            {addressResults?.map((address, index) => {
               return (
                 <li key={index}>
                   <button
