@@ -1,7 +1,7 @@
 'use server';
 
 import { Prisma } from 'generated/prisma/client';
-import prisma from '../../../lib/prisma';
+import prisma from '../../lib/prisma';
 
 /**
  * Get single matching mailto from database

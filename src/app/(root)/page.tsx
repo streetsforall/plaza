@@ -9,7 +9,7 @@ export default function Page() {
       </p>
 
       <div>
-        <Link href="/mailto/edit">Call to Action Builder</Link>
+        <Link href="/edit">Call to Action Builder</Link>
       </div>
 
       <pre></pre>
