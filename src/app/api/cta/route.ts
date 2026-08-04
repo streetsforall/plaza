@@ -1,4 +1,4 @@
-import { getMailchimp } from '../../mailto/helpers/mailchimp';
+import { getMailchimp } from '../../helpers/mailchimp';
 import { NextResponse } from 'next/server';
 
 /**
