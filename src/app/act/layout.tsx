@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import Script from 'next/script';
 import { Inter, Source_Sans_3, Space_Mono } from 'next/font/google';
-import Footer from '../mailto/components/footer';
 import Redirect from './components/Redirect';
 import './index.css';
 
