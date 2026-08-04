@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
-import { setEmailTemplate } from '../helpers/db';
-import ContactLibrary from '../components/ContactLibrary';
-import LandingPageSettings from '../components/LandingPageSettings';
-import RecipientField from '../components/RecipientField';
+import { setEmailTemplate } from '../../helpers/db';
+import ContactLibrary from './ContactLibrary';
+import LandingPageSettings from './LandingPageSettings';
+import RecipientField from './RecipientField';
 
 interface EditorProps {
   initHash?;
