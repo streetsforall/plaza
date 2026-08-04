@@ -9,28 +9,15 @@ _| """ |_|"""""|_|"""""|_|"""""|_|"""""|
 
 ## Welcome to the SFA Plaza
 
-this is a landing page and backend we can use for hosting tools and projects that don't require their own URLs
+This is a web app and API backend for working with calls to action (CTAs). CTAs are prompts to the Streets For All community to reach out to the appropriate legislators/representatives for specific issues.
 
-Pushing to the **main** branch deploys straight to: https://plaza.streetsforall.org
+### Structure
 
+The web app is for creating CTAs, which consist of a landing page that can be shared with community members, and a "mailto" link, which when clicked on, automatically opens the community member's email client and prepopulates the email.
 
-### to preview locally run:  
+The web app is divided between the editor, which Streets For All staff and volunteers can use to configure all the elements above, and the aforementioned public-facing landing page.
 
-`npm start`   
-*this starts the node js server*
-
-`cd frontend`   
-`npm start`   
-*this starts the react app*
-
-### structure
-
-All backend endpoints are prefaced with '/api'.
-
-projects structure looks like:  
-> BACKEND: 
-> node express app with api endpoints
-> > frontend: react app with pages/tools
+The `api/` directory contains API endpoints that can be called by other web clients, the primary one being the `/cta` endpoint, which is called by the main Streets For All website to retrieve the latest Mailchimp campaign for the banner at the top.
 
 ### Database
 
