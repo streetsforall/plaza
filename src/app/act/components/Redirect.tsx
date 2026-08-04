@@ -13,10 +13,7 @@ export default function Redirect() {
 
     if (oldHash) {
       // Hash without #
-      redirect(
-        `/mailto/act/${oldHash.substring(1)}?email=${actorEmail}`,
-        'replace',
-      );
+      redirect(`/act/${oldHash.substring(1)}?email=${actorEmail}`, 'replace');
     }
   }, []);
 

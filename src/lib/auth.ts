@@ -3,7 +3,7 @@ import Credentials from 'next-auth/providers/credentials';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
-    signIn: '/mailto/edit/login',
+    signIn: '/edit/login',
   },
   callbacks: {
     authorized: async ({ auth }) => {

@@ -36,7 +36,7 @@ export default async function LoginPage({
       />
 
       <h1 className="font-title mb-8 text-2xl font-bold">
-        Log in to the mailto tool
+        Log in to the CTA Editor
       </h1>
 
       {/* Form */}

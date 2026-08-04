@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
-import { setEmailTemplate } from '../helpers/db';
-import ContactLibrary from '../components/ContactLibrary';
-import LandingPageSettings from '../components/LandingPageSettings';
-import RecipientField from '../components/RecipientField';
+import { setEmailTemplate } from '../../helpers/db';
+import ContactLibrary from './ContactLibrary';
+import LandingPageSettings from './LandingPageSettings';
+import RecipientField from './RecipientField';
 
 interface EditorProps {
   initHash?;
@@ -142,7 +142,7 @@ export default function Editor({
     <>
       <header className="flex justify-between py-8">
         <span className="block self-center bg-black px-3 text-2xl font-bold text-white uppercase">
-          SFA Mailto Tool
+          SFA CTA Editor
         </span>
 
         <div className="flex items-center gap-4">
@@ -354,7 +354,7 @@ export default function Editor({
       </div>
       {/* Open button */}
       <Link
-        href="/mailto/edit/drafts"
+        href="/edit/drafts"
         className="submit fixed bottom-4 left-4 flex items-center justify-center gap-1.5 no-underline"
       >
         <Icon icon="material-symbols:folder-open-outline" />

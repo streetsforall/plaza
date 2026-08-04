@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Script from 'next/script';
 import { Inter, Source_Sans_3, Space_Mono } from 'next/font/google';
-import Footer from '../components/footer';
 import Redirect from './components/Redirect';
 import './index.css';
+import { Metadata } from 'next';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -24,11 +24,6 @@ const space_mono = Space_Mono({
   variable: '--font-space-mono',
   weight: '400',
 });
-
-export const metadata = {
-  title: 'Streets for All MailTo',
-  description: '',
-};
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -73,7 +68,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <a href="mailto:josh@streetsforall.org">josh@streetsforall.org</a>
               .
             </p>
-            <p>Built with care by the Streets for All Data/Dev Team</p>
+            <p>Built with care by the Streets For All Data/Dev Team</p>
           </footer>
         </div>
       </body>

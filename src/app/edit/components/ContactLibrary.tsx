@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Checkbox, Dialog, Tabs } from 'radix-ui';
 import { Icon } from '@iconify/react';
-import { geoLoader } from '../helpers/geo';
-import neighborhoods from '../data/LA_Neighborhood_Councils.json';
-import metro from '../data/metro.json';
-import cds from '../data/LA_City_Council_Districts.json';
+import { geoLoader } from '../../helpers/geo';
+import neighborhoods from '../../data/LA_Neighborhood_Councils.json';
+import metro from '../../data/metro.json';
+import cds from '../../data/LA_City_Council_Districts.json';
 //import assembly from '../data/CA_Assembly_Districts.json';
-import senate from '../data/CA_Senate_Districts.json';
-import Santa_Monica from '../data/Santa_Monica.json';
+import senate from '../../data/CA_Senate_Districts.json';
+import Santa_Monica from '../../data/Santa_Monica.json';
 
 interface datafeatures {
   OBJECTID: number;

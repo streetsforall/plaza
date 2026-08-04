@@ -1,3 +1,4 @@
+import { type Metadata } from 'next';
 import { Inter, Source_Sans_3, Space_Mono } from 'next/font/google';
 import './index.css';
 
@@ -21,8 +22,8 @@ const space_mono = Space_Mono({
   weight: '400',
 });
 
-export const metadata = {
-  title: 'Streets for All MailTo',
+export const metadata: Metadata = {
+  title: 'Streets For All CTA Editor',
   description: '',
 };
 
@@ -39,8 +40,8 @@ export default function EditorLayout({
       <head>
         <link rel="icon" href="/favicon.png" sizes="any" />
       </head>
-      <body className="bg-sfa-tan">
-        {children}
+      <body className="bg-sfa-green">
+        <div className="container m-auto">{children}</div>
       </body>
     </html>
   );
