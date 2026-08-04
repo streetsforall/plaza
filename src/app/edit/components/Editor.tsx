@@ -142,7 +142,7 @@ export default function Editor({
     <>
       <header className="flex justify-between py-8">
         <span className="block self-center bg-black px-3 text-2xl font-bold text-white uppercase">
-          SFA Mailto Tool
+          SFA CTA Editor
         </span>
 
         <div className="flex items-center gap-4">

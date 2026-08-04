@@ -8,7 +8,7 @@ export default async function Page() {
     <div className="container m-auto min-h-screen">
       <header className="flex justify-between py-8">
         <span className="block self-center bg-black px-3 text-2xl font-bold text-white uppercase">
-          SFA Mailto Tool
+          SFA CTA Editor
         </span>
       </header>
 
