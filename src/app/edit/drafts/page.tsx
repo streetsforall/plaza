@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import { getAllEmailTemplates } from '../../helpers/db';
 
+// Prevent stale cache
+export const dynamic = 'auto';
+
 export default async function Page() {
   const emailTemplates = await getAllEmailTemplates();
 
