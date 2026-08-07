@@ -31,7 +31,12 @@ export default function LandingPageSettings({
     <div className="flex flex-col gap-6 border-2 border-black bg-white p-8">
       <h2 className="font-title text-2xl font-bold">Landing Page</h2>
 
-      <div className="grid grid-cols-[max-content_max-content] items-center gap-x-8 gap-y-6">
+      <div
+        className={
+          'grid grid-cols-[max-content_max-content] items-center gap-x-8' +
+          (legislativeTargets.length ? ' gap-y-6' : '')
+        }
+      >
         {/* Geotarget selector */}
         <span
           title="Use this if you'd like to include an address lookup that will
@@ -100,31 +105,35 @@ export default function LandingPageSettings({
         </div>
 
         {/* Phone CTA toggle - only show if geotarget is activated */}
-        {legislativeTargets.length ? (
-          <>
-            <span className="flex items-center gap-1.5">
-              <Icon icon="material-symbols:call-outline" />
-              Phone CTA
-            </span>
+        <span
+          className={
+            'flex items-center gap-1.5' +
+            // Prevent layout shift
+            (!legislativeTargets.length ? ' invisible max-h-0' : '')
+          }
+        >
+          <Icon icon="material-symbols:call-outline" />
+          Phone CTA
+        </span>
 
-            <ToggleGroup.Root
-              className="togglegroup-root justify-self-start"
-              type="single"
-              value={isPhone ? 'true' : 'false'}
-              onValueChange={(value) => setIsPhone(value === 'true')}
-              aria-label="Text alignment"
-            >
-              <ToggleGroup.Item className="togglegroup-item" value="true">
-                Yes
-              </ToggleGroup.Item>
-              <ToggleGroup.Item className="togglegroup-item" value="false">
-                No
-              </ToggleGroup.Item>
-            </ToggleGroup.Root>
-          </>
-        ) : (
-          ''
-        )}
+        <ToggleGroup.Root
+          className={
+            'togglegroup-root justify-self-start' +
+            // Prevent layout shift
+            (!legislativeTargets.length ? ' invisible max-h-0' : '')
+          }
+          type="single"
+          value={isPhone ? 'true' : 'false'}
+          onValueChange={(value) => setIsPhone(value === 'true')}
+          aria-label="Text alignment"
+        >
+          <ToggleGroup.Item className="togglegroup-item" value="true">
+            Yes
+          </ToggleGroup.Item>
+          <ToggleGroup.Item className="togglegroup-item" value="false">
+            No
+          </ToggleGroup.Item>
+        </ToggleGroup.Root>
       </div>
 
       {/* Heading field */}
