@@ -1,13 +1,21 @@
 'use server';
 
-const client = require('@mailchimp/mailchimp_marketing');
+import client from '@mailchimp/mailchimp_marketing';
+
+interface MergeFields {
+  ADD_ST: string;
+  ADD_CITY: string;
+  ADD_ZIP: string;
+  ADD_STATE: string;
+  ADD_COUNTR: string;
+}
 
 client.setConfig({
   apiKey: process.env.MAILCHIMP_KEY,
   server: 'us4',
 });
 
-export async function addMailchimp(email: string, merge_fields: any) {
+export async function addMailchimp(email: string, merge_fields: MergeFields) {
   console.log(email, merge_fields);
 
   const run = async () => {
@@ -30,11 +38,11 @@ export async function getMailchimp() {
     sort_dir: 'DESC',
   });
 
-  var campaign = response['campaigns'][0];
+  const campaign = response['campaigns'][0];
 
-  var campaign_url = campaign['long_archive_url'];
-  var campaign_subject = campaign['settings']['subject_line'];
-  var campaign_time = campaign['send_time'];
+  const campaign_url = campaign['long_archive_url'];
+  const campaign_subject = campaign['settings']['subject_line'];
+  const campaign_time = campaign['send_time'];
   return [
     {
       url: campaign_url,

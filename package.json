@@ -12,7 +12,11 @@
     "lint": "eslint"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "!(*.js|*.jsx|*.ts|*.tsx)": "prettier --write --ignore-unknown",
+    "*.{js,jsx,ts,tsx}": [
+      "eslint",
+      "prettier --write --ignore-unknown"
+    ]
   },
   "dependencies": {
     "@mailchimp/mailchimp_marketing": "^3.0.80",
@@ -29,6 +33,7 @@
   "devDependencies": {
     "@iconify/react": "^6.0.2",
     "@tailwindcss/postcss": "^4.3.1",
+    "@types/geojson": "^7946.0.16",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

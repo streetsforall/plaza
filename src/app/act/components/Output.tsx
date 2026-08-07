@@ -35,7 +35,7 @@ export default function Output({
   const [status, setStatus] = useState<string>('Waiting for address');
 
   // Geotargeted information
-  const [districts, setDistricts] = useState<any[]>([]);
+  const [districts, setDistricts] = useState<GeoJSON.Feature[]>([]);
   const [to, setTo] = useState<string[]>(initTo || []);
 
   const mailtoLink = `mailto:${to}?&cc=${cc}&bcc=${bcc}&subject=${subject}&body=${emailBody}`;
@@ -81,36 +81,39 @@ export default function Output({
             address.properties.coordinates.latitude,
           ];
 
-          const districtData: any = await combinedGeo(
+          const districtData: GeoJSON.Feature | null = await combinedGeo(
             districtType,
             coords,
             true,
           );
 
-          // Retrieve legislator phone number
-          // TODO: Retrieve from API
-          const legislatorInfo = legislatorMetadata[districtType];
+          if (districtData) {
+            // Retrieve legislator phone number
+            // TODO: Retrieve from API
+            const legislatorInfo = legislatorMetadata[districtType];
 
-          const matchingFeature = Object.values(legislatorInfo).find(
-            (district) =>
-              String(district!['District Number'].toLowerCase()) ===
-              String(districtData.id.toLowerCase()),
-          );
+            const matchingFeature = Object.values(legislatorInfo).find(
+              (district) =>
+                String(district!['District Number'].toLowerCase()) ===
+                String((districtData.id as string).toLowerCase()),
+            );
 
-          // Append phone number to feature
-          districtData.properties.phone = matchingFeature!['Phone Number'];
+            // Append phone number to feature
+            if (districtData.properties === null) districtData.properties = {};
+            districtData.properties.phone = matchingFeature!['Phone Number'];
 
-          setDistricts((prevDistricts) => [districtData, ...prevDistricts]);
+            setDistricts((prevDistricts) => [districtData, ...prevDistricts]);
 
-          // Add district legislator to recipient list
-          setStatus(
-            'Finding Address and ' + districtType + ' District Overlap',
-          );
+            // Add district legislator to recipient list
+            setStatus(
+              'Finding Address and ' + districtType + ' District Overlap',
+            );
 
-          setTo((prevTo) => [
-            districtData.properties.person.contactDetails[0].value,
-            ...prevTo,
-          ]);
+            setTo((prevTo) => [
+              districtData.properties?.person.contactDetails[0].value,
+              ...prevTo,
+            ]);
+          }
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -140,26 +143,26 @@ export default function Output({
               district:
                 '[' +
                 districts
-                  .map((district) => district.id.toUpperCase())
+                  .map((district) => (district.id as string).toUpperCase())
                   .join(' or ') +
                 ']',
               legislator:
                 '[' +
                 districts
-                  .map((district) => district.properties.person.name)
+                  .map((district) => district.properties?.person.name)
                   .join(' or ') +
                 ']',
               role:
                 '[' +
                 districts
-                  .map((district) => district.properties.post.role)
+                  .map((district) => district.properties?.post.role)
                   .join(' and ') +
                 ']',
             }
           : {
-              district: districts[0].id.toUpperCase(),
-              legislator: districts[0].properties.person.name,
-              role: districts[0].properties.post.role,
+              district: (districts[0].id as string).toUpperCase(),
+              legislator: districts[0].properties?.person.name,
+              role: districts[0].properties?.post.role,
             };
 
       // Replace variables with data
@@ -244,11 +247,11 @@ export default function Output({
                 districts.map((district, index) => (
                   <React.Fragment key={index}>
                     <span className="font-bold">
-                      {`${district.properties.post.role} ${district.properties.person.name}`}
+                      {`${district.properties?.post.role} ${district.properties?.person.name}`}
                     </span>{' '}
                     in district{' '}
                     <span className="font-bold">
-                      {district?.id.toUpperCase()}
+                      {(district.id as string).toUpperCase()}
                     </span>
                     {
                       /* Separate with 'and' if more than one */
@@ -283,16 +286,16 @@ export default function Output({
                     {
                       /* If multiple, include names */
                       districts.length > 1
-                        ? `Call ${district.properties.post.role} ${district.properties.person.name}:`
+                        ? `Call ${district.properties?.post.role} ${district.properties?.person.name}:`
                         : 'Call your representative:'
                     }
                   </span>
                   <a
                     className="whitespace-nowrap"
                     data-umami-event="cta_click_phone"
-                    href={'tel:' + district.properties.phone}
+                    href={'tel:' + district.properties?.phone}
                   >
-                    {district.properties.phone}
+                    {district.properties?.phone}
                   </a>
                 </span>
               ))

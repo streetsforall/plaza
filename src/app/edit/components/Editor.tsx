@@ -62,7 +62,7 @@ export default function Editor({
   // Calculated values
   const [savedState, setSavedState] = useState<string>(
     // Sort to ignore toggle order
-    JSON.stringify(initDistrictVar.sort()) +
+    JSON.stringify(initDistrictVar?.sort()) +
       JSON.stringify(initActionable) +
       initReceiverList +
       initCc +

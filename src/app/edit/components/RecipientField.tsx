@@ -79,9 +79,6 @@ export default function RecipientField({
         return (
           <React.Fragment key={index}>
             <span
-              onClick={(e: any) => {
-                e.target.focus();
-              }}
               className="group focus:bg-soft-bg relative flex items-center rounded-sm border-2 border-dotted border-black px-1 text-black"
               tabIndex={10 + index}
             >

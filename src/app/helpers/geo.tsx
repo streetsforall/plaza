@@ -5,7 +5,12 @@ import { point } from '@turf/helpers';
 
 import CA_AD from '../data/ca-ad.json';
 
-export async function geo(place) {
+/**
+ * Address lookup
+ * @param place - Search query
+ * @returns Address
+ */
+export async function geo(place): Promise<GeoJSON.Feature[]> {
   return fetch(
     'https://api.mapbox.com/search/geocode/v6/forward?q=' +
       place.string +
@@ -20,19 +25,19 @@ export async function geo(place) {
 
 // this inputs a district geojson and set of coordinates and finds what feature the coords are inside
 export async function districtFinder(coords, district, people) {
-  var foundDistrict = [];
-  var pt = point(coords);
+  let foundDistrict = [];
+  const pt = point(coords);
 
   // console.log('district', district)
 
-  var startTime = performance.now();
+  const startTime = performance.now();
 
-  var foundPerson = [];
+  let foundPerson = [];
 
   console.log(district);
 
-  for (let e of district.reverse()) {
-    var poly = e.geometry;
+  for (const e of district.reverse()) {
+    const poly = e.geometry;
     if (booleanPointInPolygon(pt, poly)) {
       foundDistrict = e.id;
       const district = people.features.filter((i) => i.id == e.id);
@@ -42,13 +47,13 @@ export async function districtFinder(coords, district, people) {
     }
   }
 
-  var endTime = performance.now();
-  var timeDiff = endTime - startTime; //in ms
+  const endTime = performance.now();
+  let timeDiff = endTime - startTime; //in ms
   // strip the ms
   timeDiff /= 1000;
 
   // get seconds
-  var seconds = Math.round(timeDiff);
+  const seconds = Math.round(timeDiff);
   console.log(seconds + ' seconds to calculate ');
 
   console.log(foundPerson);
@@ -57,7 +62,7 @@ export async function districtFinder(coords, district, people) {
 
 // this loads all district data but uses local geometry
 export async function geoLoader(boundary, geo) {
-  var district_link = '';
+  let district_link = '';
 
   console.log('package', boundary, geo);
 
@@ -69,11 +74,11 @@ export async function geoLoader(boundary, geo) {
     return '';
   }
 
-  var districts: any = CA_AD;
+  const districts = CA_AD as GeoJSON.Feature[];
 
-  var people = [];
+  let people = [];
 
-  var startTime = performance.now();
+  const startTime = performance.now();
 
   console.log('loading in districts');
 
@@ -90,26 +95,37 @@ export async function geoLoader(boundary, geo) {
 
   console.log('districts loaded');
 
-  var endTime = performance.now();
-  var timeDiff = endTime - startTime; //in ms
+  const endTime = performance.now();
+  let timeDiff = endTime - startTime; //in ms
   // strip the ms
   timeDiff /= 1000;
 
   // get seconds
-  var seconds = Math.round(timeDiff);
+  const seconds = Math.round(timeDiff);
   console.log(seconds + ' seconds to load' + boundary);
 
   // console.log('response', districts)
   return { districts, people };
 }
 
-export async function combinedGeo(boundary, coords, geo) {
+/**
+ * Retrieve district meta and optionally geometry from API
+ * @param boundary - District type
+ * @param coords - Coordinate to search for
+ * @param geo - Whether to retrieve geometry
+ * @returns District feature of the provided point
+ */
+export async function combinedGeo(
+  boundary,
+  coords,
+  geo,
+): Promise<GeoJSON.Feature | null> {
   let foundDistrict = null;
 
   const pt = point(coords);
 
   let district_link = '';
-  let district_short = '';
+  const district_short = '';
 
   console.log('package', boundary, coords, geo);
 
@@ -119,7 +135,7 @@ export async function combinedGeo(boundary, coords, geo) {
   } else if (boundary === 'Senate') {
     district_link = 'state-senate-districts';
   } else {
-    return ''; // Return empty string if no valid boundary is passed
+    return null; // Return null if no valid boundary is passed
   }
 
   const startTime = performance.now();
