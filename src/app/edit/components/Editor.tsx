@@ -105,7 +105,9 @@ export default function Editor({
       newHash = (Math.random() + 1).toString(36).substring(5);
 
       setCurrentHash(newHash);
-      window.history.pushState(null, '', `/mailto/${newHash}`);
+
+      // Add to end of existing path
+      window.history.pushState(null, '', `${window.location.href}/${newHash}`);
     }
 
     // Save to database
