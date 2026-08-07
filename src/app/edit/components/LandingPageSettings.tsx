@@ -111,7 +111,7 @@ export default function LandingPageSettings({
           type="single"
           value={isPhone ? 'true' : 'false'}
           onValueChange={(value) => setIsPhone(value === 'true')}
-          aria-label="Text alignment"
+          aria-label="Include CTA to call legislator(s)"
         >
           <ToggleGroup.Item className="togglegroup-item" value="true">
             Yes
