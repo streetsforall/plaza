@@ -1,5 +1,7 @@
 import { ToggleGroup } from 'radix-ui';
+import { Switch } from 'radix-ui';
 import { Icon } from '@iconify/react';
+import { useEffect } from 'react';
 
 export default function LandingPageSettings({
   hash,
@@ -41,29 +43,61 @@ export default function LandingPageSettings({
           Geotarget
         </span>
 
-        <ToggleGroup.Root
-          className="togglegroup-root"
-          type="single"
-          value={legislativeTargets.length ? legislativeTargets[0] : 'None'}
-          onValueChange={(value) => {
-            if (value === 'None') {
-              setLegislativeTargets([]);
-            } else {
-              setLegislativeTargets([value]);
-            }
-          }}
-          aria-label="Text alignment"
-        >
-          <ToggleGroup.Item className="togglegroup-item" value="None">
-            None
-          </ToggleGroup.Item>
-          <ToggleGroup.Item className="togglegroup-item" value="Assembly">
-            Assembly
-          </ToggleGroup.Item>
-          <ToggleGroup.Item className="togglegroup-item" value="Senate">
-            Senate
-          </ToggleGroup.Item>
-        </ToggleGroup.Root>
+        <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4">
+            <label id="assembly-label" htmlFor="assembly">
+              Assembly
+            </label>
+            <Switch.Root
+              className="relative h-6.5 w-10.75 cursor-default rounded-full bg-white p-0 outline-none data-[state=checked]:bg-black"
+              id="assembly"
+              checked={legislativeTargets.includes('Assembly')}
+              onCheckedChange={() => {
+                if (legislativeTargets.includes('Assembly')) {
+                  setLegislativeTargets(
+                    legislativeTargets.filter(
+                      (target) => target !== 'Assembly',
+                    ),
+                  );
+                } else {
+                  setLegislativeTargets([...legislativeTargets, 'Assembly']);
+                }
+              }}
+            >
+              <Switch.Thumb
+                id="assembly"
+                aria-labelledby="assembly-label"
+                className="block size-5.25 translate-x-0.5 rounded-full border-2 border-black bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-4.25"
+              />
+            </Switch.Root>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <label id="senate-label" htmlFor="senate">
+              Senate
+            </label>
+            <Switch.Root
+              className="relative h-6.5 w-10.5 cursor-default rounded-full bg-white p-0 outline-none data-[state=checked]:bg-black"
+              id="senate"
+              checked={legislativeTargets.includes('Senate')}
+              onCheckedChange={() => {
+                if (legislativeTargets.includes('Senate')) {
+                  setLegislativeTargets(
+                    legislativeTargets.filter((target) => target !== 'Senate'),
+                  );
+                } else {
+                  setLegislativeTargets([...legislativeTargets, 'Senate']);
+                }
+              }}
+            >
+              <Switch.Thumb
+                id="senate"
+                aria-labelledby="senate-label"
+                className="block size-5.25 translate-x-0.5 rounded-full border-2 border-black bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-4.25"
+              />
+            </Switch.Root>
+          </div>
+        </div>
 
         {/* Phone CTA toggle - only show if geotarget is activated */}
         {legislativeTargets.length ? (
