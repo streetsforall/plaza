@@ -73,7 +73,7 @@ export default function RecipientField({
   }
 
   return (
-    <div className="flex flex-wrap gap-2 border-2 border-black focus-within:border-blue p-2">
+    <div className="focus-within:border-blue flex flex-wrap gap-2 border-2 border-black p-2">
       {/* Added emails */}
       {thisList.map((email, index) => {
         return (
