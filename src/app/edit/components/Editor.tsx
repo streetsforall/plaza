@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Icon } from '@iconify/react';
 import { setEmailTemplate } from '../../helpers/db';
@@ -61,7 +61,8 @@ export default function Editor({
 
   // Calculated values
   const [savedState, setSavedState] = useState<string>(
-    JSON.stringify(initDistrictVar) +
+    // Sort to ignore toggle order
+    JSON.stringify(initDistrictVar.sort()) +
       JSON.stringify(initActionable) +
       initReceiverList +
       initCc +
@@ -71,7 +72,8 @@ export default function Editor({
       initIsPhone,
   );
   const draftState =
-    JSON.stringify(districtVar) +
+    // Sort to ignore toggle order
+    JSON.stringify(districtVar.sort()) +
     JSON.stringify(actionable) +
     recieverList +
     cc +
@@ -110,7 +112,8 @@ export default function Editor({
     const times = Date.now();
 
     setEmailTemplate({
-      district_var: districtVar,
+      // Sort to ignore toggle order
+      district_var: districtVar.sort(),
       // Add # symbol when saving
       url: `#${currentHash || newHash}`,
       actionable: actionable,
