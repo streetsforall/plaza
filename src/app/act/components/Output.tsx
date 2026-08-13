@@ -6,6 +6,7 @@ import { combinedGeo } from '../../helpers/geo';
 import { addMailchimp } from '../../helpers/mailchimp';
 import AddressSearch from './AddressSearch';
 import legislatorMetadata from '../../data/legislator_meta.json';
+import React from 'react';
 
 interface OutputProps {
   actorEmail?: string;
@@ -34,15 +35,14 @@ export default function Output({
   const [status, setStatus] = useState<string>('Waiting for address');
 
   // Geotargeted information
-  const [district, setDistrict] = useState<any>();
+  const [districts, setDistricts] = useState<GeoJSON.Feature[]>([]);
   const [to, setTo] = useState<string[]>(initTo || []);
-  const [phone, setPhone] = useState('');
 
   const mailtoLink = `mailto:${to}?&cc=${cc}&bcc=${bcc}&subject=${subject}&body=${emailBody}`;
 
   // Retrieve data based on address
   async function retrieveDistricts(address) {
-    setIsLoading(true);
+    if (!districtLookup) return;
 
     // Update contact
     if (actorEmail) {
@@ -66,8 +66,10 @@ export default function Output({
 
     // Ensure actor is in California
     if (address.properties.context.region.name == 'California') {
+      setIsLoading(true);
+
       // Look up for each district type (assembly and/or senate)
-      districtLookup?.map(async (districtType) => {
+      for (const districtType of districtLookup) {
         try {
           // Identify district based on address
           setStatus(
@@ -79,69 +81,99 @@ export default function Output({
             address.properties.coordinates.latitude,
           ];
 
-          const districtData: any = await combinedGeo(
+          const districtData: GeoJSON.Feature | null = await combinedGeo(
             districtType,
             coords,
             true,
           );
 
-          setDistrict(districtData);
+          if (districtData) {
+            // Retrieve legislator phone number
+            // TODO: Retrieve from API
+            const legislatorInfo = legislatorMetadata[districtType];
 
-          // Add district legislator to recipient list
-          setStatus(
-            'Finding Address and ' + districtType + ' District Overlap',
-          );
+            const matchingFeature = Object.values(legislatorInfo).find(
+              (district) =>
+                String(district!['District Number'].toLowerCase()) ===
+                String((districtData.id as string).toLowerCase()),
+            );
 
-          setTo((prevTo) => [
-            districtData.properties.person.contactDetails[0].value,
-            ...prevTo,
-          ]);
+            // Append phone number to feature
+            if (districtData.properties === null) districtData.properties = {};
+            districtData.properties.phone = matchingFeature!['Phone Number'];
 
-          // Retrieve legislator phone number
-          // TODO: Retrieve from API
-          const legislatorInfo = legislatorMetadata[districtType];
+            setDistricts((prevDistricts) => [districtData, ...prevDistricts]);
 
-          const matchingFeature = Object.values(legislatorInfo).find(
-            (district) =>
-              String(district!['District Number'].toLowerCase()) ===
-              String(districtData.id.toLowerCase()),
-          );
+            // Add district legislator to recipient list
+            setStatus(
+              'Finding Address and ' + districtType + ' District Overlap',
+            );
 
-          setPhone(matchingFeature!['Phone Number']);
+            setTo((prevTo) => [
+              districtData.properties?.person.contactDetails[0].value,
+              ...prevTo,
+            ]);
+          }
         } catch (error) {
           console.error('Error fetching data:', error);
         }
 
-        setIsLoading(false);
         setStatus('Email Updated');
-      });
-    } else {
+      }
+
       setIsLoading(false);
+    } else {
       setStatus("Sorry, looks like you aren't in California! :'(");
     }
   }
 
-  // Render landing page body
+  // Render landing page body and substitute any variables with district info
   function renderTextWithLinks(text) {
     if (!text) return '';
 
-    const districtData = {
-      district: district?.id.toUpperCase(),
-      legislator: district?.properties.person.name,
-      role: district?.properties.post.role,
-    };
-
-    // Replace variables with data
     let processedText = text;
     const variableRegex = /\[\[([^\]]+)\]\]/g;
 
-    processedText = processedText.replace(
-      variableRegex,
-      (match, variableName) => {
-        // Return the data value if exists, otherwise keep original bracket format
-        return districtData[variableName] || match;
-      },
-    );
+    // Insert district info
+    if (districts.length) {
+      // If multiple districts, list in brackets
+      const districtData =
+        districts.length > 1
+          ? {
+              district:
+                '[' +
+                districts
+                  .map((district) => (district.id as string).toUpperCase())
+                  .join(' or ') +
+                ']',
+              legislator:
+                '[' +
+                districts
+                  .map((district) => district.properties?.person.name)
+                  .join(' or ') +
+                ']',
+              role:
+                '[' +
+                districts
+                  .map((district) => district.properties?.post.role)
+                  .join(' and ') +
+                ']',
+            }
+          : {
+              district: (districts[0].id as string).toUpperCase(),
+              legislator: districts[0].properties?.person.name,
+              role: districts[0].properties?.post.role,
+            };
+
+      // Replace variables with data
+      processedText = processedText.replace(
+        variableRegex,
+        (match, variableName) => {
+          // Return the data value if exists, otherwise keep original bracket format
+          return districtData[variableName] || match;
+        },
+      );
+    }
 
     // Handle URLs
     const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -192,7 +224,7 @@ export default function Output({
         </span>
       </div>
     );
-  } else if (districtLookup?.length && !district) {
+  } else if (districtLookup?.length && !districts.length) {
     /* Address lookup */
     return (
       <>
@@ -206,19 +238,32 @@ export default function Output({
       /* If geolocation is disabled or district has been identified */
       <div className="flex flex-col gap-8">
         {/* Legislator info */}
-        {district && (
+        {districts.length ? (
           <div className="border border-dotted border-black p-4 text-stone-500">
             <p>
               You are represented by{' '}
-              <span className="font-bold">
-                {district?.properties.post.role}{' '}
-                {district?.properties.person.name}
-              </span>{' '}
-              in district{' '}
-              <span className="font-bold">{district?.id.toUpperCase()}</span>.
+              {
+                /* List district info */
+                districts.map((district, index) => (
+                  <React.Fragment key={index}>
+                    <span className="font-bold">
+                      {`${district.properties?.post.role} ${district.properties?.person.name}`}
+                    </span>{' '}
+                    in district{' '}
+                    <span className="font-bold">
+                      {(district.id as string).toUpperCase()}
+                    </span>
+                    {
+                      /* Separate with 'and' if more than one */
+                      index < districts.length - 1 ? ' and ' : null
+                    }
+                  </React.Fragment>
+                ))
+              }
+              .
             </p>
           </div>
-        )}
+        ) : null}
 
         {/* Body */}
         {body && (
@@ -228,21 +273,33 @@ export default function Output({
         {/* CTA buttons */}
         <div className="flex flex-col gap-4">
           {/* Phone CTA - requires geographic legislator lookup */}
-          {district && isPhone && phone && (
-            <span className="relative flex justify-center gap-1 border border-dotted px-5 py-3 text-xl">
-              <div className="absolute top-1 -left-10 -rotate-6 text-5xl">
-                👉
-              </div>
-              <span className="font-bold">Call your representative:</span>
-              <a
-                className="whitespace-nowrap"
-                data-umami-event="cta_click_phone"
-                href={'tel:' + phone}
-              >
-                {phone}
-              </a>
-            </span>
-          )}
+          {districts.length && isPhone
+            ? districts.map((district, i) => (
+                <span
+                  key={i}
+                  className="relative flex justify-center gap-1 border border-dotted px-5 py-3 text-xl"
+                >
+                  <div className="absolute top-1 -left-10 -rotate-6 text-5xl">
+                    👉
+                  </div>
+                  <span className="font-bold">
+                    {
+                      /* If multiple, include names */
+                      districts.length > 1
+                        ? `Call ${district.properties?.post.role} ${district.properties?.person.name}:`
+                        : 'Call your representative:'
+                    }
+                  </span>
+                  <a
+                    className="whitespace-nowrap"
+                    data-umami-event="cta_click_phone"
+                    href={'tel:' + district.properties?.phone}
+                  >
+                    {district.properties?.phone}
+                  </a>
+                </span>
+              ))
+            : null}
 
           {/* Email CTA */}
           <a
@@ -252,7 +309,8 @@ export default function Output({
           >
             <div className="absolute top-1 -left-10 -rotate-6 text-5xl">👉</div>
             <span className="font-bold whitespace-nowrap">
-              Email your representative{' '}
+              Email your{' '}
+              {districts.length > 1 ? 'representatives' : 'representative'}
             </span>
             <span className="whitespace-nowrap">(Customize the bottom)</span>
           </a>

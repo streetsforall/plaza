@@ -4,7 +4,7 @@ import { geo } from '../../helpers/geo';
 export default function AddressSearch({ onSelectAddress }) {
   const [addressQuery, setAddressQuery] = useState<string>('');
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
-  const [addressResults, setAddressResults] = useState<any[]>();
+  const [addressResults, setAddressResults] = useState<GeoJSON.Feature[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Wait for pause
@@ -62,7 +62,7 @@ export default function AddressSearch({ onSelectAddress }) {
                     data-umami-event="cta_select_address"
                     onClick={() => onSelectAddress(address)}
                   >
-                    {address.properties.full_address}
+                    {address.properties?.full_address}
                   </button>
                 </li>
               );

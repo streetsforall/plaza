@@ -1,5 +1,17 @@
 import { ToggleGroup } from 'radix-ui';
+import { Switch } from 'radix-ui';
 import { Icon } from '@iconify/react';
+
+const legislativeTargetOptions = [
+  {
+    id: 'assembly',
+    name: 'Assembly',
+  },
+  {
+    id: 'senate',
+    name: 'Senate',
+  },
+];
 
 export default function LandingPageSettings({
   hash,
@@ -29,7 +41,12 @@ export default function LandingPageSettings({
     <div className="flex flex-col gap-6 border-2 border-black bg-white p-8">
       <h2 className="font-title text-2xl font-bold">Landing Page</h2>
 
-      <div className="grid grid-cols-[max-content_max-content] items-center gap-x-8 gap-y-6">
+      <div
+        className={
+          'grid grid-cols-[max-content_max-content] items-center gap-x-8' +
+          (legislativeTargets.length ? ' gap-y-6' : '')
+        }
+      >
         {/* Geotarget selector */}
         <span
           title="Use this if you'd like to include an address lookup that will
@@ -41,56 +58,68 @@ export default function LandingPageSettings({
           Geotarget
         </span>
 
-        <ToggleGroup.Root
-          className="togglegroup-root"
-          type="single"
-          value={legislativeTargets.length ? legislativeTargets[0] : 'None'}
-          onValueChange={(value) => {
-            if (value === 'None') {
-              setLegislativeTargets([]);
-            } else {
-              setLegislativeTargets([value]);
-            }
-          }}
-          aria-label="Text alignment"
-        >
-          <ToggleGroup.Item className="togglegroup-item" value="None">
-            None
-          </ToggleGroup.Item>
-          <ToggleGroup.Item className="togglegroup-item" value="Assembly">
-            Assembly
-          </ToggleGroup.Item>
-          <ToggleGroup.Item className="togglegroup-item" value="Senate">
-            Senate
-          </ToggleGroup.Item>
-        </ToggleGroup.Root>
+        <div className="flex items-center gap-8">
+          {legislativeTargetOptions.map((option) => (
+            <div key={option.id} className="flex items-center gap-4">
+              <label id={`${option.id}-label`} htmlFor={option.id}>
+                {option.name}
+              </label>
+              <Switch.Root
+                className="relative h-6.5 w-10.75 cursor-default rounded-full bg-white p-0 outline-none data-[state=checked]:bg-black"
+                id={option.id}
+                checked={legislativeTargets.includes(option.name)}
+                onCheckedChange={() => {
+                  if (legislativeTargets.includes(option.name)) {
+                    setLegislativeTargets(
+                      legislativeTargets.filter(
+                        (target) => target !== option.name,
+                      ),
+                    );
+                  } else {
+                    setLegislativeTargets([...legislativeTargets, option.name]);
+                  }
+                }}
+              >
+                <Switch.Thumb
+                  id={option.id}
+                  aria-labelledby={`${option.id}-label`}
+                  className="block size-5.25 translate-x-0.5 rounded-full border-2 border-black bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-4.25"
+                />
+              </Switch.Root>
+            </div>
+          ))}
+        </div>
 
         {/* Phone CTA toggle - only show if geotarget is activated */}
-        {legislativeTargets.length ? (
-          <>
-            <span className="flex items-center gap-1.5">
-              <Icon icon="material-symbols:call-outline" />
-              Phone CTA
-            </span>
+        <span
+          className={
+            'flex items-center gap-1.5' +
+            // Prevent layout shift
+            (!legislativeTargets.length ? ' invisible max-h-0' : '')
+          }
+        >
+          <Icon icon="material-symbols:call-outline" />
+          Phone CTA
+        </span>
 
-            <ToggleGroup.Root
-              className="togglegroup-root justify-self-start"
-              type="single"
-              value={isPhone ? 'true' : 'false'}
-              onValueChange={(value) => setIsPhone(value === 'true')}
-              aria-label="Text alignment"
-            >
-              <ToggleGroup.Item className="togglegroup-item" value="true">
-                Yes
-              </ToggleGroup.Item>
-              <ToggleGroup.Item className="togglegroup-item" value="false">
-                No
-              </ToggleGroup.Item>
-            </ToggleGroup.Root>
-          </>
-        ) : (
-          ''
-        )}
+        <ToggleGroup.Root
+          className={
+            'togglegroup-root justify-self-start' +
+            // Prevent layout shift
+            (!legislativeTargets.length ? ' invisible max-h-0' : '')
+          }
+          type="single"
+          value={isPhone ? 'true' : 'false'}
+          onValueChange={(value) => setIsPhone(value === 'true')}
+          aria-label="Include CTA to call legislator(s)"
+        >
+          <ToggleGroup.Item className="togglegroup-item" value="true">
+            Yes
+          </ToggleGroup.Item>
+          <ToggleGroup.Item className="togglegroup-item" value="false">
+            No
+          </ToggleGroup.Item>
+        </ToggleGroup.Root>
       </div>
 
       {/* Heading field */}

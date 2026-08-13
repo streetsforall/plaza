@@ -8,7 +8,6 @@
 // import senates from "../data/CA_Senate_Districts.json";
 // import {geo} from "../helpers/geo"
 
-
 // const Geocoder = ({ recieverList, setRecieverList, updateEmail }) => {
 
 //     const [place, setPlace] = useState('');
@@ -54,7 +53,6 @@
 //         updateEmail()
 //     }
 
-
 //     useEffect(() => {
 
 //         const getCoords = async () => {
@@ -78,9 +76,6 @@
 //         if (place) { getCoords(); }
 //         console.log(locations)
 //     }, [place]);
-
-
-
 
 //     return (
 
@@ -143,7 +138,6 @@
 
 //         </div>
 //     );
-
 
 // }
 
