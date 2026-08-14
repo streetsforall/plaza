@@ -85,10 +85,32 @@ export default function Editor({
     subject,
   )}&body=${encodeURIComponent(body)}`;
 
-  // Autosave
+  /**
+   * Autosave
+   */
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
+  // Wait for pause
+  const [debouncedDraftState, setDeboucedDraftState] = useState(draftState);
   useEffect(() => {
-    updateDatabase();
+    const timeoutId = setTimeout(() => {
+      setDeboucedDraftState(draftState);
+    }, 1000);
+    return () => clearTimeout(timeoutId);
   }, [draftState]);
+
+  // Trigger save
+  useEffect(() => {
+    async function autosave() {
+      setIsSaving(true);
+
+      await updateDatabase();
+
+      setIsSaving(false);
+    }
+
+    autosave();
+  }, [debouncedDraftState]);
 
   /**
    * Generate new URL hash or save to database
@@ -118,7 +140,7 @@ export default function Editor({
     // Save to database
     const times = Date.now();
 
-    setEmailTemplate({
+    await setEmailTemplate({
       // Sort to ignore toggle order
       district_var: districtVar.sort(),
       // Add # symbol when saving
@@ -157,7 +179,12 @@ export default function Editor({
 
         <div className="flex items-center gap-4">
           <span className="flex w-full items-center justify-center gap-1.5 text-sm">
-            {currentHash && savedState == draftState ? (
+            {isSaving ? (
+              <>
+                <Icon icon="line-md:loading-loop" />
+                Saving...
+              </>
+            ) : currentHash && savedState == draftState ? (
               <>
                 <Icon icon="material-symbols:check" />
                 All changes saved
