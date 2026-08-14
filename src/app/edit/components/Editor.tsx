@@ -109,7 +109,10 @@ export default function Editor({
       setIsSaving(false);
     }
 
-    autosave();
+    // Only autosave if saved before
+    if (currentHash) {
+      autosave();
+    }
   }, [debouncedDraftState]);
 
   /**
@@ -191,7 +194,7 @@ export default function Editor({
               </>
             ) : (
               <>
-                <Icon icon="material-symbols:exclamation" />
+                <Icon icon="material-symbols:warning-outline" />
                 Unsaved changes
               </>
             )}
