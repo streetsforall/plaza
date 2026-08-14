@@ -85,6 +85,11 @@ export default function Editor({
     subject,
   )}&body=${encodeURIComponent(body)}`;
 
+  // Autosave
+  useEffect(() => {
+    updateDatabase();
+  }, [draftState]);
+
   /**
    * Generate new URL hash or save to database
    */
