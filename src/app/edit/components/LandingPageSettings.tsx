@@ -1,6 +1,7 @@
 import { ToggleGroup } from 'radix-ui';
-import { Switch, Tooltip } from 'radix-ui';
+import { Switch } from 'radix-ui';
 import { Icon } from '@iconify/react';
+import Tooltip from './Tooltip';
 
 const legislativeTargetOptions = [
   {
@@ -85,24 +86,10 @@ export default function LandingPageSettings({
           ))}
         </div>
 
-        <Tooltip.Provider>
-          <Tooltip.Root>
-            <Tooltip.Trigger asChild>
-              <Icon icon="lucide:info" />
-            </Tooltip.Trigger>
-            <Tooltip.Portal>
-              <Tooltip.Content
-                className="max-w-md rounded bg-black px-3.5 py-2.25 text-sm text-white"
-                sideOffset={5}
-              >
-                Include an address lookup that will dyanmically add state
-                legislators as recipients based on the user&apos;s geographic
-                location.
-                <Tooltip.Arrow className="fill-black" />
-              </Tooltip.Content>
-            </Tooltip.Portal>
-          </Tooltip.Root>
-        </Tooltip.Provider>
+        <Tooltip>
+          Include an address lookup that will dyanmically add state legislators
+          as recipients based on the user&apos;s geographic location.
+        </Tooltip>
 
         {/* Phone CTA toggle - only show if geotarget is activated */}
         <span
@@ -135,22 +122,7 @@ export default function LandingPageSettings({
           </ToggleGroup.Item>
         </ToggleGroup.Root>
 
-        <Tooltip.Provider>
-          <Tooltip.Root>
-            <Tooltip.Trigger asChild>
-              <Icon icon="lucide:info" />
-            </Tooltip.Trigger>
-            <Tooltip.Portal>
-              <Tooltip.Content
-                className="max-w-md rounded bg-black px-3.5 py-2.25 text-sm text-white"
-                sideOffset={5}
-              >
-                Include the legislators&apos; phone number.
-                <Tooltip.Arrow className="fill-black" />
-              </Tooltip.Content>
-            </Tooltip.Portal>
-          </Tooltip.Root>
-        </Tooltip.Provider>
+        <Tooltip>Include the legislators&apos; phone number.</Tooltip>
       </div>
 
       {/* Heading field */}
@@ -184,29 +156,16 @@ export default function LandingPageSettings({
           className="flex items-center justify-between gap-1.5"
         >
           Body
-          <Tooltip.Provider>
-            <Tooltip.Root>
-              <Tooltip.Trigger asChild>
-                <Icon icon="lucide:info" />
-              </Tooltip.Trigger>
-              <Tooltip.Portal>
-                <Tooltip.Content
-                  className="max-w-md rounded bg-black px-3.5 py-2.25 text-sm text-white"
-                  sideOffset={5}
-                >
-                  You can use the variables&nbsp;
-                  <span className="font-mono">
-                    [[district]] [[legislator]] [[role]]
-                  </span>
-                  &nbsp; in conjunction with the&nbsp;
-                  <span className="font-bold">Geotarget</span>&nbsp;setting
-                  above to include informationa about the recipients&apos;
-                  representatives dynamically.
-                  <Tooltip.Arrow className="fill-black" />
-                </Tooltip.Content>
-              </Tooltip.Portal>
-            </Tooltip.Root>
-          </Tooltip.Provider>
+          <Tooltip>
+            You can use the variables&nbsp;
+            <span className="font-mono">
+              [[district]] [[legislator]] [[role]]
+            </span>
+            &nbsp; in conjunction with the&nbsp;
+            <span className="font-bold">Geotarget</span>&nbsp;setting above to
+            include informationa about the recipients&apos; representatives
+            dynamically.
+          </Tooltip>
         </label>
         <textarea
           id="landing-page-body"
