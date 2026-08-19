@@ -1,5 +1,5 @@
 import { ToggleGroup } from 'radix-ui';
-import { Switch } from 'radix-ui';
+import { Switch, Tooltip } from 'radix-ui';
 import { Icon } from '@iconify/react';
 
 const legislativeTargetOptions = [
@@ -43,17 +43,12 @@ export default function LandingPageSettings({
 
       <div
         className={
-          'grid grid-cols-[max-content_max-content] items-center gap-x-8' +
+          'grid grid-cols-[max-content_1fr_min-content] items-center gap-x-8' +
           (legislativeTargets.length ? ' gap-y-6' : '')
         }
       >
         {/* Geotarget selector */}
-        <span
-          title="Use this if you'd like to include an address lookup that will
-            dyanmically add state legislators as recipients based on the user's
-            geographic location."
-          className="flex items-center gap-1.5"
-        >
+        <span className="flex items-center gap-1.5">
           <Icon icon="material-symbols:distance-outline" />
           Geotarget
         </span>
@@ -90,6 +85,25 @@ export default function LandingPageSettings({
           ))}
         </div>
 
+        <Tooltip.Provider>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <Icon icon="lucide:info" />
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content
+                className="max-w-md rounded bg-black px-3.5 py-2.25 text-sm text-white"
+                sideOffset={5}
+              >
+                Include an address lookup that will dyanmically add state
+                legislators as recipients based on the user&apos;s geographic
+                location.
+                <Tooltip.Arrow className="fill-black" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
+
         {/* Phone CTA toggle - only show if geotarget is activated */}
         <span
           className={
@@ -120,6 +134,23 @@ export default function LandingPageSettings({
             No
           </ToggleGroup.Item>
         </ToggleGroup.Root>
+
+        <Tooltip.Provider>
+          <Tooltip.Root>
+            <Tooltip.Trigger asChild>
+              <Icon icon="lucide:info" />
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content
+                className="max-w-md rounded bg-black px-3.5 py-2.25 text-sm text-white"
+                sideOffset={5}
+              >
+                Include the legislators&apos; phone number.
+                <Tooltip.Arrow className="fill-black" />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
       </div>
 
       {/* Heading field */}
@@ -148,7 +179,35 @@ export default function LandingPageSettings({
 
       {/* Body field*/}
       <div className="flex flex-col">
-        <label htmlFor="landing-page-body">Body</label>
+        <label
+          htmlFor="landing-page-body"
+          className="flex items-center justify-between gap-1.5"
+        >
+          Body
+          <Tooltip.Provider>
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <Icon icon="lucide:info" />
+              </Tooltip.Trigger>
+              <Tooltip.Portal>
+                <Tooltip.Content
+                  className="max-w-md rounded bg-black px-3.5 py-2.25 text-sm text-white"
+                  sideOffset={5}
+                >
+                  You can use the variables&nbsp;
+                  <span className="font-mono">
+                    [[district]] [[legislator]] [[role]]
+                  </span>
+                  &nbsp; in conjunction with the&nbsp;
+                  <span className="font-bold">Geotarget</span>&nbsp;setting
+                  above to include informationa about the recipients&apos;
+                  representatives dynamically.
+                  <Tooltip.Arrow className="fill-black" />
+                </Tooltip.Content>
+              </Tooltip.Portal>
+            </Tooltip.Root>
+          </Tooltip.Provider>
+        </label>
         <textarea
           id="landing-page-body"
           value={decodeURIComponent(actionable.body)}
