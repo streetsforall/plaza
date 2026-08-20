@@ -138,7 +138,7 @@ export default function LandingPageSettings({
         </label>
         <input
           id="landing-page-heading"
-          value={decodeURIComponent(actionable.header)}
+          value={decodeURIComponent(actionable?.header)}
           onChange={(e) => {
             setActionable({
               header: e.target.value,
@@ -169,7 +169,7 @@ export default function LandingPageSettings({
         </label>
         <textarea
           id="landing-page-body"
-          value={decodeURIComponent(actionable.body)}
+          value={decodeURIComponent(actionable?.body)}
           rows={12}
           className="min-h-80"
           onChange={(e) => {

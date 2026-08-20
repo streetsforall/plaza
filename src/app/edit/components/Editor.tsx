@@ -137,7 +137,7 @@ export default function Editor({
     setError('');
     setIsSaving(true);
 
-    if (!subject || !body || !actionable.header) {
+    if (!subject || !body || !actionable?.header) {
       setError('Please fill in the required fields.');
       setIsSaving(false);
 
