@@ -1,6 +1,7 @@
 import { ToggleGroup } from 'radix-ui';
 import { Switch } from 'radix-ui';
 import { Icon } from '@iconify/react';
+import Tooltip from './Tooltip';
 
 const legislativeTargetOptions = [
   {
@@ -39,21 +40,23 @@ export default function LandingPageSettings({
 
   return (
     <div className="flex flex-col gap-6 border-2 border-black bg-white p-8">
-      <h2 className="font-title text-2xl font-bold">Landing Page</h2>
+      <h2 className="font-title flex items-center gap-1.5 text-2xl font-bold">
+        Landing Page
+        <Tooltip>
+          Settings for a landing page that can be shared with advocates and
+          contains information about the CTA and a button to automatically open
+          the the email template in their mail client
+        </Tooltip>
+      </h2>
 
       <div
         className={
-          'grid grid-cols-[max-content_max-content] items-center gap-x-8' +
+          'grid grid-cols-[max-content_1fr_min-content] items-center gap-x-8' +
           (legislativeTargets.length ? ' gap-y-6' : '')
         }
       >
         {/* Geotarget selector */}
-        <span
-          title="Use this if you'd like to include an address lookup that will
-            dyanmically add state legislators as recipients based on the user's
-            geographic location."
-          className="flex items-center gap-1.5"
-        >
+        <span className="flex items-center gap-1.5">
           <Icon icon="material-symbols:distance-outline" />
           Geotarget
         </span>
@@ -90,6 +93,11 @@ export default function LandingPageSettings({
           ))}
         </div>
 
+        <Tooltip>
+          Include an address lookup that will dyanmically add state legislators
+          as recipients based on the advocate&apos;s geographic location.
+        </Tooltip>
+
         {/* Phone CTA toggle - only show if geotarget is activated */}
         <span
           className={
@@ -120,6 +128,8 @@ export default function LandingPageSettings({
             No
           </ToggleGroup.Item>
         </ToggleGroup.Root>
+
+        <Tooltip>Include the legislators&apos; phone number.</Tooltip>
       </div>
 
       {/* Heading field */}
@@ -135,7 +145,7 @@ export default function LandingPageSettings({
         </label>
         <input
           id="landing-page-heading"
-          value={decodeURIComponent(actionable.header)}
+          value={decodeURIComponent(actionable?.header)}
           onChange={(e) => {
             setActionable({
               header: e.target.value,
@@ -148,10 +158,24 @@ export default function LandingPageSettings({
 
       {/* Body field*/}
       <div className="flex flex-col">
-        <label htmlFor="landing-page-body">Body</label>
+        <label
+          htmlFor="landing-page-body"
+          className="flex items-center justify-between gap-1.5"
+        >
+          Body
+          <Tooltip>
+            If the&nbsp;<span className="font-bold">Geotarget</span>
+            &nbsp;setting above is enabled, you can use the variables&nbsp;
+            <span className="font-mono">[[district]]</span>,&nbsp;
+            <span className="font-mono">[[legislator]]</span>, and&nbsp;
+            <span className="font-mono">[[role]]</span>
+            &nbsp;to dynamically include information about the advocate&apos;s
+            representatives.
+          </Tooltip>
+        </label>
         <textarea
           id="landing-page-body"
-          value={decodeURIComponent(actionable.body)}
+          value={decodeURIComponent(actionable?.body)}
           rows={12}
           className="min-h-80"
           onChange={(e) => {
