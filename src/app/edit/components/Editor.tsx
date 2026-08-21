@@ -8,6 +8,7 @@ import { setEmailTemplate } from '../../helpers/db';
 import ContactLibrary from './ContactLibrary';
 import LandingPageSettings from './LandingPageSettings';
 import RecipientField from './RecipientField';
+import Tooltip from './Tooltip';
 
 interface EditorProps {
   initHash?;
@@ -239,7 +240,18 @@ export default function Editor({
       <div className="flex items-start gap-4">
         {/* Left column */}
         <div className="flex w-1/2 flex-col gap-6 border-2 border-black bg-white p-8">
-          <h2 className="font-title text-2xl font-bold">Mailto</h2>
+          <h2 className="font-title flex items-center gap-1.5 text-2xl font-bold">
+            Email Template
+            <Tooltip>
+              Preconfigure an email that advocates can use to reach out to their
+              legislators/representatives, either by directly providing them
+              the&nbsp;
+              <span className="font-bold">Mailto link</span>&nbsp;at the bottom
+              via a hyperlink or by setting up a landing page that will include
+              a hyperlink by default, both of which should automatically
+              populate their mail client.
+            </Tooltip>
+          </h2>
 
           <div className="flex flex-col gap-6">
             {/* To */}

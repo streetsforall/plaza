@@ -40,7 +40,14 @@ export default function LandingPageSettings({
 
   return (
     <div className="flex flex-col gap-6 border-2 border-black bg-white p-8">
-      <h2 className="font-title text-2xl font-bold">Landing Page</h2>
+      <h2 className="font-title flex items-center gap-1.5 text-2xl font-bold">
+        Landing Page
+        <Tooltip>
+          Settings for a landing page that can be shared with advocates and
+          contains information about the CTA and a button to automatically open
+          the the email template in their mail client
+        </Tooltip>
+      </h2>
 
       <div
         className={
@@ -88,7 +95,7 @@ export default function LandingPageSettings({
 
         <Tooltip>
           Include an address lookup that will dyanmically add state legislators
-          as recipients based on the user&apos;s geographic location.
+          as recipients based on the advocate&apos;s geographic location.
         </Tooltip>
 
         {/* Phone CTA toggle - only show if geotarget is activated */}
@@ -157,14 +164,13 @@ export default function LandingPageSettings({
         >
           Body
           <Tooltip>
-            You can use the variables&nbsp;
-            <span className="font-mono">
-              [[district]] [[legislator]] [[role]]
-            </span>
-            &nbsp; in conjunction with the&nbsp;
-            <span className="font-bold">Geotarget</span>&nbsp;setting above to
-            include informationa about the recipients&apos; representatives
-            dynamically.
+            If the&nbsp;<span className="font-bold">Geotarget</span>
+            &nbsp;setting above is enabled, you can use the variables&nbsp;
+            <span className="font-mono">[[district]]</span>,&nbsp;
+            <span className="font-mono">[[legislator]]</span>, and&nbsp;
+            <span className="font-mono">[[role]]</span>
+            &nbsp;to dynamically include information about the advocate&apos;s
+            representatives.
           </Tooltip>
         </label>
         <textarea

@@ -12,10 +12,12 @@ export default function CustomTooltip({
   children: React.ReactNode;
 }) {
   return (
-    <Tooltip.Provider>
+    <Tooltip.Provider delayDuration={250}>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
-          <Icon icon="lucide:info" />
+          <span className="rounded-full p-0.5 hover:bg-gray-200">
+            <Icon icon="lucide:info" className="text-base" />
+          </span>
         </Tooltip.Trigger>
         <Tooltip.Portal>
           <Tooltip.Content
