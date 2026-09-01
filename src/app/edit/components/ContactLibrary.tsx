@@ -1,46 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Checkbox, Dialog, Tabs } from 'radix-ui';
 import { Icon } from '@iconify/react';
-import { geoLoader } from '../../helpers/geo';
 import {
+  type Contact,
   getCityCouncilMembers,
   getMetroBoardMembers,
   getNeighborhoodCouncils,
   getStateLegislators,
 } from '@/app/helpers/contacts';
 
-interface datafeatures {
-  OBJECTID: number;
-  NAME: string;
-  WADDRESS: string;
-  DWEBSITE: string;
-  DEMAIL: string;
-  DPHONE: string;
-  NC_ID: number;
-  CERTIFIED: string;
-  TOOLTIP: string;
-  NLA_URL: string;
-  SERVICE_RE: string;
-}
-
 interface Category {
   id: string;
   label: string;
-  data:
-    | GeoJSON.Feature[]
-    | {
-        updatedAt: Date;
-        contacts: Contact[];
-      };
+  data: Contact[];
   updatedAt?: Date;
-}
-
-interface Contact {
-  id: string;
-  title: string;
-  name: string;
-  primaryEmail: string;
-  secondaryEmail: string;
 }
 
 export default function ContactLibrary({ recipients, setRecipients }) {
@@ -100,33 +73,23 @@ export default function ContactLibrary({ recipients, setRecipients }) {
     loadContacts();
   }, []);
 
-  // TODO: Rewrite this whole componenet to injest from our API
-  // const geodata = geoLoader(e, false);
-
   /**
    * Add all the provided recipients
    * @param data - GeoJSON data object
    */
   function addAll(data) {
-    const updatedRecipients = data.flatMap((feature) => {
-      if (feature.properties) {
-        // Raw feature from GeoJSON (old)
-        if (areDeputiesShown && feature.properties.Deputy) {
+    const updatedRecipients = data
+      // Filter out vacant
+      .filter((contact) => contact.primaryEmail)
+      // Combine all emails into a single-level array
+      .flatMap((contact) => {
+        if (areDeputiesShown && contact.secondaryEmail) {
           // Include deputy email if applicable
-          return [feature.properties.DEMAIL, feature.properties.Deputy];
+          return [contact.primaryEmail, contact.secondaryEmail];
         } else {
-          return feature.properties.DEMAIL;
+          return contact.primaryEmail;
         }
-      } else {
-        // Parsed contact from API (new)
-        if (areDeputiesShown && feature.secondaryEmail) {
-          // Include deputy email if applicable
-          return [feature.primaryEmail, feature.secondaryEmail];
-        } else {
-          return feature.primaryEmail;
-        }
-      }
-    });
+      });
 
     // Replace the existing list, not append to it
     setRecipients(updatedRecipients);
@@ -218,12 +181,11 @@ export default function ContactLibrary({ recipients, setRecipients }) {
                   {/* Toolbar */}
                   <div className="flex items-center justify-between gap-8 border-b-2 p-4">
                     <span className="grow italic">
-                      {category.updatedAt
-                        ? `Last updated ${new Date(
-                            category.updatedAt,
-                          ).toLocaleDateString('en-US')}
-                        `
-                        : 'NOTE: These have not been updated post-November 2024 election.'}
+                      {category.updatedAt &&
+                        `Last updated ${new Date(
+                          category.updatedAt,
+                        ).toLocaleDateString('en-US')}
+                        `}
                     </span>
 
                     {/* Show deputies */}
@@ -257,76 +219,43 @@ export default function ContactLibrary({ recipients, setRecipients }) {
                   <table className="flex flex-col overflow-auto">
                     <tbody>
                       {category.data.map((feature, index) => {
-                        if (feature.properties) {
-                          // Raw feature from GeoJSON (old)
-                          return (
-                            <tr
-                              key={index}
-                              data-email={feature.properties.DEMAIL}
-                              className="cursor-pointer leading-normal not-last:border-b-2 hover:bg-black hover:text-white"
-                              onClick={() => {
-                                updateRecipients(
-                                  feature.properties.DEMAIL,
-                                  feature.properties.Deputy,
-                                );
-                              }}
-                            >
-                              {feature.properties.District && (
-                                <td className="px-4 py-2 whitespace-nowrap">
-                                  {feature.properties.District}
-                                </td>
-                              )}
-                              <td className="px-4 py-2 whitespace-nowrap">
-                                {feature.properties.NAME}
-                              </td>
-                              <td className="w-[99%] px-4 py-2">
-                                {feature.properties.DEMAIL}
-                              </td>
-                              <td className="px-4 py-2">
-                                {areDeputiesShown && feature.properties.Deputy}
-                              </td>
-                            </tr>
-                          );
-                        } else {
-                          // Parsed contact from API (new)
-                          return (
-                            <tr
-                              key={index}
-                              className="cursor-pointer leading-normal not-last:border-b-2 hover:bg-black hover:text-white"
-                              onClick={() => {
-                                updateRecipients(
-                                  feature.primaryEmail,
-                                  feature.secondaryEmail,
-                                );
-                              }}
-                            >
-                              {feature.title && (
-                                <td
-                                  // Truncate but display on hover
-                                  className="max-w-64 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap"
-                                  title={feature.title}
-                                >
-                                  {feature.title}
-                                </td>
-                              )}
+                        return (
+                          <tr
+                            key={index}
+                            className="cursor-pointer leading-normal not-last:border-b-2 hover:bg-black hover:text-white"
+                            onClick={() => {
+                              updateRecipients(
+                                feature.primaryEmail,
+                                feature.secondaryEmail,
+                              );
+                            }}
+                          >
+                            {feature.title && (
                               <td
                                 // Truncate but display on hover
-                                className="max-w-84 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap"
-                                title={feature.name}
+                                className="max-w-64 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap"
+                                title={feature.title}
                               >
-                                {feature.name}
+                                {feature.title}
                               </td>
-                              <td className="w-[99%] px-4 py-2 whitespace-nowrap">
-                                {feature.primaryEmail}
+                            )}
+                            <td
+                              // Truncate but display on hover
+                              className="max-w-84 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap"
+                              title={feature.name}
+                            >
+                              {feature.name}
+                            </td>
+                            <td className="w-[99%] px-4 py-2 whitespace-nowrap">
+                              {feature.primaryEmail}
+                            </td>
+                            {areDeputiesShown && (
+                              <td className="px-4 py-2 whitespace-nowrap">
+                                {feature.secondaryEmail}
                               </td>
-                              {areDeputiesShown && (
-                                <td className="px-4 py-2 whitespace-nowrap">
-                                  {feature.secondaryEmail}
-                                </td>
-                              )}
-                            </tr>
-                          );
-                        }
+                            )}
+                          </tr>
+                        );
                       })}
                     </tbody>
                   </table>

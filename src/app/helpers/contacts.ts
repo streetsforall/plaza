@@ -2,6 +2,14 @@
 
 const GEODATA_API_BASE_URL = process.env.GEODATA_API_BASE_URL;
 
+interface Contact {
+  id: string;
+  title: string;
+  name: string;
+  primaryEmail: string;
+  secondaryEmail: string;
+}
+
 async function getCityCouncilMembers(slug: string) {
   const data = await fetch(
     `${GEODATA_API_BASE_URL}/v1/cities/${slug}/council-members?geom=false`,
@@ -99,6 +107,7 @@ async function getStateLegislators(chamber: 'assembly' | 'senate') {
 }
 
 export {
+  type Contact,
   getCityCouncilMembers,
   getMetroBoardMembers,
   getNeighborhoodCouncils,
