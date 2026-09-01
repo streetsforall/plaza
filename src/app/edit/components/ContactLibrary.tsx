@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Checkbox, Dialog, Tabs } from 'radix-ui';
 import { Icon } from '@iconify/react';
 import { geoLoader } from '../../helpers/geo';
-import cds from '../../data/LA_City_Council_Districts.json';
 //import assembly from '../data/CA_Assembly_Districts.json';
 import senate from '../../data/CA_Senate_Districts.json';
-import Santa_Monica from '../../data/Santa_Monica.json';
 import {
+  getCityCouncilMembers,
   getMetroBoardMembers,
   getNeighborhoodCouncils,
 } from '@/app/helpers/contacts';
@@ -51,31 +50,37 @@ export default function ContactLibrary({ recipients, setRecipients }) {
 
   useEffect(() => {
     async function loadContacts() {
+      const losAngelesCityCouncilMembers =
+        await getCityCouncilMembers('los-angeles');
+      const santaMonicaCityCouncilMembers =
+        await getCityCouncilMembers('santa-monica');
       const metroBoardMembers = await getMetroBoardMembers();
       const neighborhoodCouncils = await getNeighborhoodCouncils();
 
       setCategories([
         {
-          id: 'nc',
+          id: 'la-nc',
           label: 'LA Neighborhood Councils',
           data: neighborhoodCouncils.contacts,
           updatedAt: neighborhoodCouncils.updatedAt,
         },
-        /*{
-        id: 'cd',
-        label: 'LA City Council',
-        data: cds.features,
-      },*/
         {
-          id: 'metro',
+          id: 'la-metro',
           label: 'Metro',
           data: metroBoardMembers.contacts,
           updatedAt: metroBoardMembers.updatedAt,
         },
         {
-          id: 'santamonica',
-          label: 'Santa Monica',
-          data: Santa_Monica.features,
+          id: 'los-angeles',
+          label: 'LA City Council',
+          data: losAngelesCityCouncilMembers.contacts,
+          updatedAt: losAngelesCityCouncilMembers.updatedAt,
+        },
+        {
+          id: 'santa-monica',
+          label: 'Santa Monica City Council',
+          data: santaMonicaCityCouncilMembers.contacts,
+          updatedAt: santaMonicaCityCouncilMembers.updatedAt,
         },
         /*{
         id: 'assembly',
@@ -213,7 +218,8 @@ export default function ContactLibrary({ recipients, setRecipients }) {
                     </span>
 
                     {/* Show deputies */}
-                    {category.id === 'metro' && (
+                    {(category.id === 'la-metro' ||
+                      category.id === 'los-angeles') && (
                       <div className="flex items-center gap-2.5 whitespace-nowrap">
                         <Checkbox.Root
                           id="deputies"
@@ -301,11 +307,11 @@ export default function ContactLibrary({ recipients, setRecipients }) {
                               >
                                 {feature.name}
                               </td>
-                              <td className="w-[99%] px-4 py-2">
+                              <td className="w-[99%] px-4 py-2 whitespace-nowrap">
                                 {feature.primaryEmail}
                               </td>
                               {areDeputiesShown && (
-                                <td className="px-4 py-2">
+                                <td className="px-4 py-2 whitespace-nowrap">
                                   {feature.secondaryEmail}
                                 </td>
                               )}
