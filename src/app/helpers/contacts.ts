@@ -74,4 +74,33 @@ async function getNeighborhoodCouncils() {
   };
 }
 
-export { getCityCouncilMembers, getMetroBoardMembers, getNeighborhoodCouncils };
+async function getStateLegislators(chamber: 'assembly' | 'senate') {
+  const data = await fetch(
+    `${GEODATA_API_BASE_URL}/v1/state-${chamber}-districts?geom=false`,
+  );
+  const featureCollection = await data.json();
+
+  const contacts = featureCollection.features.map((feature) => {
+    return {
+      id: feature.id,
+      title: feature.properties.extras.code,
+      name: feature.properties.person.name,
+      primaryEmail: feature.properties.person.contactDetails.find(
+        (detail) => detail.type === 'email',
+      ).value,
+      secondaryEmail: null,
+    };
+  });
+
+  return {
+    updatedAt: featureCollection.updatedAt,
+    contacts,
+  };
+}
+
+export {
+  getCityCouncilMembers,
+  getMetroBoardMembers,
+  getNeighborhoodCouncils,
+  getStateLegislators,
+};

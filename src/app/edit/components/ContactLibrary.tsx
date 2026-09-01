@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Checkbox, Dialog, Tabs } from 'radix-ui';
 import { Icon } from '@iconify/react';
 import { geoLoader } from '../../helpers/geo';
-//import assembly from '../data/CA_Assembly_Districts.json';
-import senate from '../../data/CA_Senate_Districts.json';
 import {
   getCityCouncilMembers,
   getMetroBoardMembers,
   getNeighborhoodCouncils,
+  getStateLegislators,
 } from '@/app/helpers/contacts';
 
 interface datafeatures {
@@ -56,6 +55,8 @@ export default function ContactLibrary({ recipients, setRecipients }) {
         await getCityCouncilMembers('santa-monica');
       const metroBoardMembers = await getMetroBoardMembers();
       const neighborhoodCouncils = await getNeighborhoodCouncils();
+      const stateAssemblyMembers = await getStateLegislators('assembly');
+      const stateSenateMembers = await getStateLegislators('senate');
 
       setCategories([
         {
@@ -82,16 +83,18 @@ export default function ContactLibrary({ recipients, setRecipients }) {
           data: santaMonicaCityCouncilMembers.contacts,
           updatedAt: santaMonicaCityCouncilMembers.updatedAt,
         },
-        /*{
-        id: 'assembly',
-        label: 'Assembly',
-        data: assembly.features,
-      },
-      {
-        id: 'senate',
-        label: 'Senate',
-        data: senate.features,
-      }*/
+        {
+          id: 'assembly',
+          label: 'State Assembly',
+          data: stateAssemblyMembers.contacts,
+          updatedAt: stateAssemblyMembers.updatedAt,
+        },
+        {
+          id: 'senate',
+          label: 'State Senate',
+          data: stateSenateMembers.contacts,
+          updatedAt: stateSenateMembers.updatedAt,
+        },
       ]);
     }
     loadContacts();
@@ -187,17 +190,23 @@ export default function ContactLibrary({ recipients, setRecipients }) {
                 console.log(test);
               }}
             >
-              <Tabs.List aria-label="Legislative body" className="z-10">
-                {categories.map((category) => (
-                  <Tabs.Trigger
-                    key={category.id}
-                    value={category.id}
-                    className="border-2 border-black bg-white not-last:border-r-0 first:border-l-0 hover:bg-black data-[state=active]:cursor-auto data-[state=active]:border-b-white hover:data-[state=active]:bg-white hover:data-[state=active]:text-black"
-                  >
-                    {category.label}
-                  </Tabs.Trigger>
-                ))}
-              </Tabs.List>
+              {/* Containing div required for horizontal scroll to work with vertical scroll in modal */}
+              <div className="z-10">
+                <Tabs.List
+                  aria-label="Legislative body"
+                  className="overflow-x-auto whitespace-nowrap"
+                >
+                  {categories.map((category) => (
+                    <Tabs.Trigger
+                      key={category.id}
+                      value={category.id}
+                      className="border-2 border-black bg-white not-last:border-r-0 first:border-l-0 hover:bg-black data-[state=active]:cursor-auto data-[state=active]:border-b-white hover:data-[state=active]:bg-white hover:data-[state=active]:text-black"
+                    >
+                      {category.label}
+                    </Tabs.Trigger>
+                  ))}
+                </Tabs.List>
+              </div>
 
               {/* Content */}
               {categories.map((category) => (
