@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Checkbox, Dialog, Tabs } from 'radix-ui';
 import { Icon } from '@iconify/react';
 import { geoLoader } from '../../helpers/geo';
-import metro from '../../data/metro.json';
 import cds from '../../data/LA_City_Council_Districts.json';
 //import assembly from '../data/CA_Assembly_Districts.json';
 import senate from '../../data/CA_Senate_Districts.json';
 import Santa_Monica from '../../data/Santa_Monica.json';
-import { getNeighborhoodCouncils } from '@/app/helpers/contacts';
+import {
+  getMetroBoardMembers,
+  getNeighborhoodCouncils,
+} from '@/app/helpers/contacts';
 
 interface datafeatures {
   OBJECTID: number;
@@ -49,6 +51,7 @@ export default function ContactLibrary({ recipients, setRecipients }) {
 
   useEffect(() => {
     async function loadContacts() {
+      const metroBoardMembers = await getMetroBoardMembers();
       const neighborhoodCouncils = await getNeighborhoodCouncils();
 
       setCategories([
@@ -66,7 +69,8 @@ export default function ContactLibrary({ recipients, setRecipients }) {
         {
           id: 'metro',
           label: 'Metro',
-          data: metro.features,
+          data: metroBoardMembers.contacts,
+          updatedAt: metroBoardMembers.updatedAt,
         },
         {
           id: 'santamonica',
@@ -109,7 +113,7 @@ export default function ContactLibrary({ recipients, setRecipients }) {
         // Parsed contact from API (new)
         if (areDeputiesShown && feature.secondaryEmail) {
           // Include deputy email if applicable
-          return [feature.primaryEmailL, feature.secondaryEmail];
+          return [feature.primaryEmail, feature.secondaryEmail];
         } else {
           return feature.primaryEmail;
         }
@@ -282,11 +286,19 @@ export default function ContactLibrary({ recipients, setRecipients }) {
                               }}
                             >
                               {feature.title && (
-                                <td className="px-4 py-2 whitespace-nowrap">
+                                <td
+                                  // Truncate but display on hover
+                                  className="max-w-64 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap"
+                                  title={feature.title}
+                                >
                                   {feature.title}
                                 </td>
                               )}
-                              <td className="px-4 py-2 whitespace-nowrap">
+                              <td
+                                // Truncate but display on hover
+                                className="max-w-84 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap"
+                                title={feature.name}
+                              >
                                 {feature.name}
                               </td>
                               <td className="w-[99%] px-4 py-2">

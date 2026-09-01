@@ -2,6 +2,30 @@
 
 const GEODATA_API_BASE_URL = process.env.GEODATA_API_BASE_URL;
 
+async function getMetroBoardMembers() {
+  const data = await fetch(
+    `${GEODATA_API_BASE_URL}/v1/metro-board-members?geom=false`,
+  );
+  const featureCollection = await data.json();
+
+  const contacts = featureCollection.features.map((feature) => {
+    return {
+      id: feature.id,
+      title: feature.properties.post.label,
+      name: feature.properties.person.name,
+      primaryEmail: feature.properties.person.contactDetails.find(
+        (detail) => detail.type === 'email',
+      ).value,
+      secondaryEmail: feature.properties.extras.deputyEmail,
+    };
+  });
+
+  return {
+    updatedAt: featureCollection.updatedAt,
+    contacts,
+  };
+}
+
 async function getNeighborhoodCouncils() {
   const data = await fetch(
     `${GEODATA_API_BASE_URL}/v1/cities/los-angeles/neighborhood-councils?geom=false`,
@@ -26,4 +50,4 @@ async function getNeighborhoodCouncils() {
   };
 }
 
-export { getNeighborhoodCouncils };
+export { getMetroBoardMembers, getNeighborhoodCouncils };
