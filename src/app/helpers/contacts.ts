@@ -10,9 +10,15 @@ interface Contact {
   secondaryEmail: string;
 }
 
+interface ContactsResponse {
+  updatedAt: Date;
+  contacts: Contact[];
+}
+
 async function getCityCouncilMembers(slug: string) {
   const data = await fetch(
     `${GEODATA_API_BASE_URL}/v1/cities/${slug}/council-members?geom=false`,
+    { cache: 'force-cache' },
   );
   const featureCollection = await data.json();
 
@@ -37,6 +43,7 @@ async function getCityCouncilMembers(slug: string) {
 async function getMetroBoardMembers() {
   const data = await fetch(
     `${GEODATA_API_BASE_URL}/v1/metro-board-members?geom=false`,
+    { cache: 'force-cache' },
   );
   const featureCollection = await data.json();
 
@@ -61,6 +68,7 @@ async function getMetroBoardMembers() {
 async function getNeighborhoodCouncils() {
   const data = await fetch(
     `${GEODATA_API_BASE_URL}/v1/cities/los-angeles/neighborhood-councils?geom=false`,
+    { cache: 'force-cache' },
   );
   const featureCollection = await data.json();
 
@@ -85,6 +93,7 @@ async function getNeighborhoodCouncils() {
 async function getStateLegislators(chamber: 'assembly' | 'senate') {
   const data = await fetch(
     `${GEODATA_API_BASE_URL}/v1/state-${chamber}-districts?geom=false`,
+    { cache: 'force-cache' },
   );
   const featureCollection = await data.json();
 
@@ -108,6 +117,7 @@ async function getStateLegislators(chamber: 'assembly' | 'senate') {
 
 export {
   type Contact,
+  type ContactsResponse,
   getCityCouncilMembers,
   getMetroBoardMembers,
   getNeighborhoodCouncils,

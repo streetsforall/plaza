@@ -1,77 +1,72 @@
 import { useEffect, useState } from 'react';
-import { Checkbox, Dialog, Tabs } from 'radix-ui';
+import { Checkbox, Dialog } from 'radix-ui';
 import { Icon } from '@iconify/react';
 import {
-  type Contact,
+  type ContactsResponse,
   getCityCouncilMembers,
   getMetroBoardMembers,
   getNeighborhoodCouncils,
   getStateLegislators,
 } from '@/app/helpers/contacts';
 
-interface Category {
-  id: string;
-  label: string;
-  data: Contact[];
-  updatedAt?: Date;
-}
+const categories = [
+  {
+    id: 'la-nc',
+    label: 'LA Neighborhood Councils',
+    retrieveContacts: () => getNeighborhoodCouncils(),
+  },
+  {
+    id: 'la-metro',
+    label: 'Metro',
+    retrieveContacts: () => getMetroBoardMembers(),
+  },
+  {
+    id: 'los-angeles',
+    label: 'LA City Council',
+    retrieveContacts: () => getCityCouncilMembers('los-angeles'),
+  },
+  {
+    id: 'santa-monica',
+    label: 'Santa Monica City Council',
+    retrieveContacts: () => getCityCouncilMembers('santa-monica'),
+  },
+  {
+    id: 'assembly',
+    label: 'State Assembly',
+    retrieveContacts: () => getStateLegislators('assembly'),
+  },
+  {
+    id: 'senate',
+    label: 'State Senate',
+    retrieveContacts: () => getStateLegislators('senate'),
+  },
+] as const;
+type CategoryId = (typeof categories)[number]['id'];
 
 export default function ContactLibrary({ recipients, setRecipients }) {
   const [areDeputiesShown, setAreDeputiesShown] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [activeCategoryId, setActiveCategoryId] = useState<CategoryId>('la-nc');
+  const [contactsResponse, setContactsResponse] = useState<ContactsResponse>();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    async function loadContacts() {
-      const losAngelesCityCouncilMembers =
-        await getCityCouncilMembers('los-angeles');
-      const santaMonicaCityCouncilMembers =
-        await getCityCouncilMembers('santa-monica');
-      const metroBoardMembers = await getMetroBoardMembers();
-      const neighborhoodCouncils = await getNeighborhoodCouncils();
-      const stateAssemblyMembers = await getStateLegislators('assembly');
-      const stateSenateMembers = await getStateLegislators('senate');
+    async function updateActiveCategory() {
+      setIsLoading(true);
 
-      setCategories([
-        {
-          id: 'la-nc',
-          label: 'LA Neighborhood Councils',
-          data: neighborhoodCouncils.contacts,
-          updatedAt: neighborhoodCouncils.updatedAt,
-        },
-        {
-          id: 'la-metro',
-          label: 'Metro',
-          data: metroBoardMembers.contacts,
-          updatedAt: metroBoardMembers.updatedAt,
-        },
-        {
-          id: 'los-angeles',
-          label: 'LA City Council',
-          data: losAngelesCityCouncilMembers.contacts,
-          updatedAt: losAngelesCityCouncilMembers.updatedAt,
-        },
-        {
-          id: 'santa-monica',
-          label: 'Santa Monica City Council',
-          data: santaMonicaCityCouncilMembers.contacts,
-          updatedAt: santaMonicaCityCouncilMembers.updatedAt,
-        },
-        {
-          id: 'assembly',
-          label: 'State Assembly',
-          data: stateAssemblyMembers.contacts,
-          updatedAt: stateAssemblyMembers.updatedAt,
-        },
-        {
-          id: 'senate',
-          label: 'State Senate',
-          data: stateSenateMembers.contacts,
-          updatedAt: stateSenateMembers.updatedAt,
-        },
-      ]);
+      const activeCategory = categories.find(
+        (category) => category.id === activeCategoryId,
+      );
+
+      if (!activeCategory) return;
+
+      const data = await activeCategory.retrieveContacts();
+
+      setContactsResponse(data);
+      setIsLoading(false);
     }
-    loadContacts();
-  }, []);
+
+    updateActiveCategory();
+  }, [activeCategoryId]);
 
   /**
    * Add all the provided recipients
@@ -146,122 +141,126 @@ export default function ContactLibrary({ recipients, setRecipients }) {
 
           {/* Tabs */}
           {categories.length ? (
-            <Tabs.Root
-              defaultValue={categories[0].id}
-              className="flex flex-col overflow-auto"
-              onValueChange={(test) => {
-                console.log(test);
-              }}
-            >
+            <div className="flex flex-col overflow-auto">
               {/* Containing div required for horizontal scroll to work with vertical scroll in modal */}
               <div className="z-10">
-                <Tabs.List
+                <div
                   aria-label="Legislative body"
+                  aria-orientation="horizontal"
+                  role="tablist"
                   className="overflow-x-auto whitespace-nowrap"
                 >
                   {categories.map((category) => (
-                    <Tabs.Trigger
+                    <button
                       key={category.id}
-                      value={category.id}
-                      className="border-2 border-black bg-white not-last:border-r-0 first:border-l-0 hover:bg-black data-[state=active]:cursor-auto data-[state=active]:border-b-white hover:data-[state=active]:bg-white hover:data-[state=active]:text-black"
+                      role="tab"
+                      data-state={
+                        category.id === activeCategoryId ? 'active' : 'inactive'
+                      }
+                      onClick={() => setActiveCategoryId(category.id)}
+                      className="inline-block border-2 border-black bg-white not-last:border-r-0 first:border-l-0 hover:bg-black data-[state=active]:cursor-auto data-[state=active]:border-b-white hover:data-[state=active]:bg-white hover:data-[state=active]:text-black"
                     >
                       {category.label}
-                    </Tabs.Trigger>
+                    </button>
                   ))}
-                </Tabs.List>
+                </div>
               </div>
 
               {/* Content */}
-              {categories.map((category) => (
-                <Tabs.Content
-                  key={category.id}
-                  value={category.id}
-                  className="-mt-0.5 flex flex-col overflow-auto border-t-2 border-black bg-white text-sm"
-                >
-                  {/* Toolbar */}
-                  <div className="flex items-center justify-between gap-8 border-b-2 p-4">
-                    <span className="grow italic">
-                      {category.updatedAt &&
-                        `Last updated ${new Date(
-                          category.updatedAt,
-                        ).toLocaleDateString('en-US')}
+              {isLoading ? (
+                <div className="flex flex-col items-center justify-center gap-6 p-16">
+                  <div className="circle-loader"></div>
+
+                  <p className="text-lg">Loading...</p>
+                </div>
+              ) : (
+                contactsResponse && (
+                  <>
+                    {/* Toolbar */}
+                    <div className="flex items-center justify-between gap-8 border-b-2 p-4">
+                      <span className="grow italic">
+                        {contactsResponse.updatedAt &&
+                          `Last updated ${new Date(
+                            contactsResponse.updatedAt,
+                          ).toLocaleDateString('en-US')}
                         `}
-                    </span>
+                      </span>
 
-                    {/* Show deputies */}
-                    {(category.id === 'la-metro' ||
-                      category.id === 'los-angeles') && (
-                      <div className="flex items-center gap-2.5 whitespace-nowrap">
-                        <Checkbox.Root
-                          id="deputies"
-                          checked={areDeputiesShown}
-                          onCheckedChange={() => {
-                            setAreDeputiesShown(!areDeputiesShown);
-                          }}
-                          className="flex size-6 items-center justify-center border-2 border-black p-0"
-                        >
-                          <Checkbox.Indicator>
-                            <Icon icon="material-symbols:check" />
-                          </Checkbox.Indicator>
-                        </Checkbox.Root>
-                        <label htmlFor="deputies">Show deputies</label>
-                      </div>
-                    )}
-
-                    <button
-                      className="whitespace-nowrap"
-                      onClick={() => addAll(category.data)}
-                    >
-                      Add All
-                    </button>
-                  </div>
-                  {/* List */}
-                  <table className="flex flex-col overflow-auto">
-                    <tbody>
-                      {category.data.map((feature, index) => {
-                        return (
-                          <tr
-                            key={index}
-                            className="cursor-pointer leading-normal not-last:border-b-2 hover:bg-black hover:text-white"
-                            onClick={() => {
-                              updateRecipients(
-                                feature.primaryEmail,
-                                feature.secondaryEmail,
-                              );
+                      {/* Show deputies */}
+                      {(activeCategoryId === 'la-metro' ||
+                        activeCategoryId === 'los-angeles') && (
+                        <div className="flex items-center gap-2.5 whitespace-nowrap">
+                          <Checkbox.Root
+                            id="deputies"
+                            checked={areDeputiesShown}
+                            onCheckedChange={() => {
+                              setAreDeputiesShown(!areDeputiesShown);
                             }}
+                            className="flex size-6 items-center justify-center border-2 border-black p-0"
                           >
-                            {feature.title && (
+                            <Checkbox.Indicator>
+                              <Icon icon="material-symbols:check" />
+                            </Checkbox.Indicator>
+                          </Checkbox.Root>
+                          <label htmlFor="deputies">Show deputies</label>
+                        </div>
+                      )}
+
+                      <button
+                        className="whitespace-nowrap"
+                        onClick={() => addAll(contactsResponse.contacts)}
+                      >
+                        Add All
+                      </button>
+                    </div>
+                    {/* List */}
+                    <table className="flex flex-col overflow-auto">
+                      <tbody>
+                        {contactsResponse.contacts.map((contact) => {
+                          return (
+                            <tr
+                              key={contact.id}
+                              className="cursor-pointer leading-normal not-last:border-b-2 hover:bg-black hover:text-white"
+                              onClick={() => {
+                                updateRecipients(
+                                  contact.primaryEmail,
+                                  contact.secondaryEmail,
+                                );
+                              }}
+                            >
+                              {contact.title && (
+                                <td
+                                  // Truncate but display on hover
+                                  className="max-w-64 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap"
+                                  title={contact.title}
+                                >
+                                  {contact.title}
+                                </td>
+                              )}
                               <td
                                 // Truncate but display on hover
-                                className="max-w-64 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap"
-                                title={feature.title}
+                                className="max-w-84 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap"
+                                title={contact.name}
                               >
-                                {feature.title}
+                                {contact.name}
                               </td>
-                            )}
-                            <td
-                              // Truncate but display on hover
-                              className="max-w-84 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap"
-                              title={feature.name}
-                            >
-                              {feature.name}
-                            </td>
-                            <td className="w-[99%] px-4 py-2 whitespace-nowrap">
-                              {feature.primaryEmail}
-                            </td>
-                            {areDeputiesShown && (
-                              <td className="px-4 py-2 whitespace-nowrap">
-                                {feature.secondaryEmail}
+                              <td className="w-[99%] px-4 py-2 whitespace-nowrap">
+                                {contact.primaryEmail}
                               </td>
-                            )}
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </Tabs.Content>
-              ))}
-            </Tabs.Root>
+                              {areDeputiesShown && (
+                                <td className="px-4 py-2 whitespace-nowrap">
+                                  {contact.secondaryEmail}
+                                </td>
+                              )}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </>
+                )
+              )}
+            </div>
           ) : null}
         </Dialog.Content>
       </Dialog.Portal>
