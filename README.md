@@ -7,19 +7,36 @@ _| """ |_|"""""|_|"""""|_|"""""|_|"""""|
 "--0-0-'"--0-0-'"--0-0-'"--0-0-''"--0-0-'
 ```
 
-## Welcome to the SFA Plaza
+# Welcome to the SFA Plaza
 
 This is a web app and API backend for working with calls to action (CTAs). CTAs are prompts to the Streets For All community to reach out to the appropriate legislators/representatives for specific issues.
 
-### Structure
+## Structure
 
-The web app is for creating CTAs, which consist of a landing page that can be shared with community members, and a "mailto" link, which when clicked on, automatically opens the community member's email client and prepopulates the email.
+### Web app
 
-The web app is divided between the editor, which Streets For All staff and volunteers can use to configure all the elements above, and the aforementioned public-facing landing page.
+The web app is a browser-based tool for interacting with CTAs, which consist of:
 
-The `api/` directory contains API endpoints that can be called by other web clients, the primary one being the `/cta` endpoint, which is called by the main Streets For All website to retrieve the latest Mailchimp campaign for the banner at the top.
+- An email template (recipients, CC, BCC, subject, body) for reaching out to legislators/representatives about the issue at hand, distilled into a "mailto" link, which when clicked on, automatically opens the email client and prepopulates the email
+- A landing page that can be shared with community members, containing a brief overview of the issue at hand as well as the contact information of their legislators/representatives, including the aforementioned "mailto" link
 
-### Database
+The web app is divided into the following sections:
+
+#### Editor
+
+The editor is used by Streets For All staff and volunteers to create and configure CTAs. This includes settings for both the email template ("mailto" link) and the landing page.
+
+#### Landing page
+
+The landing page is generated using the settings from the editor and can be shared with community members / advocates. Depending on the configuration, the landing page can include a geolocator, whereby the advocate enters their address to determine their specific representative(s).
+
+### API
+
+The `api/` directory contains API endpoints that can be called by other web clients.
+
+Currently its primary endpoint is `/cta`, which is called by the main Streets For All website to retrieve the latest Mailchimp campaign for the banner at the top. Note that this is independent from the CTAs in the web app, although they can be used in conjunction (i.e., send a Mailchimp email that contains a link to the web app landing page that has a "mailto" link to open up the email template for reaching out to the appropriate legislator).
+
+## Database
 
 Saved email templates are stored in MongoDB using [Prisma](https://www.prisma.io/orm). Update the connection string in the `DATABASE_URL` environment variable.
 
