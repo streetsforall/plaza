@@ -206,7 +206,7 @@ export default function Output({
   if (isLoading) {
     /* Loading animation */
     return (
-      <div className="text-blue pt-8 text-center">
+      <div className="text-blue pt-2 text-center">
         <Image
           src="/images/bus.png"
           alt="Animated bus"
@@ -214,7 +214,7 @@ export default function Output({
           width={160}
           className="loader mb-4 h-auto"
         />
-        <span className="mb-1 block text-2xl italic">
+        <span className="mb-2 block font-mono text-xl leading-tight tracking-tighter italic sm:text-2xl">
           Finding your representative...
         </span>
         <span className="mb-12 block text-sm">(This may take a moment.)</span>
@@ -275,14 +275,14 @@ export default function Output({
           {/* Phone CTA - requires geographic legislator lookup */}
           {districts.length && isPhone
             ? districts.map((district, i) => (
-                <span
+                <div
                   key={i}
-                  className="relative flex justify-center gap-1 border border-dotted px-5 py-3 text-xl"
+                  className="relative flex flex-wrap justify-center gap-1 border border-dotted px-5 py-3 text-base leading-tight sm:text-xl"
                 >
-                  <div className="absolute top-1 -left-10 -rotate-6 text-5xl">
+                  <div className="absolute top-1 -left-10 hidden -rotate-6 text-5xl sm:block">
                     👉
                   </div>
-                  <span className="font-bold">
+                  <span className="text-center font-bold">
                     {
                       /* If multiple, include names */
                       districts.length > 1
@@ -297,7 +297,7 @@ export default function Output({
                   >
                     {district.properties?.phone}
                   </a>
-                </span>
+                </div>
               ))
             : null}
 
@@ -305,9 +305,11 @@ export default function Output({
           <a
             data-umami-event="cta_click_email"
             href={mailtoLink}
-            className="bg-sfa-green relative flex justify-center gap-1 self-center rounded-lg px-5 py-3 text-lg text-white no-underline transition-transform hover:-translate-y-0.75"
+            className="bg-sfa-green relative flex flex-wrap justify-center gap-x-1 self-center rounded-lg px-5 py-3 text-base leading-tight text-white no-underline transition-transform hover:-translate-y-0.75 sm:text-lg"
           >
-            <div className="absolute top-1 -left-10 -rotate-6 text-5xl">👉</div>
+            <div className="absolute top-1 -left-10 hidden -rotate-6 text-5xl sm:block">
+              👉
+            </div>
             <span className="font-bold whitespace-nowrap">
               Email your{' '}
               {districts.length > 1 ? 'representatives' : 'representative'}

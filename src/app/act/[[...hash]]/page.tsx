@@ -46,7 +46,7 @@ export default async function Page({
   if (cta) {
     return (
       <div className="flex flex-col">
-        <h2 className="font-title mb-8 text-4xl font-bold">
+        <h2 className="font-title mb-4 text-3xl font-bold sm:mb-8 sm:text-4xl">
           {cta?.actionable?.header}
         </h2>
 

@@ -3,7 +3,6 @@ import Script from 'next/script';
 import { Inter, Source_Sans_3, Space_Mono } from 'next/font/google';
 import Redirect from './components/Redirect';
 import './index.css';
-import { Metadata } from 'next';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -40,11 +39,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         />
       </head>
       <body className="bg-sfa-tan">
-        <div className="m-auto flex min-h-screen max-w-2xl flex-col">
+        <div className="m-auto flex min-h-screen max-w-160 flex-col">
           {/* Handle old URL format (requires client component to access URL hash) */}
           <Redirect />
 
-          <header className="mx-auto flex flex-col items-center gap-2 py-16">
+          <header className="mx-auto flex flex-col items-center gap-2 px-6 py-8 sm:py-16">
             <a href="https://www.streetsforall.org">
               <Image
                 src="/images/SFA_logo_wide.png"
@@ -58,10 +57,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </header>
 
           <div className="grow">
-            <div className="rounded-2xl bg-white p-10">{children}</div>
+            <div className="rounded-none bg-white px-6 py-8 sm:rounded-2xl sm:p-10">
+              {children}
+            </div>
           </div>
 
-          <footer className="flex max-w-full flex-col gap-2 p-12 text-center text-xs text-stone-500">
+          <footer className="flex max-w-full flex-col gap-2 p-6 text-center text-xs text-stone-500 sm:p-12">
             <p>This tool is a work in progress!</p>
             <p>
               Suggestions or issues? Email{' '}
