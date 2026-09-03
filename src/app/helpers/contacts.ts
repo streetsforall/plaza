@@ -1,6 +1,7 @@
 'use server';
 
 const GEODATA_API_BASE_URL = process.env.GEODATA_API_BASE_URL;
+const CACHE_SECONDS = 300; // 5 minutes
 
 interface Contact {
   id: string;
@@ -18,7 +19,9 @@ interface ContactsResponse {
 async function getCityCouncilMembers(slug: string) {
   const data = await fetch(
     `${GEODATA_API_BASE_URL}/v1/cities/${slug}/council-members?geom=false`,
-    { cache: 'force-cache' },
+    {
+      next: { revalidate: CACHE_SECONDS },
+    },
   );
   const featureCollection = await data.json();
 
@@ -43,7 +46,9 @@ async function getCityCouncilMembers(slug: string) {
 async function getMetroBoardMembers() {
   const data = await fetch(
     `${GEODATA_API_BASE_URL}/v1/metro-board-members?geom=false`,
-    { cache: 'force-cache' },
+    {
+      next: { revalidate: CACHE_SECONDS },
+    },
   );
   const featureCollection = await data.json();
 
@@ -68,7 +73,9 @@ async function getMetroBoardMembers() {
 async function getNeighborhoodCouncils() {
   const data = await fetch(
     `${GEODATA_API_BASE_URL}/v1/cities/los-angeles/neighborhood-councils?geom=false`,
-    { cache: 'force-cache' },
+    {
+      next: { revalidate: CACHE_SECONDS },
+    },
   );
   const featureCollection = await data.json();
 
@@ -93,7 +100,9 @@ async function getNeighborhoodCouncils() {
 async function getStateLegislators(chamber: 'assembly' | 'senate') {
   const data = await fetch(
     `${GEODATA_API_BASE_URL}/v1/state-${chamber}-districts?geom=false`,
-    { cache: 'force-cache' },
+    {
+      next: { revalidate: CACHE_SECONDS },
+    },
   );
   const featureCollection = await data.json();
 
