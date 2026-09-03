@@ -13,7 +13,7 @@ const categories = [
   {
     id: 'la-nc',
     label: 'LA Neighborhood Councils',
-    retrieveContacts: () => getNeighborhoodCouncils(),
+    retrieveContacts: () => getNeighborhoodCouncils(), // Allows deferral of function call
   },
   {
     id: 'la-metro',
