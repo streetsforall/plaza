@@ -129,7 +129,11 @@ export default function LandingPageSettings({
           </ToggleGroup.Item>
         </ToggleGroup.Root>
 
-        <Tooltip>Include the legislators&apos; phone number.</Tooltip>
+        <Tooltip
+          className={!legislativeTargets.length ? 'invisible max-h-0' : ''}
+        >
+          Include the legislators&apos; phone number.
+        </Tooltip>
       </div>
 
       {/* Heading field */}
