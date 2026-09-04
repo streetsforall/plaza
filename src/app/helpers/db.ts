@@ -33,7 +33,7 @@ async function getAllEmailTemplates() {
     console.log('Fetching all email templates');
 
     const emailTemplates = await prisma.emailTemplate.findMany({
-      orderBy: { time: 'desc' },
+      orderBy: { createdAt: 'desc' },
     });
 
     return emailTemplates;

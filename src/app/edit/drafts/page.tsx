@@ -28,8 +28,11 @@ export default async function Page() {
               <th className="border-b-2 border-black px-4 py-2 text-left">
                 Hash
               </th>
-              <th className="border-b-2 border-black px-4 py-2 text-left">
+              <th className="border-b-2 border-black px-4 py-2 text-right">
                 Modified
+              </th>
+              <th className="border-b-2 border-black px-4 py-2 text-right">
+                Created
               </th>
             </tr>
           </thead>
@@ -57,11 +60,15 @@ export default async function Page() {
                       <Link href={hash} className="absolute inset-0" />
                       {hash}
                     </td>
-                    <td className="relative px-4 py-2 group-not-last:border-b-2">
+                    <td className="relative px-4 py-2 text-right group-not-last:border-b-2">
                       <Link href={hash} className="absolute inset-0" />
-                      {template.time
-                        ? new Date(template.time).toISOString().slice(0, 10)
-                        : ''}{' '}
+                      {template.updatedAt &&
+                        new Date(template.updatedAt).toLocaleDateString()}
+                    </td>
+                    <td className="relative px-4 py-2 text-right group-not-last:border-b-2">
+                      <Link href={hash} className="absolute inset-0" />
+                      {template.createdAt &&
+                        new Date(template.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
                 );
