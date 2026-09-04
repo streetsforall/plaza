@@ -4,18 +4,21 @@ import { Icon } from '@iconify/react';
 /**
  * A styled tooltip
  * @param props.children - Tooltip content
+ * @param props.className - Additional classes to apply to tooltip trigger
  * @returns
  */
 export default function CustomTooltip({
   children,
+  className,
 }: {
   children: React.ReactNode;
+  className?: string;
 }) {
   return (
     <Tooltip.Provider delayDuration={250}>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
-          <span className="rounded-full p-0.5 hover:bg-gray-200">
+          <span className={`rounded-full p-0.5 hover:bg-gray-200 ${className}`}>
             <Icon icon="lucide:info" className="text-base" />
           </span>
         </Tooltip.Trigger>

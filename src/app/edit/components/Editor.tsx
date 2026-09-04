@@ -420,8 +420,6 @@ export default function Editor({
             isPhone={isPhone}
             setIsPhone={setPhone}
           />
-
-          {/* <Geocoder setRecieverList={setRecieverList} recieverList={recieverList} /> */}
         </div>
       </div>
 
