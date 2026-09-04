@@ -170,7 +170,6 @@ export default function Editor({
       bcc: bcc,
       subject: encodeURIComponent(subject),
       body: encodeURIComponent(body),
-      time: new Date(times),
       phone: isPhone,
     });
 
