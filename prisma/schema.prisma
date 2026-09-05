@@ -21,6 +21,8 @@ type EmailTemplateActionable {
 
 model EmailTemplate {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt    DateTime @default(now()) 
+  updatedAt    DateTime @updatedAt
   /// [ActionableType]
   actionable   Json?
   bcc          String[]
@@ -31,7 +33,6 @@ model EmailTemplate {
   phone        Boolean?
   shareable    Boolean?
   subject      String
-  time         DateTime
   to           String[]
   url          String   @unique
 
