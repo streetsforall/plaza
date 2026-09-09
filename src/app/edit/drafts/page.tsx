@@ -1,11 +1,11 @@
 import Link from 'next/link';
-import { getAllEmailTemplates } from '../../helpers/db';
+import { getAllCtas } from '../../helpers/db';
 
 // Prevent stale cache
 export const dynamic = 'auto';
 
 export default async function Page() {
-  const emailTemplates = await getAllEmailTemplates();
+  const ctas = await getAllCtas();
 
   return (
     <div className="container m-auto min-h-screen">
@@ -26,7 +26,7 @@ export default async function Page() {
                 Landing page header
               </th>
               <th className="border-b-2 border-black px-4 py-2 text-left">
-                Hash
+                Slug
               </th>
               <th className="border-b-2 border-black px-4 py-2 text-right">
                 Modified
@@ -37,38 +37,38 @@ export default async function Page() {
             </tr>
           </thead>
           <tbody>
-            {emailTemplates &&
-              emailTemplates.map((template) => {
+            {ctas &&
+              ctas.map((cta) => {
                 // Remove # symbol
-                const hash = template.url.substring(1);
+                const slug = cta.slug.substring(1);
 
                 return (
                   <tr
-                    key={template.id}
+                    key={cta.id}
                     className="group cursor-pointer hover:bg-black hover:text-white"
                     aria-label="Load"
                   >
                     <td className="relative w-1/2 max-w-0 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap group-not-last:border-b-2">
-                      <Link href={hash} className="absolute inset-0" />
-                      {decodeURIComponent(template.subject || '-')}
+                      <Link href={slug} className="absolute inset-0" />
+                      {decodeURIComponent(cta.mailto.subject || '-')}
                     </td>
                     <td className="relative w-1/2 max-w-0 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap group-not-last:border-b-2">
-                      <Link href={hash} className="absolute inset-0" />
-                      {decodeURIComponent(template.actionable?.header || '-')}
+                      <Link href={slug} className="absolute inset-0" />
+                      {decodeURIComponent(cta.landingPage?.heading || '-')}
                     </td>
                     <td className="relative px-4 py-2 font-mono text-sm group-not-last:border-b-2">
-                      <Link href={hash} className="absolute inset-0" />
-                      {hash}
+                      <Link href={slug} className="absolute inset-0" />
+                      {slug}
                     </td>
                     <td className="relative px-4 py-2 text-right group-not-last:border-b-2">
-                      <Link href={hash} className="absolute inset-0" />
-                      {template.updatedAt &&
-                        new Date(template.updatedAt).toLocaleDateString()}
+                      <Link href={slug} className="absolute inset-0" />
+                      {cta.updatedAt &&
+                        new Date(cta.updatedAt).toLocaleDateString()}
                     </td>
                     <td className="relative px-4 py-2 text-right group-not-last:border-b-2">
-                      <Link href={hash} className="absolute inset-0" />
-                      {template.createdAt &&
-                        new Date(template.createdAt).toLocaleDateString()}
+                      <Link href={slug} className="absolute inset-0" />
+                      {cta.createdAt &&
+                        new Date(cta.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
                 );

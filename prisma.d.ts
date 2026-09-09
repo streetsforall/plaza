@@ -1,9 +1,20 @@
 // Custom types for Prisma schema
 declare global {
   namespace PrismaJson {
-    type ActionableType = {
+    type LandingPageType = {
+      isActive?: boolean;
+      geotargetDistrictTypes?: string[];
+      isPhone?: boolean;
+      heading: string;
+      body?: string;
+    };
+
+    type MailtoType = {
+      to: string[];
+      cc: string[];
+      bcc: string[];
+      subject: string;
       body: string;
-      header: string;
     };
   }
 }

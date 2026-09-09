@@ -4,52 +4,60 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
-import { setEmailTemplate } from '../../helpers/db';
+import { setCta } from '../../helpers/db';
 import ContactLibrary from './ContactLibrary';
-import LandingPageSettings from './LandingPageSettings';
+import LandingPageSettings, { GeotargetOptions } from './LandingPageSettings';
 import RecipientField from './RecipientField';
 import Tooltip from './Tooltip';
 
 interface EditorProps {
-  initHash?;
-  initReceiverList?;
-  initCc?;
-  initBcc?;
-  initSubject?;
-  initBody?;
-  initDistrictVar?;
-  initIsPhone?;
-  initActionable?;
+  initSlug?: string;
+  initMailtoTo?: string[];
+  initMailtoCc?: string[];
+  initMailtoBcc?: string[];
+  initMailtoSubject?: string;
+  initMailtoBody?: string;
+  initLandingPageGeotargetDistrictTypes?: string[];
+  initLandingPageIsPhone?: boolean;
+  initLandingPageHeading?: string;
+  initLandingPageBody?: string;
 }
 
 export default function Editor({
-  initHash = '',
-  initReceiverList = [],
-  initCc = [],
-  initBcc = ['contact@streetsforall.org'],
-  initSubject = '',
-  initBody = '',
-  initDistrictVar = [],
-  initIsPhone = true, // Default to displaying phone CTA
-  initActionable = { header: '', body: '' },
+  initSlug = '',
+  initMailtoTo = [],
+  initMailtoCc = [],
+  initMailtoBcc = ['contact@streetsforall.org'],
+  initMailtoSubject = '',
+  initMailtoBody = '',
+  initLandingPageGeotargetDistrictTypes = [],
+  initLandingPageIsPhone = true, // Default to displaying phone CTA
+  initLandingPageHeading = '',
+  initLandingPageBody = '',
 }: EditorProps) {
-  const [currentHash, setCurrentHash] = useState(initHash);
+  const [currentSlug, setCurrentSlug] = useState(initSlug);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   // Email template
-  const [recieverList, setRecieverList] = useState<string[]>(initReceiverList);
-  const [cc, setCc] = useState<string[]>(initCc);
-  const [bcc, setBcc] = useState<string[]>(initBcc);
-  const [subject, setSubject] = useState<string>(initSubject);
-  const [body, setBody] = useState<string>(initBody);
+  const [mailtoTo, setMailtoTo] = useState<string[]>(initMailtoTo);
+  const [mailtoCc, setMailtoCc] = useState<string[]>(initMailtoCc);
+  const [mailtoBcc, setMailtoBcc] = useState<string[]>(initMailtoBcc);
+  const [mailtoSubject, setMailtoSubject] = useState<string>(initMailtoSubject);
+  const [mailtoBody, setMailtoBody] = useState<string>(initMailtoBody);
 
   // Landing page
-  const [districtVar, setDistrictVar] = useState<string[]>(initDistrictVar);
-  const [isPhone, setPhone] = useState<boolean>(initIsPhone);
-  const [actionable, setActionable] = useState<{
-    body: string;
-    header: string;
-  }>(initActionable);
+  const [
+    landingPageGeotargetDistrictTypes,
+    setLandingPageGeotargetDistrictTypes,
+  ] = useState<string[]>(initLandingPageGeotargetDistrictTypes);
+  const [landingPageIsPhone, setLandingPageIsPhone] = useState<boolean>(
+    initLandingPageIsPhone,
+  );
+  const [landingPageHeading, setLandingPageHeading] = useState<string>(
+    initLandingPageHeading,
+  );
+  const [landingPageBody, setLandingPageBody] =
+    useState<string>(initLandingPageBody);
 
   // UI state
   const [showCC, setshowCC] = useState<boolean>(false);
@@ -59,28 +67,30 @@ export default function Editor({
   // Calculated values
   const [savedState, setSavedState] = useState<string>(
     // Sort to ignore toggle order
-    JSON.stringify(initDistrictVar?.sort()) +
-      JSON.stringify(initActionable) +
-      initReceiverList +
-      initCc +
-      initBcc +
-      initSubject +
-      initBody +
-      initIsPhone,
+    JSON.stringify(initLandingPageGeotargetDistrictTypes?.sort()) +
+      initLandingPageIsPhone +
+      initLandingPageHeading +
+      initLandingPageBody +
+      initMailtoTo +
+      initMailtoCc +
+      initMailtoBcc +
+      initMailtoSubject +
+      initMailtoBody,
   );
   const draftState =
     // Sort to ignore toggle order
-    JSON.stringify(districtVar.sort()) +
-    JSON.stringify(actionable) +
-    recieverList +
-    cc +
-    bcc +
-    subject +
-    body +
-    isPhone;
-  const mailtoLink = `mailto:${recieverList}?&cc=${cc}&bcc=${bcc}&subject=${encodeURIComponent(
-    subject,
-  )}&body=${encodeURIComponent(body)}`;
+    JSON.stringify(landingPageGeotargetDistrictTypes.sort()) +
+    landingPageIsPhone +
+    landingPageHeading +
+    landingPageBody +
+    mailtoTo +
+    mailtoCc +
+    mailtoBcc +
+    mailtoSubject +
+    mailtoBody;
+  const mailtoLink = `mailto:${mailtoTo}?&cc=${mailtoCc}&bcc=${mailtoBcc}&subject=${encodeURIComponent(
+    mailtoSubject,
+  )}&body=${encodeURIComponent(mailtoBody)}`;
 
   /**
    * Autosave
@@ -101,7 +111,7 @@ export default function Editor({
     }
 
     // Only autosave if saved before
-    if (currentHash) {
+    if (currentSlug) {
       autosave();
     }
   }, [debouncedDraftState]);
@@ -130,7 +140,7 @@ export default function Editor({
   const router = useRouter();
 
   /**
-   * Generate new URL hash or save to database
+   * Generate new URL slug or save to database
    */
   async function updateDatabase() {
     // TODO: Clean up potential json escapes
@@ -138,39 +148,42 @@ export default function Editor({
     setError('');
     setIsSaving(true);
 
-    if (!subject || !body || !actionable?.header) {
+    if (!mailtoSubject || !mailtoBody || !landingPageHeading) {
       setError('Please fill in the required fields.');
       setIsSaving(false);
 
       return;
     }
 
-    // If no hash, create one and add to URL
-    let newHash;
-    if (!currentHash) {
-      newHash = (Math.random() + 1).toString(36).substring(5);
+    // If no slug, create one and add to URL
+    let newSlug;
+    if (!currentSlug) {
+      newSlug = (Math.random() + 1).toString(36).substring(5);
 
-      setCurrentHash(newHash);
+      setCurrentSlug(newSlug);
 
       // Add to end of existing path
-      window.history.pushState(null, '', `${window.location.href}/${newHash}`);
+      window.history.pushState(null, '', `${window.location.href}/${newSlug}`);
     }
 
     // Save to database
-    const times = Date.now();
-
-    await setEmailTemplate({
-      // Sort to ignore toggle order
-      district_var: districtVar.sort(),
+    await setCta({
       // Add # symbol when saving
-      url: `#${currentHash || newHash}`,
-      actionable: actionable,
-      to: recieverList,
-      cc: cc,
-      bcc: bcc,
-      subject: encodeURIComponent(subject),
-      body: encodeURIComponent(body),
-      phone: isPhone,
+      slug: `#${currentSlug || newSlug}`,
+      mailto: {
+        to: mailtoTo,
+        cc: mailtoCc,
+        bcc: mailtoBcc,
+        subject: encodeURIComponent(mailtoSubject),
+        body: encodeURIComponent(mailtoBody),
+      },
+      landingPage: {
+        // Sort to ignore toggle order
+        geotargetDistrictTypes: landingPageGeotargetDistrictTypes.sort(),
+        isPhone: landingPageIsPhone,
+        heading: landingPageHeading,
+        body: landingPageBody,
+      },
     });
 
     // Add local saved state to compare against
@@ -206,7 +219,7 @@ export default function Editor({
               </>
             ) : savedState == draftState ? (
               /* Only if saved before */
-              currentHash ? (
+              currentSlug ? (
                 <>
                   <Icon icon="material-symbols:check" />
                   All changes saved
@@ -258,21 +271,21 @@ export default function Editor({
               <div className="flex items-end justify-between">
                 <label>To</label>
                 <ContactLibrary
-                  recipients={recieverList}
-                  setRecipients={setRecieverList}
+                  recipients={mailtoTo}
+                  setRecipients={setMailtoTo}
                 />
               </div>
 
               <RecipientField
-                thisList={recieverList}
-                setThisList={setRecieverList}
-                toList={recieverList}
-                setToList={setRecieverList}
-                ccList={cc}
-                setCcList={setCc}
+                thisList={mailtoTo}
+                setThisList={setMailtoTo}
+                toList={mailtoTo}
+                setToList={setMailtoTo}
+                ccList={mailtoCc}
+                setCcList={setMailtoCc}
                 setIsCcVisible={setshowCC}
-                bccList={bcc}
-                setBccList={setBcc}
+                bccList={mailtoBcc}
+                setBccList={setMailtoBcc}
                 setIsBccVisible={setShowBcc}
               />
             </div>
@@ -295,15 +308,15 @@ export default function Editor({
                 </label>
                 {showCC === true ? (
                   <RecipientField
-                    thisList={cc}
-                    setThisList={setCc}
-                    toList={recieverList}
-                    setToList={setRecieverList}
-                    ccList={cc}
-                    setCcList={setCc}
+                    thisList={mailtoCc}
+                    setThisList={setMailtoCc}
+                    toList={mailtoTo}
+                    setToList={setMailtoTo}
+                    ccList={mailtoCc}
+                    setCcList={setMailtoCc}
                     setIsCcVisible={setshowCC}
-                    bccList={bcc}
-                    setBccList={setBcc}
+                    bccList={mailtoBcc}
+                    setBccList={setMailtoBcc}
                     setIsBccVisible={setShowBcc}
                   />
                 ) : (
@@ -324,15 +337,15 @@ export default function Editor({
                 </label>
                 {showBcc === true ? (
                   <RecipientField
-                    thisList={bcc}
-                    setThisList={setBcc}
-                    toList={recieverList}
-                    setToList={setRecieverList}
-                    ccList={cc}
-                    setCcList={setCc}
+                    thisList={mailtoBcc}
+                    setThisList={setMailtoBcc}
+                    toList={mailtoTo}
+                    setToList={setMailtoTo}
+                    ccList={mailtoCc}
+                    setCcList={setMailtoCc}
                     setIsCcVisible={setshowCC}
-                    bccList={bcc}
-                    setBccList={setBcc}
+                    bccList={mailtoBcc}
+                    setBccList={setMailtoBcc}
                     setIsBccVisible={setShowBcc}
                   />
                 ) : (
@@ -354,11 +367,11 @@ export default function Editor({
                 </span>
               </label>
               <input
-                value={decodeURIComponent(subject)}
+                value={decodeURIComponent(mailtoSubject)}
                 id="email-subject"
                 className="w-full"
                 onChange={(e) => {
-                  setSubject(e.target.value);
+                  setMailtoSubject(e.target.value);
                 }}
                 required
               />
@@ -377,12 +390,12 @@ export default function Editor({
                 </span>
               </label>
               <textarea
-                value={decodeURIComponent(body)}
+                value={decodeURIComponent(mailtoBody)}
                 id="email-body"
                 rows={12}
                 className="min-h-80 w-full"
                 onChange={(e) => {
-                  setBody(e.target.value);
+                  setMailtoBody(e.target.value);
                 }}
                 required
               />
@@ -411,13 +424,17 @@ export default function Editor({
         {/* Right column */}
         <div className="w-1/2 max-w-full">
           <LandingPageSettings
-            hash={currentHash}
-            legislativeTargets={districtVar}
-            setLegislativeTargets={setDistrictVar}
-            actionable={actionable}
-            setActionable={setActionable}
-            isPhone={isPhone}
-            setIsPhone={setPhone}
+            slug={currentSlug}
+            geotargetDistrictTypes={
+              landingPageGeotargetDistrictTypes as GeotargetOptions[]
+            }
+            setGeotargetDistrictTypes={setLandingPageGeotargetDistrictTypes}
+            isPhone={landingPageIsPhone}
+            setIsPhone={setLandingPageIsPhone}
+            heading={landingPageHeading}
+            setHeading={setLandingPageHeading}
+            body={landingPageBody}
+            setBody={setLandingPageBody}
           />
         </div>
       </div>

@@ -5,18 +5,18 @@ import prisma from '../../lib/prisma';
 
 /**
  * Get single matching mailto from database
- * @param hash - URL hash including #
+ * @param slug - URL slug including #
  * @returns Saved mailto email template
  */
-async function getEmailTemplate(hash: string) {
+async function getCta(slug: string) {
   try {
-    console.log(`Fetching email template ${hash}`);
+    console.log(`Fetching CTA ${slug}`);
 
-    const emailTemplate = await prisma.emailTemplate.findUnique({
-      where: { url: hash },
+    const cta = await prisma.cTA.findUnique({
+      where: { slug },
     });
 
-    return emailTemplate;
+    return cta;
   } catch (error) {
     console.error(error);
 
@@ -28,15 +28,15 @@ async function getEmailTemplate(hash: string) {
  * Get all mailtos from database
  * @returns Saved mailto email templates
  */
-async function getAllEmailTemplates() {
+async function getAllCtas() {
   try {
-    console.log('Fetching all email templates');
+    console.log('Fetching all CTAs');
 
-    const emailTemplates = await prisma.emailTemplate.findMany({
+    const ctas = await prisma.cTA.findMany({
       orderBy: { createdAt: 'desc' },
     });
 
-    return emailTemplates;
+    return ctas;
   } catch (error) {
     console.error(error);
 
@@ -48,21 +48,21 @@ async function getAllEmailTemplates() {
  * Save mailto to database
  * @param data - JSON object
  */
-async function setEmailTemplate(data: Prisma.EmailTemplateCreateInput) {
+async function setCta(data: Prisma.CTACreateInput) {
   try {
-    console.log('Updating email template');
+    console.log('Updating CTA');
     console.debug(data);
 
     // Update or create
-    const emailTemplate = await prisma.emailTemplate.upsert({
+    const cta = await prisma.cTA.upsert({
       where: {
-        url: data.url,
+        slug: data.slug,
       },
       update: data,
       create: data,
     });
 
-    return emailTemplate;
+    return cta;
   } catch (error) {
     console.error(error);
 
@@ -70,4 +70,4 @@ async function setEmailTemplate(data: Prisma.EmailTemplateCreateInput) {
   }
 }
 
-export { getEmailTemplate, getAllEmailTemplates, setEmailTemplate };
+export { getCta, getAllCtas, setCta };
