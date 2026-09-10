@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@iconify/react';
-import { setCta } from '../../helpers/db';
+import { setCta } from '@/app/helpers/db';
+import { type GeotargetOptions } from '@/types/geo';
 import ContactLibrary from './ContactLibrary';
-import LandingPageSettings, { GeotargetOptions } from './LandingPageSettings';
+import LandingPageSettings from './LandingPageSettings';
 import RecipientField from './RecipientField';
 import Tooltip from './Tooltip';
 

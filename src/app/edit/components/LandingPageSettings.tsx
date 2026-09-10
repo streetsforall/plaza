@@ -2,21 +2,8 @@ import { type Dispatch, type SetStateAction } from 'react';
 import { ToggleGroup } from 'radix-ui';
 import { Switch } from 'radix-ui';
 import { Icon } from '@iconify/react';
+import { geotargetOptions, type GeotargetOptions } from '@/types/geo';
 import Tooltip from './Tooltip';
-
-const geotargetOptions = [
-  {
-    id: 'assembly',
-    name: 'Assembly',
-  },
-  {
-    id: 'senate',
-    name: 'Senate',
-  },
-] as const;
-
-// Use as type
-export type GeotargetOptions = (typeof geotargetOptions)[number]['name'];
 
 interface LandingPageSettingsProps {
   slug: string;

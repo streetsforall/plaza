@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { geo } from '../../helpers/geo';
+import { searchAddress } from '../../helpers/geo';
 
 export default function AddressSearch({ onSelectAddress }) {
   const [addressQuery, setAddressQuery] = useState<string>('');
@@ -24,7 +24,7 @@ export default function AddressSearch({ onSelectAddress }) {
         string: debouncedQuery,
       };
 
-      const jsonData = await geo(body);
+      const jsonData = await searchAddress(body);
       setAddressResults(jsonData);
       setIsLoading(false);
     }

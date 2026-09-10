@@ -1,16 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import { combinedGeo } from '../../helpers/geo';
-import { addMailchimp } from '../../helpers/mailchimp';
+import { type GeotargetOptions } from '@/types/geo';
+import { findDistrict } from '@/app/helpers/geo';
+import { addMailchimp } from '@/app/helpers/mailchimp';
 import AddressSearch from './AddressSearch';
 import legislatorMetadata from '../../data/legislator_meta.json';
-import React from 'react';
 
 interface OutputProps {
   actorEmail?: string;
-  geotargetDistrictTypes?: string[];
+  geotargetDistrictTypes?: GeotargetOptions[];
   isPhone?: boolean | null;
   body?: string;
   initMailtoTo?: string[];
@@ -81,10 +81,9 @@ export default function Output({
             address.properties.coordinates.latitude,
           ];
 
-          const districtData: GeoJSON.Feature | null = await combinedGeo(
+          const districtData: GeoJSON.Feature | null = await findDistrict(
             districtType,
             coords,
-            true,
           );
 
           if (districtData) {

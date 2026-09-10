@@ -1,9 +1,11 @@
-// Custom types for Prisma schema
+import { GeotargetOptions } from './geo';
+
 declare global {
+  // Custom types for Prisma schema
   namespace PrismaJson {
     type LandingPageType = {
       isActive?: boolean;
-      geotargetDistrictTypes?: string[];
+      geotargetDistrictTypes?: GeotargetOptions[];
       isPhone?: boolean;
       heading: string;
       body?: string;
