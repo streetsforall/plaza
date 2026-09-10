@@ -1,48 +1,48 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import { combinedGeo } from '../../helpers/geo';
-import { addMailchimp } from '../../helpers/mailchimp';
+import { type GeotargetOptions } from '@/types/geo';
+import { findDistrict } from '@/app/helpers/geo';
+import { addMailchimp } from '@/app/helpers/mailchimp';
 import AddressSearch from './AddressSearch';
 import legislatorMetadata from '../../data/legislator_meta.json';
-import React from 'react';
 
 interface OutputProps {
   actorEmail?: string;
-  districtLookup?: string[];
-  body?: string;
+  geotargetDistrictTypes?: GeotargetOptions[];
   isPhone?: boolean | null;
-  initTo?: string[];
-  cc: string[];
-  bcc: string[];
-  subject: string;
-  emailBody: string;
+  body?: string;
+  initMailtoTo?: string[];
+  mailtoCc: string[];
+  mailtoBcc: string[];
+  mailtoSubject: string;
+  mailtoBody: string;
 }
 
 export default function Output({
   actorEmail,
-  districtLookup,
-  body,
+  geotargetDistrictTypes,
   isPhone,
-  initTo,
-  cc,
-  bcc,
-  subject,
-  emailBody,
+  body,
+  initMailtoTo,
+  mailtoCc,
+  mailtoBcc,
+  mailtoSubject,
+  mailtoBody,
 }: OutputProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<string>('Waiting for address');
 
   // Geotargeted information
   const [districts, setDistricts] = useState<GeoJSON.Feature[]>([]);
-  const [to, setTo] = useState<string[]>(initTo || []);
+  const [mailtoTo, setMailtoTo] = useState<string[]>(initMailtoTo || []);
 
-  const mailtoLink = `mailto:${to}?&cc=${cc}&bcc=${bcc}&subject=${subject}&body=${emailBody}`;
+  const mailtoLink = `mailto:${mailtoTo}?&cc=${mailtoCc}&bcc=${mailtoBcc}&subject=${mailtoSubject}&body=${mailtoBody}`;
 
   // Retrieve data based on address
   async function retrieveDistricts(address) {
-    if (!districtLookup) return;
+    if (!geotargetDistrictTypes) return;
 
     // Update contact
     if (actorEmail) {
@@ -69,7 +69,7 @@ export default function Output({
       setIsLoading(true);
 
       // Look up for each district type (assembly and/or senate)
-      for (const districtType of districtLookup) {
+      for (const districtType of geotargetDistrictTypes) {
         try {
           // Identify district based on address
           setStatus(
@@ -81,10 +81,9 @@ export default function Output({
             address.properties.coordinates.latitude,
           ];
 
-          const districtData: GeoJSON.Feature | null = await combinedGeo(
+          const districtData: GeoJSON.Feature | null = await findDistrict(
             districtType,
             coords,
-            true,
           );
 
           if (districtData) {
@@ -109,7 +108,7 @@ export default function Output({
               'Finding Address and ' + districtType + ' District Overlap',
             );
 
-            setTo((prevTo) => [
+            setMailtoTo((prevTo) => [
               districtData.properties?.person.contactDetails[0].value,
               ...prevTo,
             ]);
@@ -224,7 +223,7 @@ export default function Output({
         </span>
       </div>
     );
-  } else if (districtLookup?.length && !districts.length) {
+  } else if (geotargetDistrictTypes?.length && !districts.length) {
     /* Address lookup */
     return (
       <>

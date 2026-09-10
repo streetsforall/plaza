@@ -79,7 +79,7 @@ export default function RecipientField({
         return (
           <React.Fragment key={index}>
             <span
-              className="group focus:bg-soft-bg relative flex items-center rounded-sm border-2 border-dotted border-black px-1 text-black"
+              className="group relative flex items-center rounded-sm border-2 border-dotted border-black px-1 text-black"
               tabIndex={10 + index}
             >
               {email}

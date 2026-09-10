@@ -1,28 +1,33 @@
+import { type Dispatch, type SetStateAction } from 'react';
 import { ToggleGroup } from 'radix-ui';
 import { Switch } from 'radix-ui';
 import { Icon } from '@iconify/react';
+import { geotargetOptions, type GeotargetOptions } from '@/types/geo';
 import Tooltip from './Tooltip';
 
-const legislativeTargetOptions = [
-  {
-    id: 'assembly',
-    name: 'Assembly',
-  },
-  {
-    id: 'senate',
-    name: 'Senate',
-  },
-];
+interface LandingPageSettingsProps {
+  slug: string;
+  geotargetDistrictTypes: Array<GeotargetOptions>;
+  setGeotargetDistrictTypes: Dispatch<SetStateAction<Array<GeotargetOptions>>>;
+  isPhone: boolean;
+  setIsPhone: Dispatch<SetStateAction<boolean>>;
+  heading: string;
+  setHeading: Dispatch<SetStateAction<string>>;
+  body: string;
+  setBody: Dispatch<SetStateAction<string>>;
+}
 
 export default function LandingPageSettings({
-  hash,
-  legislativeTargets,
-  setLegislativeTargets,
-  actionable,
-  setActionable,
+  slug,
+  geotargetDistrictTypes,
+  setGeotargetDistrictTypes,
   isPhone,
   setIsPhone,
-}) {
+  heading,
+  setHeading,
+  body,
+  setBody,
+}: LandingPageSettingsProps) {
   /**
    * Copy link to clipboard
    * @param event - Mouse event
@@ -52,7 +57,7 @@ export default function LandingPageSettings({
       <div
         className={
           'grid grid-cols-[max-content_1fr_min-content] items-center gap-x-8' +
-          (legislativeTargets.length ? ' gap-y-6' : '')
+          (geotargetDistrictTypes.length ? ' gap-y-6' : '')
         }
       >
         {/* Geotarget selector */}
@@ -62,7 +67,7 @@ export default function LandingPageSettings({
         </span>
 
         <div className="flex items-center gap-8">
-          {legislativeTargetOptions.map((option) => (
+          {geotargetOptions.map((option) => (
             <div key={option.id} className="flex items-center gap-4">
               <label id={`${option.id}-label`} htmlFor={option.id}>
                 {option.name}
@@ -70,16 +75,19 @@ export default function LandingPageSettings({
               <Switch.Root
                 className="relative h-6.5 w-10.75 cursor-default rounded-full bg-white p-0 outline-none data-[state=checked]:bg-black"
                 id={option.id}
-                checked={legislativeTargets.includes(option.name)}
+                checked={geotargetDistrictTypes.includes(option.name)}
                 onCheckedChange={() => {
-                  if (legislativeTargets.includes(option.name)) {
-                    setLegislativeTargets(
-                      legislativeTargets.filter(
+                  if (geotargetDistrictTypes.includes(option.name)) {
+                    setGeotargetDistrictTypes(
+                      geotargetDistrictTypes.filter(
                         (target) => target !== option.name,
                       ),
                     );
                   } else {
-                    setLegislativeTargets([...legislativeTargets, option.name]);
+                    setGeotargetDistrictTypes([
+                      ...geotargetDistrictTypes,
+                      option.name,
+                    ]);
                   }
                 }}
               >
@@ -103,7 +111,7 @@ export default function LandingPageSettings({
           className={
             'flex items-center gap-1.5' +
             // Prevent layout shift
-            (!legislativeTargets.length ? ' invisible max-h-0' : '')
+            (!geotargetDistrictTypes.length ? ' invisible max-h-0' : '')
           }
         >
           <Icon icon="material-symbols:call-outline" />
@@ -114,7 +122,7 @@ export default function LandingPageSettings({
           className={
             'togglegroup-root justify-self-start' +
             // Prevent layout shift
-            (!legislativeTargets.length ? ' invisible max-h-0' : '')
+            (!geotargetDistrictTypes.length ? ' invisible max-h-0' : '')
           }
           type="single"
           value={isPhone ? 'true' : 'false'}
@@ -130,7 +138,7 @@ export default function LandingPageSettings({
         </ToggleGroup.Root>
 
         <Tooltip
-          className={!legislativeTargets.length ? 'invisible max-h-0' : ''}
+          className={!geotargetDistrictTypes.length ? 'invisible max-h-0' : ''}
         >
           Include the legislators&apos; phone number.
         </Tooltip>
@@ -149,12 +157,9 @@ export default function LandingPageSettings({
         </label>
         <input
           id="landing-page-heading"
-          value={decodeURIComponent(actionable?.header)}
+          value={decodeURIComponent(heading)}
           onChange={(e) => {
-            setActionable({
-              header: e.target.value,
-              body: actionable.body,
-            });
+            setHeading(e.target.value);
           }}
           required
         />
@@ -179,21 +184,18 @@ export default function LandingPageSettings({
         </label>
         <textarea
           id="landing-page-body"
-          value={decodeURIComponent(actionable?.body)}
+          value={decodeURIComponent(body)}
           rows={12}
           className="min-h-80"
           onChange={(e) => {
-            setActionable({
-              header: actionable.header,
-              body: e.target.value,
-            });
+            setBody(e.target.value);
           }}
         />
       </div>
 
       {/* Shareable link */}
       <div>
-        {hash ? (
+        {slug ? (
           <button
             className="flex w-full items-center justify-center gap-1.5 border-2 border-black font-mono"
             onClick={(e) => copyLink(e)}

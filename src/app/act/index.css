@@ -6,14 +6,6 @@
   --color-sfa-tan: #f3eee2;
 
   --color-blue: #0032ff;
-
-  --color-bg: rgb(241, 241, 240);
-  --color-edit: rgb(249, 248, 246);
-  --color-button: rgb(212, 204, 204);
-  --color-soft-bg: rgb(216, 228, 238);
-  --color-bold: rgb(34, 40, 219);
-  --color-copy: rgb(213, 245, 186);
-  --color-copyhigh: rgb(135, 214, 151);
 }
 
 @theme inline {
