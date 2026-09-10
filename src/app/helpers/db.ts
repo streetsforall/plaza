@@ -5,7 +5,7 @@ import prisma from '../../lib/prisma';
 
 /**
  * Get single matching mailto from database
- * @param slug - URL slug including #
+ * @param slug - URL slug
  * @returns Saved mailto email template
  */
 async function getCta(slug: string) {
@@ -13,7 +13,7 @@ async function getCta(slug: string) {
     console.log(`Fetching CTA ${slug}`);
 
     const cta = await prisma.cTA.findUnique({
-      where: { slug },
+      where: { slug: slug },
     });
 
     return cta;

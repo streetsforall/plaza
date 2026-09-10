@@ -39,9 +39,6 @@ export default async function Page() {
           <tbody>
             {ctas &&
               ctas.map((cta) => {
-                // Remove # symbol
-                const slug = cta.slug.substring(1);
-
                 return (
                   <tr
                     key={cta.id}
@@ -49,24 +46,24 @@ export default async function Page() {
                     aria-label="Load"
                   >
                     <td className="relative w-1/2 max-w-0 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap group-not-last:border-b-2">
-                      <Link href={slug} className="absolute inset-0" />
+                      <Link href={cta.slug} className="absolute inset-0" />
                       {decodeURIComponent(cta.mailto.subject || '-')}
                     </td>
                     <td className="relative w-1/2 max-w-0 overflow-hidden px-4 py-2 text-ellipsis whitespace-nowrap group-not-last:border-b-2">
-                      <Link href={slug} className="absolute inset-0" />
+                      <Link href={cta.slug} className="absolute inset-0" />
                       {decodeURIComponent(cta.landingPage?.heading || '-')}
                     </td>
                     <td className="relative px-4 py-2 font-mono text-sm group-not-last:border-b-2">
-                      <Link href={slug} className="absolute inset-0" />
-                      {slug}
+                      <Link href={cta.slug} className="absolute inset-0" />
+                      {cta.slug}
                     </td>
                     <td className="relative px-4 py-2 text-right group-not-last:border-b-2">
-                      <Link href={slug} className="absolute inset-0" />
+                      <Link href={cta.slug} className="absolute inset-0" />
                       {cta.updatedAt &&
                         new Date(cta.updatedAt).toLocaleDateString()}
                     </td>
                     <td className="relative px-4 py-2 text-right group-not-last:border-b-2">
-                      <Link href={slug} className="absolute inset-0" />
+                      <Link href={cta.slug} className="absolute inset-0" />
                       {cta.createdAt &&
                         new Date(cta.createdAt).toLocaleDateString()}
                     </td>

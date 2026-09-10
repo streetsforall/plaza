@@ -14,11 +14,11 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   // Get slug from URL path
-  const { slug } = await params;
+  const slugs = (await params).slug;
+  const slug = slugs && slugs[0];
 
   // Load saved email template
-  // Add # symbol back to match DB
-  const cta = await getCachedCta(`#${slug}`);
+  const cta = await getCachedCta(slug);
 
   return {
     title: cta?.landingPage?.heading,
@@ -36,12 +36,12 @@ export default async function Page({
   searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   // Get slug and email from URL path
-  const { slug } = await params;
+  const slugs = (await params).slug;
+  const slug = slugs && slugs[0];
   const actorEmail = (await searchParams).email;
 
   // Load saved email template
-  // Add # symbol back to match DB
-  const cta = await getCachedCta(`#${slug}`);
+  const cta = await getCachedCta(slug);
 
   if (cta) {
     return (

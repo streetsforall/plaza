@@ -8,12 +8,12 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   // Get slug from URL path
-  const { slug } = await params;
+  const slugs = (await params).slug;
+  const slug = slugs && slugs[0];
 
   if (slug) {
     // If slug, load saved email template
-    // Add # symbol back to match DB
-    const saved = await getCta(`#${slug}`);
+    const saved = await getCta(slug);
 
     if (saved) {
       return (

@@ -169,8 +169,7 @@ export default function Editor({
 
     // Save to database
     await setCta({
-      // Add # symbol when saving
-      slug: `#${currentSlug || newSlug}`,
+      slug: currentSlug || newSlug,
       mailto: {
         to: mailtoTo,
         cc: mailtoCc,
