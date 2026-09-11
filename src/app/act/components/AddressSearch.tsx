@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
 import { searchAddress } from '../../helpers/geo';
 
 export default function AddressSearch({ onSelectAddress }) {
+  const params = useParams<{ slug: string }>();
+  const slug = params.slug[0];
+
   const [addressQuery, setAddressQuery] = useState<string>('');
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
   const [addressResults, setAddressResults] = useState<GeoJSON.Feature[]>();
@@ -59,7 +63,8 @@ export default function AddressSearch({ onSelectAddress }) {
                 <li key={index}>
                   <button
                     className="w-full cursor-pointer border-b border-dotted border-stone-400 px-4 py-3 text-left text-stone-600 hover:bg-stone-100"
-                    data-umami-event="cta_select_address"
+                    data-umami-event="select-address"
+                    data-umami-event-slug={slug}
                     onClick={() => onSelectAddress(address)}
                   >
                     {address.properties?.full_address}

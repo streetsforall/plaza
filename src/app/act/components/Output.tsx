@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import { type GeotargetOptions } from '@/types/geo';
 import { findDistrict } from '@/app/helpers/geo';
 import { addMailchimp } from '@/app/helpers/mailchimp';
@@ -31,6 +32,9 @@ export default function Output({
   mailtoSubject,
   mailtoBody,
 }: OutputProps) {
+  const params = useParams<{ slug: string }>();
+  const slug = params.slug[0];
+
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState<string>('Waiting for address');
 
@@ -290,9 +294,19 @@ export default function Output({
                     }
                   </span>
                   <a
-                    className="whitespace-nowrap"
-                    data-umami-event="cta_click_phone"
                     href={'tel:' + district.properties?.phone}
+                    className="whitespace-nowrap"
+                    data-umami-event="click-phone-cta"
+                    data-umami-event-slug={slug}
+                    // Determine district type based on id prefix
+                    data-umami-event-geotarget-assembly={
+                      (district.id as string).substring(0, 2) === 'ad' &&
+                      district.id
+                    }
+                    data-umami-event-geotarget-senate={
+                      (district.id as string).substring(0, 2) === 'sd' &&
+                      district.id
+                    }
                   >
                     {district.properties?.phone}
                   </a>
@@ -302,9 +316,21 @@ export default function Output({
 
           {/* Email CTA */}
           <a
-            data-umami-event="cta_click_email"
             href={mailtoLink}
             className="bg-sfa-green relative flex flex-wrap justify-center gap-x-1 self-center rounded-lg px-5 py-3 text-base leading-tight text-white no-underline transition-transform hover:-translate-y-0.75 sm:text-lg"
+            data-umami-event="click-email-cta"
+            data-umami-event-slug={slug}
+            // Determine district type based on id prefix
+            data-umami-event-geotarget-assembly={
+              districts.find(
+                (district) => (district.id as string).substring(0, 2) === 'ad',
+              )?.id
+            }
+            data-umami-event-geotarget-senate={
+              districts.find(
+                (district) => (district.id as string).substring(0, 2) === 'sd',
+              )?.id
+            }
           >
             <div className="absolute top-1 -left-10 hidden -rotate-6 text-5xl sm:block">
               👉
