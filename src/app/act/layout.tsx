@@ -4,6 +4,8 @@ import { Inter, Source_Sans_3, Space_Mono } from 'next/font/google';
 import Redirect from './components/Redirect';
 import './index.css';
 
+const UMAMI_WEBSITE_ID = process.env.UMAMI_WEBSITE_ID;
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
@@ -35,7 +37,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Script
           defer
           src="https://cloud.umami.is/script.js"
-          data-website-id="79af4e69-5da3-464f-a844-ecfa00f5b7c3"
+          data-website-id={UMAMI_WEBSITE_ID}
         />
       </head>
       <body className="bg-sfa-tan">
