@@ -1,6 +1,8 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
+const AUTH_PASSWORD = process.env.AUTH_PASSWORD;
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: '/edit/login',
@@ -14,7 +16,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       authorize: async (credentials) => {
-        if (credentials.password === process.env.AUTH_PASSWORD) {
+        if (credentials.password === AUTH_PASSWORD) {
           return { id: '' };
         }
         return null;

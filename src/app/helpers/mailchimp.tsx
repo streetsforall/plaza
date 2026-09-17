@@ -2,6 +2,9 @@
 
 import client from '@mailchimp/mailchimp_marketing';
 
+const MAILCHIMP_KEY = process.env.MAILCHIMP_KEY;
+const MAILCHIMP_SERVER = process.env.MAILCHIMP_SERVER;
+
 interface MergeFields {
   ADD_ST: string;
   ADD_CITY: string;
@@ -11,8 +14,8 @@ interface MergeFields {
 }
 
 client.setConfig({
-  apiKey: process.env.MAILCHIMP_KEY,
-  server: 'us4',
+  apiKey: MAILCHIMP_KEY,
+  server: MAILCHIMP_SERVER,
 });
 
 export async function addMailchimp(email: string, merge_fields: MergeFields) {

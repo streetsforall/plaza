@@ -5,7 +5,7 @@ import { point } from '@turf/helpers';
 import { geotargetOptions, GeotargetOptions } from '@/types/geo';
 
 const GEODATA_API_BASE_URL = process.env.GEODATA_API_BASE_URL;
-const MAPBOX_TOKEN = process.env.Mapbox_Token;
+const MAPBOX_TOKEN = process.env.MAPBOX_TOKEN;
 
 /**
  * Address lookup
